@@ -21,10 +21,10 @@ Proyek ini dikembangkan oleh 4 orang dengan pembagian peran yang spesifik:
 
 | Nama Anggota | Peran (Role) | Fokus Tugas |
 | :--- | :--- | :--- |
-| **Rifky** | Project Manager & UI/UX Designer | Merancang antarmuka (Figma), manajemen proyek, dan QA |
-| **Fajar** | Frontend Developer | Slicing XML, UI Logic (Kotlin), dan integrasi komponen |
-| **Naufal** | Backend Developer 1 | Firebase Auth, Session Management, dan Security Rules |
-| **Wadis** | Backend Developer 2 | Cloud Firestore architecture dan fungsi logika CRUD |
+| **Rifky Akbar Utomo Putra** | Project Manager & UI/UX Designer | Merancang antarmuka (Figma), manajemen proyek, dan QA |
+| **Yurian Fathur Fajar** | Frontend Developer | Slicing XML, UI Logic (Kotlin), dan integrasi komponen |
+| **Naufal Pramudya Ananda** | Backend Developer 1 | Firebase Auth, Session Management, dan Security Rules |
+| **Wadis Friendly** | Backend Developer 2 | Cloud Firestore architecture dan fungsi logika CRUD |
 
 ## 🚀 Instalasi & Konfigurasi
 1. *Clone repository* ini ke komputer lokal:
