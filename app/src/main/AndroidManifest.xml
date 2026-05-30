@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusConnectProject">
         <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.WelcomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.panitia.ScannerActivity"
             android:exported="false" />
         <activity

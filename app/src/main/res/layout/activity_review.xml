@@ -1,10 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.mahasiswa.ReviewActivity">
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/btnCloseReview"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:tint="#111827"
+        android:layout_gravity="start"
+        android:layout_marginBottom="32dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How was the event?"
+        android:textColor="#111827"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvReviewEventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Annual Inter-University Hackathon"
+        android:textColor="#6B7280"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- Rating Bintang -->
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:progressTint="#FF8A00"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- Input Ulasan Teks -->
+    <EditText
+        android:id="@+id/etReviewText"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/bg_input_rounded"
+        android:gravity="top|start"
+        android:hint="Write your feedback here (optional)..."
+        android:padding="16dp"
+        android:textSize="14sp"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btnSubmitReview"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:backgroundTint="#0A3C9F"
+        android:text="Submit Review"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:cornerRadius="10dp" />
+
+</LinearLayout>
