@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CampusConnectProject">
+        <activity
+            android:name=".ui.panitia.ScannerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.ManageUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.VerifyEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.DashboardAdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.panitia.ManagePesertaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.panitia.CreateEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.panitia.DashboardPanitiaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mahasiswa.ReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mahasiswa.TicketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mahasiswa.CheckoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mahasiswa.DetailEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mahasiswa.HomeMahasiswaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
