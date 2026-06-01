@@ -78,22 +78,6 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Already have an account? "
-                android:textColor="#6B7280"
-                android:textSize="14sp" />
-
-            <TextView
-
-                android:id="@+id/tvGoToLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Log in"
-                android:textColor="#0047A5"
-                android:textSize="14sp"
-                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 

@@ -8,15 +8,15 @@ import android.widget.Button
 import android.widget.ImageView
 
 
-class ForgotPasswordActivity : AppCompatActivity() {
+class ResetPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_forgot_password)
+        setContentView(R.layout.activity_reset_password)
 
-        val btnBackForgot = findViewById<ImageView>(R.id.btnBackForgot)
-        val btnSendReset = findViewById<Button>(R.id.btnSendReset)
+        val btnBackReset = findViewById<ImageView>(R.id.btnBackReset)
+        val btnConfirmReset = findViewById<Button>(R.id.btnConfirmReset)
 
-        btnBackForgot.setOnClickListener {
+        btnBackReset.setOnClickListener {
 
             startActivity(
                 Intent(
@@ -25,12 +25,13 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 )
             )
         }
-        btnSendReset.setOnClickListener {
+
+        btnConfirmReset.setOnClickListener {
 
             startActivity(
                 Intent(
                     this,
-                    ResetPasswordActivity::class.java
+                    LoginActivity::class.java
                 )
             )
         }

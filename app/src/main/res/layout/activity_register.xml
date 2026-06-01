@@ -93,23 +93,23 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input_rounded"
-            android:padding="4dp"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:padding="4dp">
 
             <Button
                 android:id="@+id/btnRoleMahasiswa"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:backgroundTint="#0047A5"
+                    android:backgroundTint="#00000000"
                 android:text="Mahasiswa/Umum"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
-                app:cornerRadius="8dp"/>
+                app:cornerRadius="8dp" />
 
             <Button
                 android:id="@+id/btnRolePanitia"
@@ -121,8 +121,8 @@
                 android:textAllCaps="false"
                 android:textColor="#6B7280"
                 android:textSize="12sp"
-                app:elevation="0dp"
-                app:cornerRadius="8dp"/>
+                app:cornerRadius="8dp"
+                app:elevation="0dp" />
         </LinearLayout>
 
         <TextView
