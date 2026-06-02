@@ -51,6 +51,9 @@
             android:name=".ui.mahasiswa.HomeMahasiswaActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.mahasiswa.HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity

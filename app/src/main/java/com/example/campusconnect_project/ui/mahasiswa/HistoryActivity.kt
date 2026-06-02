@@ -2,27 +2,43 @@ package com.example.campusconnect_project.ui.mahasiswa
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusconnect_project.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.campusconnect_project.ui.profile.ProfileActivity
 
 
-class HomeMahasiswaActivity : AppCompatActivity() {
+class HistoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_mahasiswa)
+        setContentView(R.layout.activity_history)
 
+        val btnReview = findViewById<Button>(R.id.btnReview)
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigation.selectedItemId = R.id.nav_home
+        bottomNavigation.selectedItemId = R.id.nav_history
+
+        btnReview.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    ReviewActivity::class.java
+                )
+            )
+        }
 
         bottomNavigation.setOnItemSelectedListener { item ->
 
             when(item.itemId){
 
                 R.id.nav_home -> {
-
+                    startActivity(
+                        Intent(
+                            this,
+                            HomeMahasiswaActivity::class.java
+                        )
+                    )
                     true
                 }
 
@@ -39,14 +55,6 @@ class HomeMahasiswaActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_history -> {
-
-                    startActivity(
-                        Intent(
-                            this,
-                            HistoryActivity::class.java
-                        )
-                    )
-
                     true
                 }
 
