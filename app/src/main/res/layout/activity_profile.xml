@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -43,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Rifky"
+        android:text="Pengguna"
         android:textColor="#111827"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -75,6 +76,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvProfileRole">
 
         <TextView
+            android:id="@+id/tvEditProfile"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
@@ -90,12 +92,29 @@
             android:layout_marginHorizontal="16dp"/>
 
         <TextView
+            android:id="@+id/tvChangePassword"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
             android:paddingHorizontal="16dp"
             android:text="Change Password"
             android:textColor="#1F2937"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E5E7EB"
+            android:layout_marginHorizontal="16dp"/>
+
+        <TextView
+            android:id="@+id/tvDeleteAccount"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:text="Delete Account"
+            android:textColor="#EF4444"
             android:textSize="16sp" />
     </LinearLayout>
 

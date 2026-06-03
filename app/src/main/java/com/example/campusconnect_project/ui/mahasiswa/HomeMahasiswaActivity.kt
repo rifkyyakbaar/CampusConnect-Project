@@ -1,69 +1,13 @@
 package com.example.campusconnect_project.ui.mahasiswa
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusconnect_project.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.example.campusconnect_project.ui.profile.ProfileActivity
-
 
 class HomeMahasiswaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_mahasiswa)
-
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigation.selectedItemId = R.id.nav_home
-
-        bottomNavigation.setOnItemSelectedListener { item ->
-
-            when(item.itemId){
-
-                R.id.nav_home -> {
-
-                    true
-                }
-
-                R.id.nav_ticket -> {
-
-                    startActivity(
-                        Intent(
-                            this,
-                            TicketActivity::class.java
-                        )
-                    )
-
-                    true
-                }
-
-                R.id.nav_history -> {
-
-                    startActivity(
-                        Intent(
-                            this,
-                            HistoryActivity::class.java
-                        )
-                    )
-
-                    true
-                }
-
-                R.id.nav_profile -> {
-
-                    startActivity(
-                        Intent(
-                            this,
-                            ProfileActivity::class.java
-                        )
-                    )
-
-                    true
-                }
-
-                else -> false
-            }
-        }
     }
 }
