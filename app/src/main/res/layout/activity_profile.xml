@@ -64,8 +64,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvProfileName" />
 
+    <TextView
+        android:id="@+id/tvProfileEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:text="-"
+        android:textColor="#6B7280"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProfileRole" />
+
     <!-- Menu-menu Pengaturan -->
     <LinearLayout
+        android:id="@+id/profileMenuContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
@@ -73,7 +88,7 @@
         android:orientation="vertical"
         android:background="@drawable/bg_input_rounded"
         android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvProfileRole">
+        app:layout_constraintTop_toBottomOf="@id/tvProfileEmail">
 
         <TextView
             android:id="@+id/tvEditProfile"
@@ -131,11 +146,20 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:cornerRadius="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profileMenuContainer"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         android:layout_marginBottom="32dp"/>
 
-    <!-- dummy view anchor for logout constraint -->
-    <View android:id="@+id/linearLayout2" android:layout_width="1dp" android:layout_height="1dp" app:layout_constraintTop_toBottomOf="@id/tvProfileRole" app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="160dp"/>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        app:itemIconTint="#0A3C9F"
+        app:itemTextColor="#0A3C9F"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

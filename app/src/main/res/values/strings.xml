@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CampusConnect-Project</string>
+    <string name="welcome_user">Welcome, %1$s!</string>
 </resources>
