@@ -106,6 +106,13 @@ class CreateEventActivity : AppCompatActivity() {
 
                         finish()
                     }
-            }
+                    .addOnFailureListener { e ->
+
+                        Toast.makeText(
+                            this,
+                            "Gagal: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }            }
     }
 }
