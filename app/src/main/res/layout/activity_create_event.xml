@@ -49,6 +49,7 @@
             app:strokeWidth="1dp">
 
             <LinearLayout
+                android:id="@+id/layoutUploadPosterPlaceholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -63,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Tap to upload event poster"
+                    android:text="Event poster"
                     android:textColor="#6B7280"
                     android:textSize="14sp" />
             </LinearLayout>

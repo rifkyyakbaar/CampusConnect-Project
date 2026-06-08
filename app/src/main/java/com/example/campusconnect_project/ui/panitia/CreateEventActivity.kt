@@ -2,15 +2,15 @@ package com.example.campusconnect_project.ui.panitia
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusconnect_project.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import android.widget.EditText
-import android.widget.Toast
-import android.widget.Button
-
 
 
 class CreateEventActivity : AppCompatActivity() {
@@ -46,22 +46,24 @@ class CreateEventActivity : AppCompatActivity() {
 
     private fun publishEvent() {
 
+        val btnSubmit = findViewById<Button>(R.id.btnSubmitEvent)
+
         val eventName =
-            findViewById<EditText>(R.id.etEventName).text.toString()
+            findViewById<EditText>(R.id.etEventName).text.toString().trim()
 
         val category =
-            findViewById<EditText>(R.id.etCategory).text.toString()
+            findViewById<EditText>(R.id.etCategory).text.toString().trim()
 
-        val capacity =
-            findViewById<EditText>(R.id.etCapacity).text.toString()
+        val capacityText =
+            findViewById<EditText>(R.id.etCapacity).text.toString().trim()
 
         val description =
-            findViewById<EditText>(R.id.etDescription).text.toString()
+            findViewById<EditText>(R.id.etDescription).text.toString().trim()
 
         if (
             eventName.isEmpty() ||
             category.isEmpty() ||
-            capacity.isEmpty() ||
+            capacityText.isEmpty() ||
             description.isEmpty()
         ) {
             Toast.makeText(
@@ -72,7 +74,27 @@ class CreateEventActivity : AppCompatActivity() {
             return
         }
 
-        val user = auth.currentUser ?: return
+        val capacity = capacityText.toIntOrNull()
+        if (capacity == null || capacity <= 0) {
+            Toast.makeText(
+                this,
+                "Kapasitas harus berupa angka lebih dari 0",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        val user = auth.currentUser
+        if (user == null) {
+            Toast.makeText(
+                this,
+                "Silakan login terlebih dahulu",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        btnSubmit.isEnabled = false
 
         firestore.collection("users")
             .document(user.uid)
@@ -82,20 +104,23 @@ class CreateEventActivity : AppCompatActivity() {
                 val organizerName =
                     doc.getString("fullName") ?: "Panitia"
 
+                val eventRef = firestore.collection("events").document()
                 val event = hashMapOf(
+                    "eventId" to eventRef.id,
                     "eventName" to eventName,
                     "category" to category,
-                    "capacity" to capacity.toInt(),
+                    "capacity" to capacity,
                     "description" to description,
                     "organizerId" to user.uid,
                     "organizerName" to organizerName,
+                    "posterUrl" to "",
                     "status" to "pending",
                     "registrants" to 0,
-                    "createdAt" to System.currentTimeMillis()
+                    "createdAt" to FieldValue.serverTimestamp()
                 )
 
-                firestore.collection("events")
-                    .add(event)
+                eventRef
+                    .set(event)
                     .addOnSuccessListener {
 
                         Toast.makeText(
@@ -113,6 +138,16 @@ class CreateEventActivity : AppCompatActivity() {
                             "Gagal: ${e.message}",
                             Toast.LENGTH_LONG
                         ).show()
-                    }            }
+                        btnSubmit.isEnabled = true
+                    }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    this,
+                    "Gagal mengambil data panitia: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                btnSubmit.isEnabled = true
+            }
     }
 }

@@ -9,10 +9,12 @@
     import android.widget.TextView
     import com.google.firebase.auth.FirebaseAuth
     import com.google.firebase.firestore.FirebaseFirestore
+    import com.google.firebase.firestore.ListenerRegistration
 
     class DashboardPanitiaActivity : AppCompatActivity() {
         private val auth = FirebaseAuth.getInstance()
         private val firestore = FirebaseFirestore.getInstance()
+        private var myEventsListener: ListenerRegistration? = null
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -21,7 +23,18 @@
             loadPanitiaName()
             profilepanitia()
             createevent()
-            loadMyEvents()
+            showDefaultStats()
+        }
+
+        override fun onStart() {
+            super.onStart()
+            listenMyEvents()
+        }
+
+        override fun onStop() {
+            super.onStop()
+            myEventsListener?.remove()
+            myEventsListener = null
         }
 
         private fun loadPanitiaName() {
@@ -74,23 +87,39 @@
                 )
             }
         }
-        private fun loadMyEvents() {
+        private fun showDefaultStats() {
+            findViewById<TextView>(R.id.tvTotalEvents).text = "0"
+            findViewById<TextView>(R.id.tvTotalRegistrants).text = "0"
+        }
+
+        private fun listenMyEvents() {
 
             val user = auth.currentUser ?: return
 
-            firestore.collection("events")
+            myEventsListener?.remove()
+            myEventsListener = firestore.collection("events")
                 .whereEqualTo(
                     "organizerId",
                     user.uid
                 )
-                .get()
-                .addOnSuccessListener { result ->
+                .addSnapshotListener { result, error ->
+                    if (error != null || result == null) {
+                        showDefaultStats()
+                        return@addSnapshotListener
+                    }
 
                     val totalEvents = result.size()
+                    val totalRegistrants = result.documents.sumOf { document ->
+                        document.getLong("registrants") ?: 0L
+                    }
 
                     findViewById<TextView>(
                         R.id.tvTotalEvents
                     ).text = totalEvents.toString()
+
+                    findViewById<TextView>(
+                        R.id.tvTotalRegistrants
+                    ).text = totalRegistrants.toString()
                 }
         }
     }
