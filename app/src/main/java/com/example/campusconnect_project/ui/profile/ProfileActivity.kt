@@ -13,14 +13,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.widget.ImageView
 import com.example.campusconnect_project.R
 import com.example.campusconnect_project.ui.auth.LoginActivity
-import com.example.campusconnect_project.ui.mahasiswa.HistoryActivity
+import com.example.campusconnect_project.ui.panitia.DashboardPanitiaActivity
 import com.example.campusconnect_project.ui.mahasiswa.HomeMahasiswaActivity
-import com.example.campusconnect_project.ui.mahasiswa.TicketActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -29,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class ProfileActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
-
+    private var userRole = ""
     private lateinit var tvProfileName: TextView
     private lateinit var tvProfileRole: TextView
     private lateinit var tvProfileEmail: TextView
@@ -79,9 +78,33 @@ class ProfileActivity : AppCompatActivity() {
         btnLogout = findViewById(R.id.btnLogout)
         tvDeleteAccount = findViewById(R.id.tvDeleteAccount)
 
-        loadProfile()
-        setupBottomNavigation()
+        val btnBack = findViewById<ImageView>(R.id.btnBack)
 
+        btnBack.setOnClickListener {
+
+            if (userRole.equals("Panitia", ignoreCase = true)) {
+
+                startActivity(
+                    Intent(
+                        this,
+                        DashboardPanitiaActivity::class.java
+                    )
+                )
+
+            } else {
+
+                startActivity(
+                    Intent(
+                        this,
+                        HomeMahasiswaActivity::class.java
+                    )
+                )
+            }
+
+            finish()
+        }
+
+        loadProfile()
         btnLogout.setOnClickListener {
             logout()
         }
@@ -108,6 +131,7 @@ class ProfileActivity : AppCompatActivity() {
                     ?: user.email?.substringBefore("@")
                     ?: "Pengguna"
                 val role = document.getString("role") ?: "Mahasiswa"
+                userRole = role
                 val provider = document.getString("provider") ?: providerLabel()
 
                 tvProfileName.text = fullName
@@ -119,31 +143,6 @@ class ProfileActivity : AppCompatActivity() {
                 showMessage(exception.localizedMessage ?: "Gagal memuat profil.")
             }
     }
-
-    private fun setupBottomNavigation() {
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigation.selectedItemId = R.id.nav_profile
-
-        bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    startActivity(Intent(this, HomeMahasiswaActivity::class.java))
-                    true
-                }
-                R.id.nav_ticket -> {
-                    startActivity(Intent(this, TicketActivity::class.java))
-                    true
-                }
-                R.id.nav_history -> {
-                    startActivity(Intent(this, HistoryActivity::class.java))
-                    true
-                }
-                R.id.nav_profile -> true
-                else -> false
-            }
-        }
-    }
-
     private fun logout() {
         auth.signOut()
         GoogleSignIn.getClient(this, googleSignInOptions()).signOut()

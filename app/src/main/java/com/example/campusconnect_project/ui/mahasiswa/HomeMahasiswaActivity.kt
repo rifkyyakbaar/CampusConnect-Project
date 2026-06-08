@@ -19,6 +19,7 @@ class HomeMahasiswaActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home_mahasiswa)
 
         loadWelcomeName()
+        loadEvents()
         setupBottomNavigation()
     }
 
@@ -47,7 +48,15 @@ class HomeMahasiswaActivity : AppCompatActivity() {
                 tvWelcomeName.text = getString(R.string.welcome_user, fallbackName)
             }
     }
+    private fun loadEvents() {
 
+        firestore.collection("events")
+            .get()
+            .addOnSuccessListener {
+
+                // tampilkan semua event
+            }
+    }
     private fun setupBottomNavigation() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.selectedItemId = R.id.nav_home
