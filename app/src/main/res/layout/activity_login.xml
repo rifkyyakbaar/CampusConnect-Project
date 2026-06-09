@@ -86,19 +86,24 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <EditText
-            android:id="@+id/etPassword"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="••••••••"
-            android:inputType="textPassword"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
-            android:textSize="14sp"
-            android:layout_marginBottom="32dp"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            app:endIconMode="password_toggle"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/bg_input_rounded"
+                android:hint="•••••••"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btnSignIn"
