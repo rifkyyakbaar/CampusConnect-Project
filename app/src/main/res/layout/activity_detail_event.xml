@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/bg_utama"
     tools:context=".ui.mahasiswa.DetailEventActivity">
 
     <ScrollView
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:scaleType="centerCrop"
-                android:background="#374151" />
+                android:background="@color/bg_input" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="COMPETITION"
-                        android:textColor="#0047A5"
+                        android:textColor="@color/warna_primer"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:text="Oct 24, 2026"
-                        android:textColor="#6B7280"
+                        android:textColor="@color/teks_sekunder"
                         android:textSize="12sp" />
                 </RelativeLayout>
 
@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Annual Inter-University Hackathon: CodeTheFuture"
-                    android:textColor="#111827"
+                    android:textColor="@color/teks_utama"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp"/>
@@ -79,7 +79,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@android:drawable/ic_dialog_map"
-                        app:tint="#6B7280"
+                        app:tint="@color/teks_sekunder"
                         android:layout_marginEnd="8dp"/>
 
                     <TextView
@@ -87,21 +87,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Main Auditorium, Building A"
-                        android:textColor="#4B5563"
+                        android:textColor="@color/teks_sekunder"
                         android:textSize="14sp" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#E5E7EB"
+                    android:background="@color/garis_pembatas"
                     android:layout_marginBottom="24dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="About This Event"
-                    android:textColor="#111827"
+                    android:textColor="@color/teks_utama"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -111,7 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Join over 500 developers for 48 hours of building, learning, and networking. This annual hackathon brings together the brightest minds across universities to solve real-world problems using technology. \n\nWhat to expect:\n- Mentorship from industry experts\n- Free food and swags\n- Grand prize of $5000"
-                    android:textColor="#4B5563"
+                    android:textColor="@color/teks_sekunder"
                     android:textSize="14sp"
                     android:lineSpacingExtra="4dp" />
             </LinearLayout>
@@ -124,7 +124,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="#FFFFFF"
+        android:background="@color/bg_utama"
         android:elevation="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -139,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tickets Left"
-                android:textColor="#6B7280"
+                android:textColor="@color/teks_sekunder"
                 android:textSize="12sp" />
 
             <TextView
@@ -147,7 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="15 / 500"
-                android:textColor="#B45309"
+                android:textColor="@color/teks_warning"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -157,10 +157,10 @@
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_weight="2"
-            android:backgroundTint="#0A3C9F"
+            android:backgroundTint="@color/warna_primer"
             android:text="Join Event"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="16sp"
             app:cornerRadius="10dp" />
     </LinearLayout>

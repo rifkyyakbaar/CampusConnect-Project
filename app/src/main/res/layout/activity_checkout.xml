@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/bg_utama">
 
     <LinearLayout
         android:id="@+id/headerCheckout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@color/bg_utama"
         android:elevation="4dp"
         android:orientation="horizontal"
         android:padding="20dp"
@@ -22,14 +22,14 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@android:drawable/ic_menu_revert"
-            app:tint="#111827" />
+            app:tint="@color/teks_utama" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Confirm Registration"
-            android:textColor="#111827"
+            android:textColor="@color/teks_utama"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -45,18 +45,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Summary"
-            android:textColor="#6B7280"
+            android:textColor="@color/teks_sekunder"
             android:textSize="14sp"
             android:layout_marginBottom="8dp"/>
 
-        <!-- Card Info Event -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:strokeColor="#E5E7EB"
+            app:cardBackgroundColor="@color/bg_utama"
+            app:strokeColor="@color/garis_pembatas"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -64,20 +64,22 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/tvCheckEventName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Annual Inter-University Hackathon"
-                    android:textColor="#111827"
+                    android:textColor="@color/teks_utama"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tvCheckEventDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Oct 24, 2026 • Main Auditorium"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/teks_sekunder"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
@@ -87,11 +89,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Participant Details"
-            android:textColor="#6B7280"
+            android:textColor="@color/teks_sekunder"
             android:textSize="14sp"
             android:layout_marginBottom="8dp"/>
 
-        <!-- Kotak Data Peserta -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,14 +104,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Full Name"
-                android:textColor="#9CA3AF"
+                android:textColor="@color/teks_sekunder"
                 android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/tvCheckName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rifky Akbar Utomo Putra"
-                android:textColor="#111827"
+                android:textColor="@color/teks_utama"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"/>
@@ -119,29 +121,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Email"
-                android:textColor="#9CA3AF"
+                android:textColor="@color/teks_sekunder"
                 android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/tvCheckEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="rifky@example.com"
-                android:textColor="#111827"
+                android:textColor="@color/teks_utama"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Tombol Confirm (Sticky di bawah) -->
     <Button
         android:id="@+id/btnConfirmRegister"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="24dp"
-        android:backgroundTint="#0A3C9F"
+        android:backgroundTint="@color/warna_primer"
         android:text="Confirm &amp; Get Ticket"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="16sp"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent" />

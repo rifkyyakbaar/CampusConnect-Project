@@ -5,15 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F4F6"
+    android:background="@color/bg_utama"
     tools:context=".ui.admin.DashboardAdminActivity">
 
-    <!-- Header Hitam untuk Admin -->
     <View
         android:id="@+id/headerAdmin"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="#111827"
+        android:background="@color/bg_header_admin"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -39,14 +38,13 @@
         app:layout_constraintTop_toBottomOf="@+id/headerAdmin"
         android:layout_marginTop="-90dp"/>
 
-    <!-- Banner Peringatan -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cvPendingApproval"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="32dp"
-        app:cardBackgroundColor="#FEF3C7"
+        app:cardBackgroundColor="@color/bg_warning"
         app:cardCornerRadius="12dp"
         app:cardElevation="2dp"
         app:layout_constraintTop_toBottomOf="@id/headerAdmin">
@@ -57,17 +55,19 @@
             android:padding="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
+
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@android:drawable/ic_dialog_alert"
-                app:tint="#D97706" />
+                app:tint="@color/ikon_warning" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:text="You have 5 events waiting for approval."
-                android:textColor="#92400E"
+                android:textColor="@color/teks_warning"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -80,13 +80,12 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="Pending Approvals"
-        android:textColor="#111827"
+        android:textColor="@color/teks_utama"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cvPendingApproval" />
 
-    <!-- List Event yang butuh ACC -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAdminApprovals"
         android:layout_width="match_parent"

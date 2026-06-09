@@ -5,15 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F4F6"
+    android:background="@color/bg_utama"
     tools:context=".ui.panitia.DashboardPanitiaActivity">
 
-    <!-- Header Latar Biru -->
     <View
         android:id="@+id/headerBackground"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="#0A3C9F"
+        android:background="@color/warna_primer"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -23,7 +22,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="Organizer Dashboard"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +40,7 @@
         android:src="@android:drawable/ic_menu_myplaces"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="#FFFFFF" />
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/tvPanitiaName"
@@ -50,13 +49,12 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="Hello, Pengguna!"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle" />
 
-    <!-- Card Statistik -->
     <LinearLayout
         android:id="@+id/layoutStats"
         android:layout_width="match_parent"
@@ -66,13 +64,13 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/tvPanitiaName">
 
-        <!-- Stat 1: Total Events -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="@color/bg_utama"
             app:cardElevation="4dp">
 
             <LinearLayout
@@ -86,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Active Events"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/teks_sekunder"
                     android:textSize="12sp" />
 
                 <TextView
@@ -94,20 +92,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="#0A3C9F"
+                    android:textColor="@color/warna_primer"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Stat 2: Total Registrants -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="@color/bg_utama"
             app:cardElevation="4dp">
 
             <LinearLayout
@@ -121,7 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Total Registrants"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/teks_sekunder"
                     android:textSize="12sp" />
 
                 <TextView
@@ -129,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="#0A3C9F"
+                    android:textColor="@color/warna_primer"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"/>
@@ -144,13 +142,12 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="My Managed Events"
-        android:textColor="#111827"
+        android:textColor="@color/teks_utama"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutStats" />
 
-    <!-- RecyclerView untuk daftar event yang dibuat panitia -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPanitiaEvents"
         android:layout_width="match_parent"
@@ -160,16 +157,15 @@
         app:layout_constraintTop_toBottomOf="@id/tvMyEventsLabel"
         tools:listitem="@layout/item_event" />
 
-    <!-- Tombol Mengambang (Floating Action Button) untuk Tambah Event -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="#FF8A00"
+        android:backgroundTint="@color/warna_aksen"
         android:src="@android:drawable/ic_input_add"
-        app:tint="#FFFFFF"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

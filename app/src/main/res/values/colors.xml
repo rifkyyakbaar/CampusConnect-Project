@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="warna_aksen">#FF8A00</color>
+    <color name="bg_header_admin">#111827</color> <color name="bg_warning">#FEF3C7</color> <color name="teks_warning">#92400E</color> <color name="ikon_warning">#D97706</color>
+    <color name="garis_pembatas">#E5E7EB</color>
+    <color name="bg_utama">#FFFFFF</color> <color name="teks_utama">#212121</color> <color name="teks_sekunder">#757575</color> <color name="warna_primer">#0A3D91</color> <color name="bg_input">#F5F5F5</color>
 </resources>

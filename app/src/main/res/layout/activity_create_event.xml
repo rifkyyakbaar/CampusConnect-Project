@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/bg_utama"
     android:fillViewport="true"
     tools:context=".ui.panitia.CreateEventActivity">
 
@@ -24,28 +24,27 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@android:drawable/ic_menu_revert"
-                app:tint="#111827" />
+                app:tint="@color/teks_utama" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="Create New Event"
-                android:textColor="#111827"
+                android:textColor="@color/teks_utama"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <!-- Upload Poster Area -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cvUploadPoster"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#F9FAFB"
+            app:cardBackgroundColor="@color/bg_input"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:strokeColor="#D1D5DB"
+            app:strokeColor="@color/garis_pembatas"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -55,39 +54,42 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_menu_camera"
-                    app:tint="#9CA3AF" />
+                    app:tint="@color/teks_sekunder" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Event poster"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/teks_sekunder"
                     android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Input Nama Event -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Name"
-            android:textColor="#1F2937"
+            android:textColor="@color/teks_utama"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
+
         <EditText
             android:id="@+id/etEventName"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:background="@drawable/bg_input_rounded"
             android:hint="Enter event name"
+            android:textColor="@color/teks_utama"
+            android:textColorHint="@color/teks_sekunder"
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Input Kategori & Kapasitas (Sebelah-sebelahan) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,19 +102,23 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:layout_marginEnd="8dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Category"
-                    android:textColor="#1F2937"
+                    android:textColor="@color/teks_utama"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
+
                 <EditText
                     android:id="@+id/etCategory"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:background="@drawable/bg_input_rounded"
                     android:hint="e.g. Seminar"
+                    android:textColor="@color/teks_utama"
+                    android:textColorHint="@color/teks_sekunder"
                     android:paddingHorizontal="16dp"/>
             </LinearLayout>
 
@@ -122,13 +128,15 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:layout_marginStart="8dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Capacity"
-                    android:textColor="#1F2937"
+                    android:textColor="@color/teks_utama"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
+
                 <EditText
                     android:id="@+id/etCapacity"
                     android:layout_width="match_parent"
@@ -136,18 +144,20 @@
                     android:background="@drawable/bg_input_rounded"
                     android:inputType="number"
                     android:hint="e.g. 500"
+                    android:textColor="@color/teks_utama"
+                    android:textColorHint="@color/teks_sekunder"
                     android:paddingHorizontal="16dp"/>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Input Deskripsi -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description"
-            android:textColor="#1F2937"
+            android:textColor="@color/teks_utama"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
+
         <EditText
             android:id="@+id/etDescription"
             android:layout_width="match_parent"
@@ -155,19 +165,21 @@
             android:background="@drawable/bg_input_rounded"
             android:gravity="top|start"
             android:hint="Detail about the event..."
+            android:textColor="@color/teks_utama"
+            android:textColorHint="@color/teks_sekunder"
             android:padding="16dp"
             android:layout_marginBottom="32dp"/>
 
-        <!-- Tombol Submit -->
         <Button
             android:id="@+id/btnSubmitEvent"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:backgroundTint="#0A3C9F"
+            android:backgroundTint="@color/warna_primer"
             android:text="Publish Event"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="16sp"
             app:cornerRadius="10dp" />
+
     </LinearLayout>
 </ScrollView>
