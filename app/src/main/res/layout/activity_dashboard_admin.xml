@@ -93,6 +93,6 @@
         android:layout_marginTop="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvLabelApproval"
-        tools:listitem="@layout/item_event" />
+        tools:listitem="@layout/item_event_admin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

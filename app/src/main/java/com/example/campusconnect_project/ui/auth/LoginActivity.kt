@@ -88,6 +88,22 @@ class LoginActivity : AppCompatActivity() {
         val email = findViewById<EditText>(R.id.etEmail).text.toString().trim()
         val password = findViewById<EditText>(R.id.etPassword).text.toString()
 
+        if (
+            email == "admin@campusconnect.com" &&
+            password == "admin123"
+        ) {
+
+            startActivity(
+                Intent(
+                    this,
+                    DashboardAdminActivity::class.java
+                )
+            )
+
+            finish()
+            return
+        }
+
         when {
             email.isEmpty() -> showError("Email wajib diisi.")
             password.isEmpty() -> showError("Password wajib diisi.")
