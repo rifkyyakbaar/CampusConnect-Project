@@ -1,10 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.campusconnect_project"
+    namespace = "com.campusconnect.app"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.campusconnect_project"
+        applicationId = "com.campusconnect.app"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -48,9 +47,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 }

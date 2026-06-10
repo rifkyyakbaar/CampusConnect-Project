@@ -1,0 +1,462 @@
+package com.campusconnect.app.data
+
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import com.campusconnect.app.model.Event
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URLEncoder
+import java.net.URL
+import java.util.UUID
+
+object SupabaseRepository {
+    private const val SUPABASE_REST_URL = "https://tnestulrktqmpwwjmoct.supabase.co/rest/v1"
+    private const val SUPABASE_AUTH_URL = "https://tnestulrktqmpwwjmoct.supabase.co/auth/v1"
+    private const val SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuZXN0dWxya3RxbXB3d2ptb2N0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDI1NDMsImV4cCI6MjA5NjU3ODU0M30.EKEWIFhUdjAUOaSqdVm8ilRevK6qSRsQ9G6uiVrbUok"
+    private const val PREF_NAME = "supabase_session"
+    private val mainHandler = Handler(Looper.getMainLooper())
+
+    data class AppUser(
+        val uid: String,
+        val email: String,
+        val fullName: String,
+        val role: String,
+        val provider: String
+    )
+
+    fun currentUser(context: Context): AppUser? {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val uid = prefs.getString("uid", null) ?: return null
+        return AppUser(
+            uid = uid,
+            email = prefs.getString("email", "") ?: "",
+            fullName = prefs.getString("fullName", "") ?: "",
+            role = prefs.getString("role", "Mahasiswa") ?: "Mahasiswa",
+            provider = prefs.getString("provider", "email") ?: "email"
+        )
+    }
+
+    fun signInWithEmail(
+        context: Context,
+        email: String,
+        password: String,
+        callback: (Result<AppUser>) -> Unit
+    ) = runAsync(callback) {
+        val body = JSONObject()
+            .put("email", email)
+            .put("password", password)
+        val response = runCatching {
+            request("POST", "$SUPABASE_AUTH_URL/token?grant_type=password", body)
+        }.getOrElse { exception ->
+            if (isInvalidLoginCredentialsError(exception)) {
+                throw IllegalStateException("Email belum terdaftar atau password salah. Jika belum punya akun, silakan daftar dulu.")
+            }
+            throw exception
+        }
+        saveSession(context, response, "email")
+        ensureUserProfile(context, "Pengguna", "Mahasiswa", "email")
+    }
+
+    fun signUpWithEmail(
+        context: Context,
+        fullName: String,
+        email: String,
+        password: String,
+        role: String,
+        callback: (Result<AppUser>) -> Unit
+    ) = runAsync(callback) {
+        val metadata = JSONObject()
+            .put("fullName", fullName)
+            .put("role", role)
+        val body = JSONObject()
+            .put("email", email)
+            .put("password", password)
+            .put("data", metadata)
+        val response = runCatching {
+            request("POST", "$SUPABASE_AUTH_URL/signup", body)
+        }.getOrElse { exception ->
+            if (isEmailAlreadyRegisteredError(exception)) {
+                throw IllegalStateException("Email sudah terdaftar. Silakan login menggunakan email tersebut.")
+            }
+            throw exception
+        }
+        if (response.optJSONObject("user") == null) {
+            throw IllegalStateException("Email sudah terdaftar atau registrasi belum bisa diproses. Silakan coba login menggunakan email tersebut.")
+        }
+        if (isExistingEmailSignupResponse(response)) {
+            throw IllegalStateException("Email sudah terdaftar. Silakan login menggunakan email tersebut.")
+        }
+        saveSession(context, response, "email")
+        upsertUserProfileOrCurrent(context, fullName, role, "email")
+    }
+
+    fun signInWithGoogle(
+        context: Context,
+        idToken: String,
+        fullName: String,
+        email: String,
+        role: String,
+        callback: (Result<AppUser>) -> Unit
+    ) = runAsync(callback) {
+        val body = JSONObject()
+            .put("provider", "google")
+            .put("id_token", idToken)
+        val response = request("POST", "$SUPABASE_AUTH_URL/token?grant_type=id_token", body)
+        saveSession(context, response, "google")
+        upsertUserProfileOrCurrent(context, fullName.ifBlank { "Pengguna" }, role, "google", email)
+    }
+
+    fun loadUserProfile(context: Context, uid: String, callback: (Result<AppUser>) -> Unit) =
+        runAsync(callback) {
+            val user = fetchUserProfile(context, uid) ?: currentUser(context)
+                ?: throw IllegalStateException("User tidak ditemukan.")
+            saveUserToPrefs(context, user)
+            user
+        }
+
+    fun createEvent(
+        context: Context,
+        eventName: String,
+        category: String,
+        capacity: Int,
+        description: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+        val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+        val organizer = fetchUserProfile(context, user.uid) ?: user
+        val eventId = UUID.randomUUID().toString()
+        val body = JSONObject()
+            .put("eventId", eventId)
+            .put("eventName", eventName)
+            .put("category", category)
+            .put("capacity", capacity)
+            .put("description", description)
+            .put("organizerId", user.uid)
+            .put("organizerName", organizer.fullName.ifBlank { "Panitia" })
+            .put("posterUrl", "")
+            .put("status", "pending")
+            .put("registrants", 0)
+        request("POST", "$SUPABASE_REST_URL/events", body, bearer = accessToken(context), prefer = "return=minimal")
+        Unit
+    }
+
+    fun loadPendingEvents(callback: (Result<List<Event>>) -> Unit) = runAsync(callback) {
+        val response = request("GET", "$SUPABASE_REST_URL/events?status=eq.pending")
+        parseEvents(response.getJSONArray("data"))
+    }
+
+    fun loadEvents(callback: (Result<List<Event>>) -> Unit) = runAsync(callback) {
+        val response = request("GET", "$SUPABASE_REST_URL/events")
+        parseEvents(response.getJSONArray("data"))
+    }
+
+    fun loadOrganizerStats(uid: String, callback: (Result<Pair<Int, Long>>) -> Unit) =
+        runAsync(callback) {
+            val response = request("GET", "$SUPABASE_REST_URL/events?organizerId=eq.${encode(uid)}")
+            val events = parseEvents(response.getJSONArray("data"))
+            events.size to events.sumOf { it.registrants.toLong() }
+        }
+
+    fun sendPasswordReset(email: String, callback: (Result<Unit>) -> Unit) = runAsync(callback) {
+        val body = JSONObject().put("email", email)
+        request("POST", "$SUPABASE_AUTH_URL/recover", body)
+        Unit
+    }
+
+    fun updatePassword(context: Context, newPassword: String, callback: (Result<Unit>) -> Unit) =
+        runAsync(callback) {
+            val body = JSONObject().put("password", newPassword)
+            request("PUT", "$SUPABASE_AUTH_URL/user", body, bearer = accessToken(context))
+            Unit
+        }
+
+    fun deleteCurrentUser(context: Context, callback: (Result<Unit>) -> Unit) = runAsync(callback) {
+        val user = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
+        deleteUserProfile(context, user.uid)
+        runCatching {
+            request("DELETE", "$SUPABASE_AUTH_URL/user", bearer = accessToken(context))
+        }
+        signOut(context)
+        Unit
+    }
+
+    fun signOut(context: Context) {
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().clear().apply()
+    }
+
+    private fun ensureUserProfile(
+        context: Context,
+        fallbackName: String,
+        fallbackRole: String,
+        provider: String
+    ): AppUser {
+        val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
+        val profile = fetchUserProfile(context, current.uid)
+        return if (profile != null) {
+            saveUserToPrefs(context, profile)
+            profile
+        } else {
+            upsertUserProfileOrCurrent(context, fallbackName, fallbackRole, provider)
+        }
+    }
+
+    private fun upsertUserProfileOrCurrent(
+        context: Context,
+        fullName: String,
+        role: String,
+        provider: String,
+        emailOverride: String? = null
+    ): AppUser {
+        return runCatching {
+            upsertUserProfile(context, fullName, role, provider, emailOverride)
+        }.getOrElse { exception ->
+            if (!isMissingUsersTableError(exception)) throw exception
+            val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
+            val fallback = current.copy(
+                email = emailOverride?.ifBlank { null } ?: current.email,
+                fullName = current.fullName.ifBlank { fullName },
+                role = current.role.ifBlank { role },
+                provider = provider
+            )
+            saveUserToPrefs(context, fallback)
+            fallback
+        }
+    }
+
+    private fun upsertUserProfile(
+        context: Context,
+        fullName: String,
+        role: String,
+        provider: String,
+        emailOverride: String? = null
+    ): AppUser {
+        val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
+        val email = emailOverride?.ifBlank { null } ?: current.email
+        val body = JSONObject()
+            .put("uid", current.uid)
+            .put("fullName", fullName)
+            .put("email", email)
+            .put("role", role)
+            .put("provider", provider)
+
+        val token = accessToken(context)
+        val existing = fetchUserProfile(context, current.uid)
+        if (existing == null) {
+            request("POST", "$SUPABASE_REST_URL/users", body, bearer = token, prefer = "return=minimal")
+        } else {
+            request(
+                "PATCH",
+                "$SUPABASE_REST_URL/users?uid=eq.${encode(current.uid)}",
+                body,
+                bearer = token,
+                prefer = "return=minimal"
+            )
+        }
+
+        val user = AppUser(current.uid, email, fullName, role, provider)
+        saveUserToPrefs(context, user)
+        return user
+    }
+
+    private fun fetchUserProfile(context: Context, uid: String): AppUser? {
+        val response = runCatching {
+            request(
+                "GET",
+                "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}&limit=1",
+                bearer = accessToken(context)
+            )
+        }.getOrElse { exception ->
+            if (isMissingUsersTableError(exception)) return null
+            throw exception
+        }
+        val rows = response.getJSONArray("data")
+        if (rows.length() == 0) return null
+        val item = rows.getJSONObject(0)
+        return AppUser(
+            uid = item.optString("uid", uid),
+            email = item.optString("email", ""),
+            fullName = item.optString("fullName", "Pengguna"),
+            role = item.optString("role", "Mahasiswa"),
+            provider = item.optString("provider", "email")
+        )
+    }
+
+    private fun deleteUserProfile(context: Context, uid: String) {
+        val token = accessToken(context)
+        if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
+
+        val existingProfile = runCatching {
+            fetchUserProfileForAccountDeletion(token, uid)
+        }.getOrElse { exception ->
+            if (isMissingUsersTableError(exception)) return
+            throw exception
+        }
+
+        if (existingProfile == null) return
+
+        val response = request(
+            "DELETE",
+            "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}",
+            bearer = token,
+            prefer = "return=representation"
+        )
+        val deletedRows = response.optJSONArray("data") ?: JSONArray()
+        if (deletedRows.length() == 0) {
+            throw IllegalStateException("Profil users tidak terhapus. Pastikan policy DELETE public.users mengizinkan user menghapus profilnya sendiri.")
+        }
+    }
+
+    private fun fetchUserProfileForAccountDeletion(token: String, uid: String): AppUser? {
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}&limit=1",
+            bearer = token
+        )
+        val rows = response.getJSONArray("data")
+        if (rows.length() == 0) return null
+        val item = rows.getJSONObject(0)
+        return AppUser(
+            uid = item.optString("uid", uid),
+            email = item.optString("email", ""),
+            fullName = item.optString("fullName", "Pengguna"),
+            role = item.optString("role", "Mahasiswa"),
+            provider = item.optString("provider", "email")
+        )
+    }
+
+    private fun saveSession(context: Context, response: JSONObject, provider: String) {
+        val user = response.optJSONObject("user")
+            ?: throw IllegalStateException("Sesi login tidak valid. Silakan coba login ulang.")
+        val accessToken = response.optString("access_token")
+        if (accessToken.isBlank()) {
+            throw IllegalStateException("Registrasi berhasil. Silakan cek email untuk verifikasi, lalu login.")
+        }
+        val metadata = user.optJSONObject("user_metadata")
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit()
+            .putString("accessToken", accessToken)
+            .putString("refreshToken", response.optString("refresh_token"))
+            .putString("uid", user.getString("id"))
+            .putString("email", user.optString("email"))
+            .putString("fullName", metadata?.optString("fullName") ?: metadata?.optString("full_name") ?: "")
+            .putString("role", metadata?.optString("role") ?: "Mahasiswa")
+            .putString("provider", provider)
+            .apply()
+    }
+
+    private fun saveUserToPrefs(context: Context, user: AppUser) {
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit()
+            .putString("uid", user.uid)
+            .putString("email", user.email)
+            .putString("fullName", user.fullName)
+            .putString("role", user.role)
+            .putString("provider", user.provider)
+            .apply()
+    }
+
+    private fun parseEvents(rows: JSONArray): List<Event> {
+        val events = mutableListOf<Event>()
+        for (index in 0 until rows.length()) {
+            val item = rows.getJSONObject(index)
+            events.add(
+                Event(
+                    id = item.optString("eventId", item.optString("id", "")),
+                    eventName = item.optString("eventName", ""),
+                    category = item.optString("category", ""),
+                    description = item.optString("description", ""),
+                    organizerId = item.optString("organizerId", ""),
+                    organizerName = item.optString("organizerName", ""),
+                    capacity = item.optInt("capacity", 0),
+                    registrants = item.optInt("registrants", 0),
+                    status = item.optString("status", "pending"),
+                    createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt")
+                )
+            )
+        }
+        return events
+    }
+
+    private fun request(
+        method: String,
+        url: String,
+        body: JSONObject? = null,
+        bearer: String? = null,
+        prefer: String? = null
+    ): JSONObject {
+        val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+            requestMethod = method
+            connectTimeout = 15_000
+            readTimeout = 15_000
+            setRequestProperty("apikey", SUPABASE_ANON_KEY)
+            setRequestProperty("Authorization", "Bearer ${bearer?.takeIf { it.isNotBlank() } ?: SUPABASE_ANON_KEY}")
+            setRequestProperty("Content-Type", "application/json")
+            prefer?.let { setRequestProperty("Prefer", it) }
+            if (body != null) {
+                doOutput = true
+                outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
+            }
+        }
+
+        val status = connection.responseCode
+        val stream = if (status in 200..299) connection.inputStream else connection.errorStream
+        val text = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+        if (status !in 200..299) {
+            val message = parseErrorMessage(text)
+            throw IllegalStateException(message.ifBlank { "Request Supabase gagal ($status)." })
+        }
+        return if (text.isBlank()) JSONObject() else {
+            val trimmed = text.trim()
+            if (trimmed.startsWith("[")) JSONObject().put("data", JSONArray(trimmed)) else JSONObject(trimmed)
+        }
+    }
+
+    private fun accessToken(context: Context): String {
+        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            .getString("accessToken", "") ?: ""
+    }
+
+    private fun encode(value: String): String = URLEncoder.encode(value, "UTF-8")
+
+    private fun parseErrorMessage(text: String): String {
+        if (text.isBlank()) return ""
+        return runCatching {
+            val json = JSONObject(text)
+            listOf("msg", "message", "error_description", "error", "code")
+                .firstNotNullOfOrNull { key -> json.optString(key).takeIf { it.isNotBlank() } }
+                ?: text
+        }.getOrDefault(text)
+    }
+
+    private fun isMissingUsersTableError(exception: Throwable): Boolean {
+        val message = exception.localizedMessage.orEmpty()
+        return message.contains("public.users", ignoreCase = true) &&
+            message.contains("schema cache", ignoreCase = true)
+    }
+
+    private fun isInvalidLoginCredentialsError(exception: Throwable): Boolean {
+        val message = exception.localizedMessage.orEmpty()
+        return message.contains("invalid login credentials", ignoreCase = true) ||
+            message.contains("invalid_grant", ignoreCase = true)
+    }
+
+    private fun isEmailAlreadyRegisteredError(exception: Throwable): Boolean {
+        val message = exception.localizedMessage.orEmpty()
+        return message.contains("already registered", ignoreCase = true) ||
+            message.contains("already exists", ignoreCase = true) ||
+            message.contains("user already", ignoreCase = true)
+    }
+
+    private fun isExistingEmailSignupResponse(response: JSONObject): Boolean {
+        val user = response.optJSONObject("user") ?: return false
+        val identities = user.optJSONArray("identities") ?: return false
+        return identities.length() == 0
+    }
+
+    private fun <T> runAsync(callback: (Result<T>) -> Unit, block: () -> T) {
+        Thread {
+            val result = runCatching(block)
+            mainHandler.post { callback(result) }
+        }.start()
+    }
+}
