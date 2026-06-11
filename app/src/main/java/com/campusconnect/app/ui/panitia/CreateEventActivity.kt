@@ -1,21 +1,39 @@
 package com.campusconnect.app.ui.panitia
 
-import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 
 class CreateEventActivity : AppCompatActivity() {
+    private var selectedPosterUri: Uri? = null
+
+    private val pickPosterLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        selectedPosterUri = uri
+        findViewById<ImageView>(R.id.ivPosterPreview).apply {
+            setImageURI(uri)
+            visibility = ImageView.VISIBLE
+        }
+        findViewById<LinearLayout>(R.id.layoutUploadPosterPlaceholder).visibility = LinearLayout.GONE
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_event)
 
         backdashboard()
+        setupPosterPicker()
+        ensurePanitiaAccess()
 
         val btnSubmit = findViewById<Button>(R.id.btnSubmitEvent)
         btnSubmit.setOnClickListener {
@@ -26,7 +44,13 @@ class CreateEventActivity : AppCompatActivity() {
     private fun backdashboard() {
         val btnBackCreate = findViewById<ImageView>(R.id.btnBackCreate)
         btnBackCreate.setOnClickListener {
-            startActivity(Intent(this, DashboardPanitiaActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun setupPosterPicker() {
+        findViewById<CardView>(R.id.cvUploadPoster).setOnClickListener {
+            pickPosterLauncher.launch("image/*")
         }
     }
 
@@ -53,17 +77,44 @@ class CreateEventActivity : AppCompatActivity() {
             return
         }
 
-        btnSubmit.isEnabled = false
-        SupabaseRepository.createEvent(this, eventName, category, capacity, description) { result ->
+        val user = SupabaseRepository.currentUser(this)
+        if (user?.role?.equals("Panitia", ignoreCase = true) != true) {
+            Toast.makeText(this, "Hanya akun Panitia yang bisa membuat event", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        setSubmitLoading(btnSubmit, true)
+        SupabaseRepository.createEvent(this, eventName, category, capacity, description, selectedPosterUri) { result ->
             result
                 .onSuccess {
                     Toast.makeText(this, "Event berhasil dibuat", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 .onFailure { exception ->
-                    Toast.makeText(this, "Gagal: ${exception.message}", Toast.LENGTH_LONG).show()
-                    btnSubmit.isEnabled = true
+                    showPublishError(exception.message.orEmpty())
+                    setSubmitLoading(btnSubmit, false)
                 }
         }
+    }
+
+    private fun ensurePanitiaAccess() {
+        val user = SupabaseRepository.currentUser(this) ?: return
+        if (!user.role.equals("Panitia", ignoreCase = true)) {
+            Toast.makeText(this, "Hanya akun Panitia yang bisa membuat event", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    private fun setSubmitLoading(button: Button, loading: Boolean) {
+        button.isEnabled = !loading
+        button.text = if (loading) "Publishing..." else "Publish Event"
+    }
+
+    private fun showPublishError(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Gagal publish event")
+            .setMessage(message.ifBlank { "Event belum bisa dibuat. Silakan coba lagi." })
+            .setPositiveButton("OK", null)
+            .show()
     }
 }

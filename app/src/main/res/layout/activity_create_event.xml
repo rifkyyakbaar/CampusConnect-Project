@@ -47,6 +47,14 @@
             app:strokeColor="@color/garis_pembatas"
             app:strokeWidth="1dp">
 
+            <ImageView
+                android:id="@+id/ivPosterPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Event poster preview"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/layoutUploadPosterPlaceholder"
                 android:layout_width="wrap_content"

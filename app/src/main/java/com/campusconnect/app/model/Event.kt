@@ -10,5 +10,6 @@ data class Event(
     var capacity: Int = 0,
     var registrants: Int = 0,
     var status: String = "pending",
+    var posterUrl: String = "",
     var createdAt: String? = null
 )

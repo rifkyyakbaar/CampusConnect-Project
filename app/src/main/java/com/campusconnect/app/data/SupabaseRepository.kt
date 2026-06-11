@@ -1,8 +1,10 @@
 package com.campusconnect.app.data
 
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.webkit.MimeTypeMap
 import com.campusconnect.app.model.Event
 import org.json.JSONArray
 import org.json.JSONObject
@@ -12,9 +14,11 @@ import java.net.URL
 import java.util.UUID
 
 object SupabaseRepository {
+    private const val SUPABASE_PROJECT_URL = "https://tnestulrktqmpwwjmoct.supabase.co"
     private const val SUPABASE_REST_URL = "https://tnestulrktqmpwwjmoct.supabase.co/rest/v1"
     private const val SUPABASE_AUTH_URL = "https://tnestulrktqmpwwjmoct.supabase.co/auth/v1"
     private const val SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuZXN0dWxya3RxbXB3d2ptb2N0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDI1NDMsImV4cCI6MjA5NjU3ODU0M30.EKEWIFhUdjAUOaSqdVm8ilRevK6qSRsQ9G6uiVrbUok"
+    private const val EVENT_POSTERS_BUCKET = "event-posters"
     private const val PREF_NAME = "supabase_session"
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -122,11 +126,15 @@ object SupabaseRepository {
         category: String,
         capacity: Int,
         description: String,
+        posterUri: Uri? = null,
         callback: (Result<Unit>) -> Unit
     ) = runAsync(callback) {
         val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
         val organizer = fetchUserProfile(context, user.uid) ?: user
         val eventId = UUID.randomUUID().toString()
+        val posterUrl = posterUri?.let {
+            uploadEventPoster(context, it, user.uid, eventId)
+        }.orEmpty()
         val body = JSONObject()
             .put("eventId", eventId)
             .put("eventName", eventName)
@@ -135,7 +143,7 @@ object SupabaseRepository {
             .put("description", description)
             .put("organizerId", user.uid)
             .put("organizerName", organizer.fullName.ifBlank { "Panitia" })
-            .put("posterUrl", "")
+            .put("posterUrl", posterUrl)
             .put("status", "pending")
             .put("registrants", 0)
         request("POST", "$SUPABASE_REST_URL/events", body, bearer = accessToken(context), prefer = "return=minimal")
@@ -370,11 +378,81 @@ object SupabaseRepository {
                     capacity = item.optInt("capacity", 0),
                     registrants = item.optInt("registrants", 0),
                     status = item.optString("status", "pending"),
+                    posterUrl = item.optString("posterUrl", ""),
                     createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt")
                 )
             )
         }
         return events
+    }
+
+    private fun uploadEventPoster(context: Context, posterUri: Uri, userId: String, eventId: String): String {
+        val token = accessToken(context)
+        if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
+
+        val contentResolver = context.contentResolver
+        val mimeType = contentResolver.getType(posterUri) ?: "image/jpeg"
+        if (!mimeType.startsWith("image/")) {
+            throw IllegalStateException("File poster harus berupa gambar.")
+        }
+
+        val extension = MimeTypeMap.getSingleton()
+            .getExtensionFromMimeType(mimeType)
+            ?.takeIf { it.isNotBlank() }
+            ?: "jpg"
+        val objectPath = "$userId/$eventId.$extension"
+        val bytes = contentResolver.openInputStream(posterUri)?.use { it.readBytes() }
+            ?: throw IllegalStateException("Gambar poster tidak bisa dibaca.")
+
+        runCatching {
+            requestBinary(
+                method = "POST",
+                url = "$SUPABASE_PROJECT_URL/storage/v1/object/$EVENT_POSTERS_BUCKET/$objectPath",
+                bytes = bytes,
+                contentType = mimeType,
+                bearer = token,
+                upsert = false
+            )
+        }.getOrElse { exception ->
+            if (isMissingEventPostersBucketError(exception)) {
+                throw IllegalStateException(
+                    "Bucket Storage '$EVENT_POSTERS_BUCKET' belum ada. Jalankan SQL setup Supabase untuk membuat bucket poster event."
+                )
+            }
+            throw exception
+        }
+
+        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$EVENT_POSTERS_BUCKET/$objectPath"
+    }
+
+    private fun requestBinary(
+        method: String,
+        url: String,
+        bytes: ByteArray,
+        contentType: String,
+        bearer: String,
+        upsert: Boolean
+    ): JSONObject {
+        val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+            requestMethod = method
+            connectTimeout = 20_000
+            readTimeout = 30_000
+            doOutput = true
+            setRequestProperty("apikey", SUPABASE_ANON_KEY)
+            setRequestProperty("Authorization", "Bearer $bearer")
+            setRequestProperty("Content-Type", contentType)
+            setRequestProperty("x-upsert", upsert.toString())
+            outputStream.use { it.write(bytes) }
+        }
+
+        val status = connection.responseCode
+        val stream = if (status in 200..299) connection.inputStream else connection.errorStream
+        val text = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+        if (status !in 200..299) {
+            val message = parseErrorMessage(text)
+            throw IllegalStateException(message.ifBlank { "Upload poster gagal ($status)." })
+        }
+        return if (text.isBlank()) JSONObject() else JSONObject(text)
     }
 
     private fun request(
@@ -451,6 +529,13 @@ object SupabaseRepository {
         val user = response.optJSONObject("user") ?: return false
         val identities = user.optJSONArray("identities") ?: return false
         return identities.length() == 0
+    }
+
+    private fun isMissingEventPostersBucketError(exception: Throwable): Boolean {
+        val message = exception.localizedMessage.orEmpty()
+        return message.contains("bucket not found", ignoreCase = true) ||
+            (message.contains(EVENT_POSTERS_BUCKET, ignoreCase = true) &&
+                message.contains("not found", ignoreCase = true))
     }
 
     private fun <T> runAsync(callback: (Result<T>) -> Unit, block: () -> T) {
