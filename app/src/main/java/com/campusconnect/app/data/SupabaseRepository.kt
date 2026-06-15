@@ -141,6 +141,7 @@ object SupabaseRepository {
         location: String,
         capacity: Int,
         description: String,
+        eventDate: String,
         posterUri: Uri? = null,
         callback: (Result<Unit>) -> Unit
     ) = runAsync(callback) {
@@ -161,13 +162,19 @@ object SupabaseRepository {
             .put("organizerName", organizer.fullName.ifBlank { "Panitia" })
             .put("posterUrl", posterUrl)
             .put("status", "pending")
+            .put("eventDate", eventDate)
             .put("registrants", 0)
         request("POST", "$SUPABASE_REST_URL/events", body, bearer = accessToken(context), prefer = "return=minimal")
         Unit
     }
 
     fun loadPendingEvents(callback: (Result<List<Event>>) -> Unit) = runAsync(callback) {
-        val response = request("GET", "$SUPABASE_REST_URL/events?status=eq.pending")
+        val response = request("GET", "$SUPABASE_REST_URL/events?status=eq.pending&order=createdAt.desc")
+        parseEvents(response.getJSONArray("data"))
+    }
+
+    fun loadAdminEvents(callback: (Result<List<Event>>) -> Unit) = runAsync(callback) {
+        val response = request("GET", "$SUPABASE_REST_URL/events?order=createdAt.desc")
         parseEvents(response.getJSONArray("data"))
     }
 
@@ -198,9 +205,12 @@ object SupabaseRepository {
         status: String,
         callback: (Result<Unit>) -> Unit
     ) = runAsync(callback) {
+        if (!status.equals("approved", ignoreCase = true) && !status.equals("rejected", ignoreCase = true)) {
+            throw IllegalArgumentException("Status event tidak valid.")
+        }
 
         val body = JSONObject()
-            .put("status", status)
+            .put("status", status.lowercase(Locale.US))
 
         request(
             "PATCH",
@@ -504,6 +514,7 @@ object SupabaseRepository {
                     registrants = item.optInt("registrants", 0),
                     status = item.optString("status", "pending"),
                     posterUrl = item.optString("posterUrl", ""),
+                    eventDate = item.optString("eventDate", ""),
                     createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt")
                 )
             )

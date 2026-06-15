@@ -104,6 +104,33 @@
                 android:textColor="#6B7280"
                 android:textSize="14sp"
                 android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tvVerifyEventDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Start : -"
+                android:textColor="#6B7280"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textColor="#6B7280"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvVerifyStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="PENDING"
+                android:textColor="#F59E0B"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

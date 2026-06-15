@@ -1,5 +1,6 @@
 package com.campusconnect.app.ui.admin
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -33,6 +34,9 @@ class EventAdminAdapter(
         val tvLocation: TextView =
             itemView.findViewById(R.id.tvLocation)
 
+        val tvEventDate: TextView =
+            itemView.findViewById(R.id.tvEventDate)
+
         val tvCapacity: TextView =
             itemView.findViewById(R.id.tvCapacity)
 
@@ -64,6 +68,7 @@ class EventAdminAdapter(
     ) {
 
         val event = eventList[position]
+        val status = event.status.ifBlank { "pending" }
 
         holder.tvEventName.text =
             event.eventName
@@ -77,11 +82,20 @@ class EventAdminAdapter(
         holder.tvLocation.text =
             event.location
 
+        holder.tvEventDate.text =
+            "Start : ${event.eventDate.ifBlank { "-" }}"
+
         holder.tvCapacity.text =
             "Capacity : ${event.capacity}"
 
         holder.tvStatus.text =
-            event.status.uppercase()
+            status.uppercase()
+        holder.tvStatus.setTextColor(statusColor(status))
+        holder.btnReview.text = if (status.equals("pending", ignoreCase = true)) {
+            "Review"
+        } else {
+            "View"
+        }
 
         if (event.posterUrl.isNotEmpty()) {
             Glide.with(holder.itemView.context)
@@ -97,5 +111,13 @@ class EventAdminAdapter(
     }
     override fun getItemCount(): Int {
         return eventList.size
+    }
+
+    private fun statusColor(status: String): Int {
+        return when {
+            status.equals("approved", ignoreCase = true) -> Color.rgb(22, 163, 74)
+            status.equals("rejected", ignoreCase = true) -> Color.rgb(220, 38, 38)
+            else -> Color.rgb(245, 158, 11)
+        }
     }
 }

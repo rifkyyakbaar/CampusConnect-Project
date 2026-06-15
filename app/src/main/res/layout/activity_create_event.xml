@@ -119,15 +119,12 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
-                <EditText
-                    android:id="@+id/etCategory"
+                <Spinner
+                    android:id="@+id/spCategory"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:background="@drawable/bg_input_rounded"
-                    android:hint="e.g. Seminar"
-                    android:textColor="@color/teks_utama"
-                    android:textColorHint="@color/teks_sekunder"
-                    android:paddingHorizontal="16dp"/>
+                    android:paddingHorizontal="12dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -176,6 +173,49 @@
             android:textColorHint="@color/teks_sekunder"
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Start"
+            android:textColor="@color/teks_utama"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/etEventDate"
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input_rounded"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="Date"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/teks_utama"
+                android:textColorHint="@color/teks_sekunder" />
+
+            <EditText
+                android:id="@+id/etEventTime"
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input_rounded"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="Time"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/teks_utama"
+                android:textColorHint="@color/teks_sekunder" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

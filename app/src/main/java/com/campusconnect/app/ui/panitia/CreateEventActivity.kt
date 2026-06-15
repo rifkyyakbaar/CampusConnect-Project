@@ -1,11 +1,15 @@
 package com.campusconnect.app.ui.panitia
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.net.Uri
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -13,9 +17,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class CreateEventActivity : AppCompatActivity() {
+    private val eventStartCalendar = Calendar.getInstance()
     private var selectedPosterUri: Uri? = null
+    private var selectedEventDate = ""
+    private var selectedEventTime = ""
 
     private val pickPosterLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -32,6 +42,8 @@ class CreateEventActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_event)
 
         backdashboard()
+        setupCategoryDropdown()
+        setupEventStartPickers()
         setupPosterPicker()
         ensurePanitiaAccess()
 
@@ -54,15 +66,62 @@ class CreateEventActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupCategoryDropdown() {
+        val categories = listOf("Seminar", "Workshop", "Dies Natalies", "Lainnya")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        findViewById<Spinner>(R.id.spCategory).adapter = adapter
+    }
+
+    private fun setupEventStartPickers() {
+        val etEventDate = findViewById<EditText>(R.id.etEventDate)
+        val etEventTime = findViewById<EditText>(R.id.etEventTime)
+
+        etEventDate.setOnClickListener {
+            DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    eventStartCalendar.set(Calendar.YEAR, year)
+                    eventStartCalendar.set(Calendar.MONTH, month)
+                    eventStartCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    selectedEventDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(eventStartCalendar.time)
+                    etEventDate.setText(selectedEventDate)
+                },
+                eventStartCalendar.get(Calendar.YEAR),
+                eventStartCalendar.get(Calendar.MONTH),
+                eventStartCalendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        etEventTime.setOnClickListener {
+            TimePickerDialog(
+                this,
+                { _, hourOfDay, minute ->
+                    eventStartCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    eventStartCalendar.set(Calendar.MINUTE, minute)
+                    selectedEventTime = SimpleDateFormat("HH:mm", Locale.US).format(eventStartCalendar.time)
+                    etEventTime.setText(selectedEventTime)
+                },
+                eventStartCalendar.get(Calendar.HOUR_OF_DAY),
+                eventStartCalendar.get(Calendar.MINUTE),
+                true
+            ).show()
+        }
+    }
+
     private fun publishEvent() {
         val btnSubmit = findViewById<Button>(R.id.btnSubmitEvent)
         val eventName = findViewById<EditText>(R.id.etEventName).text.toString().trim()
-        val category = findViewById<EditText>(R.id.etCategory).text.toString().trim()
+        val category = findViewById<Spinner>(R.id.spCategory).selectedItem?.toString().orEmpty()
         val location = findViewById<EditText>(R.id.etLocation).text.toString().trim()
         val capacityText = findViewById<EditText>(R.id.etCapacity).text.toString().trim()
         val description = findViewById<EditText>(R.id.etDescription).text.toString().trim()
+        val eventDate = listOf(selectedEventDate, selectedEventTime)
+            .filter { it.isNotBlank() }
+            .joinToString(" ")
 
-        if (eventName.isEmpty() || category.isEmpty() || location.isEmpty() || capacityText.isEmpty() || description.isEmpty()) {
+        if (eventName.isEmpty() || category.isEmpty() || location.isEmpty() || capacityText.isEmpty() || description.isEmpty() || selectedEventDate.isEmpty() || selectedEventTime.isEmpty()) {
             Toast.makeText(this, "Lengkapi semua data", Toast.LENGTH_SHORT).show()
             return
         }
@@ -85,7 +144,7 @@ class CreateEventActivity : AppCompatActivity() {
         }
 
         setSubmitLoading(btnSubmit, true)
-        SupabaseRepository.createEvent(this, eventName, category, location, capacity, description, selectedPosterUri) { result ->
+        SupabaseRepository.createEvent(this, eventName, category, location, capacity, description, eventDate, selectedPosterUri) { result ->
             result
                 .onSuccess {
                     Toast.makeText(this, "Event berhasil dibuat", Toast.LENGTH_SHORT).show()

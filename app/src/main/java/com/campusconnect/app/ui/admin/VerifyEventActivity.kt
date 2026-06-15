@@ -1,6 +1,8 @@
 package com.campusconnect.app.ui.admin
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import android.widget.ImageView
@@ -18,7 +20,10 @@ class VerifyEventActivity : AppCompatActivity() {
     private lateinit var tvCategory: TextView
     private lateinit var tvLocation: TextView
     private lateinit var tvCapacity: TextView
+    private lateinit var tvEventDate: TextView
+    private lateinit var tvStatus: TextView
     private lateinit var tvDescription: TextView
+    private lateinit var bottomVerifyBar: View
 
     private lateinit var btnApprove: Button
     private lateinit var btnReject: Button
@@ -35,7 +40,10 @@ class VerifyEventActivity : AppCompatActivity() {
         tvCategory = findViewById(R.id.tvVerifyCategory)
         tvLocation = findViewById(R.id.tvVerifyLocation)
         tvCapacity = findViewById(R.id.tvVerifyCapacity)
+        tvEventDate = findViewById(R.id.tvVerifyEventDate)
+        tvStatus = findViewById(R.id.tvVerifyStatus)
         tvDescription = findViewById(R.id.tvVerifyDesc)
+        bottomVerifyBar = findViewById(R.id.bottomVerifyBar)
 
         btnApprove = findViewById(R.id.btnApprove)
         btnReject = findViewById(R.id.btnReject)
@@ -64,6 +72,8 @@ class VerifyEventActivity : AppCompatActivity() {
                 tvCategory.text = "Category : ${event.category}"
                 tvLocation.text = "Location : ${event.location}"
                 tvCapacity.text = "Capacity : ${event.capacity}"
+                tvEventDate.text = "Start : ${event.eventDate.ifBlank { "-" }}"
+                showStatus(event.status)
                 tvDescription.text = event.description
 
                 Glide.with(this)
@@ -82,6 +92,7 @@ class VerifyEventActivity : AppCompatActivity() {
     }
 
     private fun approveEvent() {
+        setActionLoading(true)
 
         SupabaseRepository.updateEventStatus(
             eventId,
@@ -96,9 +107,11 @@ class VerifyEventActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                showStatus("approved")
                 finish()
 
             }.onFailure {
+                setActionLoading(false)
 
                 Toast.makeText(
                     this,
@@ -110,6 +123,7 @@ class VerifyEventActivity : AppCompatActivity() {
     }
 
     private fun rejectEvent() {
+        setActionLoading(true)
 
         SupabaseRepository.updateEventStatus(
             eventId,
@@ -124,9 +138,11 @@ class VerifyEventActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                showStatus("rejected")
                 finish()
 
             }.onFailure {
+                setActionLoading(false)
 
                 Toast.makeText(
                     this,
@@ -134,6 +150,30 @@ class VerifyEventActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+    }
+
+    private fun showStatus(statusValue: String) {
+        val status = statusValue.ifBlank { "pending" }
+        tvStatus.text = status.uppercase()
+        tvStatus.setTextColor(statusColor(status))
+
+        val canReview = status.equals("pending", ignoreCase = true)
+        bottomVerifyBar.visibility = if (canReview) View.VISIBLE else View.GONE
+        btnApprove.isEnabled = canReview
+        btnReject.isEnabled = canReview
+    }
+
+    private fun setActionLoading(isLoading: Boolean) {
+        btnApprove.isEnabled = !isLoading
+        btnReject.isEnabled = !isLoading
+    }
+
+    private fun statusColor(status: String): Int {
+        return when {
+            status.equals("approved", ignoreCase = true) -> Color.rgb(22, 163, 74)
+            status.equals("rejected", ignoreCase = true) -> Color.rgb(220, 38, 38)
+            else -> Color.rgb(245, 158, 11)
         }
     }
 }

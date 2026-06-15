@@ -24,11 +24,15 @@ create table if not exists public.events (
     "posterUrl" text not null default '',
     status text not null default 'pending',
     registrants integer not null default 0,
+    "eventDate" text not null default '',
     "createdAt" timestamptz not null default now()
 );
 
 alter table public.events
 add column if not exists location text not null default '';
+
+alter table public.events
+add column if not exists "eventDate" text not null default '';
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
@@ -89,6 +93,13 @@ on public.events for update
 to authenticated
 using (auth.uid() = "organizerId")
 with check (auth.uid() = "organizerId");
+
+drop policy if exists "Admins can update event approval status" on public.events;
+create policy "Admins can update event approval status"
+on public.events for update
+to anon, authenticated
+using (true)
+with check (status in ('pending', 'approved', 'rejected'));
 
 drop policy if exists "Anyone can read event posters" on storage.objects;
 create policy "Anyone can read event posters"
