@@ -10,6 +10,7 @@ import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
 
 class DashboardAdminActivity : AppCompatActivity() {
+
     private lateinit var rvAdminApprovals: RecyclerView
     private val eventList = mutableListOf<Event>()
     private lateinit var adapter: EventAdminAdapter
@@ -19,6 +20,7 @@ class DashboardAdminActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dashboard_admin)
 
         rvAdminApprovals = findViewById(R.id.rvAdminApprovals)
+
         adapter = EventAdminAdapter(eventList) { event ->
             val intent = Intent(this, VerifyEventActivity::class.java)
             intent.putExtra("eventId", event.id)
@@ -28,6 +30,11 @@ class DashboardAdminActivity : AppCompatActivity() {
         rvAdminApprovals.layoutManager = LinearLayoutManager(this)
         rvAdminApprovals.adapter = adapter
 
+        loadEvents()
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadEvents()
     }
 

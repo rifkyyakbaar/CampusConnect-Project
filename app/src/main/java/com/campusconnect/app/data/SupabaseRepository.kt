@@ -193,6 +193,37 @@ object SupabaseRepository {
         events.firstOrNull() ?: throw IllegalStateException("Event tidak ditemukan.")
     }
 
+    fun updateEventStatus(
+        eventId: String,
+        status: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val body = JSONObject()
+            .put("status", status)
+
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/events?eventId=eq.${encode(eventId)}",
+            body,
+            prefer = "return=minimal"
+        )
+
+        Unit
+    }
+
+    fun loadApprovedEvents(
+        callback: (Result<List<Event>>) -> Unit
+    ) = runAsync(callback) {
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/events?status=eq.approved"
+        )
+
+        parseEvents(response.getJSONArray("data"))
+    }
+
     fun loadOrganizerStats(uid: String, callback: (Result<Pair<Int, Long>>) -> Unit) =
         runAsync(callback) {
             val response = request("GET", "$SUPABASE_REST_URL/events?organizerId=eq.${encode(uid)}")

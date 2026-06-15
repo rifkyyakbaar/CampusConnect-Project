@@ -12,5 +12,6 @@ data class Event(
     var registrants: Int = 0,
     var status: String = "pending",
     var posterUrl: String = "",
+    var eventDate: String = "",
     var createdAt: String? = null
 )
