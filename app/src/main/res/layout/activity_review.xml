@@ -5,16 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="@color/bg_utama"
     android:padding="24dp"
     android:gravity="center_horizontal">
 
+    <!-- Tombol Close -->
     <ImageView
         android:id="@+id/btnCloseReview"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:tint="#111827"
+        android:contentDescription="@null"
+        app:tint="@color/teks_utama"
         android:layout_gravity="start"
         android:layout_marginBottom="32dp"/>
 
@@ -22,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="How was the event?"
-        android:textColor="#111827"
+        android:textColor="@color/teks_utama"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
@@ -32,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Annual Inter-University Hackathon"
-        android:textColor="#6B7280"
+        android:textColor="@color/teks_sekunder"
         android:textSize="14sp"
         android:textAlignment="center"
         android:layout_marginBottom="32dp"/>
@@ -44,7 +46,7 @@
         android:layout_height="wrap_content"
         android:numStars="5"
         android:stepSize="1.0"
-        android:progressTint="#FF8A00"
+        android:progressTint="@color/warna_aksen"
         android:layout_marginBottom="32dp"/>
 
     <!-- Input Ulasan Teks -->
@@ -55,6 +57,8 @@
         android:background="@drawable/bg_input_rounded"
         android:gravity="top|start"
         android:hint="Write your feedback here (optional)..."
+        android:textColor="@color/teks_utama"
+        android:textColorHint="@color/teks_sekunder"
         android:padding="16dp"
         android:textSize="14sp"
         android:layout_marginBottom="32dp"/>
@@ -63,10 +67,10 @@
         android:id="@+id/btnSubmitReview"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:backgroundTint="#0A3C9F"
+        android:backgroundTint="@color/warna_primer"
         android:text="Submit Review"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="16sp"
         app:cornerRadius="10dp" />
 

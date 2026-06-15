@@ -5,18 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0A3C9F"
+    android:background="@color/bg_utama"
     tools:context=".ui.mahasiswa.MyTicketActivity">
 
-    <!-- Header / Navigasi Atas -->
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:contentDescription="@null"
         android:src="@android:drawable/ic_menu_revert"
-        app:tint="#FFFFFF"
+        app:tint="@color/teks_utama"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your E-Ticket"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/teks_utama"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"
@@ -32,7 +32,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/btnBack" />
 
-    <!-- Card Tiket Utama -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,27 +39,26 @@
         android:layout_marginTop="32dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="12dp"
+        app:cardBackgroundColor="@color/bg_input"
         app:layout_constraintTop_toBottomOf="@id/btnBack">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFFFFF">
+            android:orientation="vertical">
 
-            <!-- Bagian Atas Tiket: Info Event -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="24dp"
-                android:background="#F9FAFB">
+                android:background="@color/bg_utama">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="COMPETITION"
-                    android:textColor="#0A3C9F"
+                    android:textColor="@color/warna_primer"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -70,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Annual Inter-University Hackathon"
-                    android:textColor="#111827"
+                    android:textColor="@color/teks_utama"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp"/>
@@ -78,9 +76,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
-                    <!-- Info Tanggal -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -90,20 +88,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Date &amp; Time"
-                            android:textColor="#6B7280"
-                            android:textSize="10sp" />
+                            android:textColor="@color/teks_sekunder"
+                            android:textSize="12sp" />
                         <TextView
                             android:id="@+id/tvTicketDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Oct 24, 2026\n08:00 AM"
-                            android:textColor="#111827"
+                            android:textColor="@color/teks_utama"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
-                    <!-- Info Lokasi -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -113,14 +110,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Venue"
-                            android:textColor="#6B7280"
-                            android:textSize="10sp" />
+                            android:textColor="@color/teks_sekunder"
+                            android:textSize="12sp" />
                         <TextView
                             android:id="@+id/tvTicketVenue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Main Auditorium"
-                            android:textColor="#111827"
+                            android:textColor="@color/teks_utama"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginTop="4dp"/>
@@ -128,7 +125,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Garis Putus-putus Tiket -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -136,7 +132,6 @@
                 android:background="@drawable/bg_dashed_line"
                 android:layerType="software" />
 
-            <!-- Bagian Bawah Tiket: Data Peserta & QR Code -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,7 +143,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Attendee"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/teks_sekunder"
                     android:textSize="12sp" />
 
                 <TextView
@@ -156,26 +151,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rifky"
-                    android:textColor="#111827"
+                    android:textColor="@color/teks_utama"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"/>
 
                 <TextView
+                    android:id="@+id/tvTicketRole"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Mahasiswa/Umum"
-                    android:textColor="#0A3C9F"
+                    android:textColor="@color/warna_primer"
                     android:textSize="12sp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="24dp"/>
 
-                <!-- Placeholder QR Code -->
                 <ImageView
                     android:id="@+id/ivQRCode"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:background="#E5E7EB"
+                    android:background="@color/garis_pembatas"
+                    android:contentDescription="@null"
                     android:padding="8dp"
                     android:scaleType="centerCrop" />
 
@@ -184,8 +180,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ID: CC-8924-XYZ"
-                    android:textColor="#9CA3AF"
-                    android:textSize="10sp"
+                    android:textColor="@color/teks_sekunder"
+                    android:textSize="12sp"
                     android:layout_marginTop="16dp"/>
             </LinearLayout>
         </LinearLayout>
