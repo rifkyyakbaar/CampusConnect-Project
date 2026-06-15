@@ -14,6 +14,13 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/imgPoster"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo_campus_connect" />
+
         <TextView
             android:id="@+id/tvEventName"
             android:layout_width="wrap_content"
@@ -37,6 +44,14 @@
             android:layout_marginTop="4dp"
             android:text="Kategori"
             android:textColor="#6B7280" />
+
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Location"
+            android:textColor="#6B7280"/>
 
         <TextView
             android:id="@+id/tvCapacity"

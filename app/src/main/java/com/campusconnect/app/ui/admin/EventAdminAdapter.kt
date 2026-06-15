@@ -1,6 +1,8 @@
 package com.campusconnect.app.ui.admin
 
 import android.view.LayoutInflater
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -16,6 +18,8 @@ class EventAdminAdapter(
 
     class EventViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
+        val imgPoster: ImageView =
+            itemView.findViewById(R.id.imgPoster)
 
         val tvEventName: TextView =
             itemView.findViewById(R.id.tvEventName)
@@ -25,6 +29,9 @@ class EventAdminAdapter(
 
         val tvCategory: TextView =
             itemView.findViewById(R.id.tvCategory)
+
+        val tvLocation: TextView =
+            itemView.findViewById(R.id.tvLocation)
 
         val tvCapacity: TextView =
             itemView.findViewById(R.id.tvCapacity)
@@ -67,17 +74,27 @@ class EventAdminAdapter(
         holder.tvCategory.text =
             event.category
 
+        holder.tvLocation.text =
+            event.location
+
         holder.tvCapacity.text =
             "Capacity : ${event.capacity}"
 
         holder.tvStatus.text =
             event.status.uppercase()
 
+        if (event.posterUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(event.posterUrl)
+                .placeholder(R.drawable.logo_campus_connect)
+                .error(R.drawable.logo_campus_connect)
+                .into(holder.imgPoster)
+        }
+
         holder.btnReview.setOnClickListener {
             onReviewClick(event)
         }
     }
-
     override fun getItemCount(): Int {
         return eventList.size
     }

@@ -60,6 +60,12 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
+            <ImageView
+                android:id="@+id/imgVerifyPoster"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="20dp"/>
 
             <!-- Placeholder untuk preview data event (Judul, Kapasitas, dll) -->
             <TextView
@@ -77,7 +83,27 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/tvVerifyCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#6B7280"
+                android:textSize="14sp"/>
 
+            <TextView
+                android:id="@+id/tvVerifyLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#6B7280"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvVerifyCapacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#6B7280"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
