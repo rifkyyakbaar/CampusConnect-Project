@@ -48,7 +48,8 @@ class RegisterActivity : AppCompatActivity() {
             idToken = idToken,
             fullName = account.displayName ?: "Pengguna",
             email = account.email ?: "",
-            role = selectedRole
+            role = selectedRole,
+            createProfileIfMissing = true
         ) { result ->
             result
                 .onSuccess { user ->

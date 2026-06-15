@@ -98,7 +98,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun confirmDeleteAccount() {
         AlertDialog.Builder(this)
             .setTitle("Hapus akun?")
-            .setMessage("Data profil Supabase akan dihapus permanen. Penghapusan user Auth membutuhkan aturan Supabase yang mengizinkan endpoint delete user.")
+            .setMessage("Akun akan dinonaktifkan dan tidak bisa digunakan untuk login lagi.")
             .setNegativeButton("Batal", null)
             .setPositiveButton("Hapus") { _, _ ->
                 deleteAccount()

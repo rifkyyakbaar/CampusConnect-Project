@@ -11,6 +11,10 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URLEncoder
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import java.util.UUID
 
 object SupabaseRepository {
@@ -28,6 +32,11 @@ object SupabaseRepository {
         val fullName: String,
         val role: String,
         val provider: String
+    )
+
+    private data class ProfileState(
+        val user: AppUser,
+        val isDeleted: Boolean
     )
 
     fun currentUser(context: Context): AppUser? {
@@ -60,7 +69,7 @@ object SupabaseRepository {
             throw exception
         }
         saveSession(context, response, "email")
-        ensureUserProfile(context, "Pengguna", "Mahasiswa", "email")
+        requireUserProfile(context)
     }
 
     fun signUpWithEmail(
@@ -82,7 +91,7 @@ object SupabaseRepository {
             request("POST", "$SUPABASE_AUTH_URL/signup", body)
         }.getOrElse { exception ->
             if (isEmailAlreadyRegisteredError(exception)) {
-                throw IllegalStateException("Email sudah terdaftar. Silakan login menggunakan email tersebut.")
+                return@runAsync restoreEmailAccountIfDeleted(context, fullName, email, password, role)
             }
             throw exception
         }
@@ -90,7 +99,7 @@ object SupabaseRepository {
             throw IllegalStateException("Email sudah terdaftar atau registrasi belum bisa diproses. Silakan coba login menggunakan email tersebut.")
         }
         if (isExistingEmailSignupResponse(response)) {
-            throw IllegalStateException("Email sudah terdaftar. Silakan login menggunakan email tersebut.")
+            return@runAsync restoreEmailAccountIfDeleted(context, fullName, email, password, role)
         }
         saveSession(context, response, "email")
         upsertUserProfileOrCurrent(context, fullName, role, "email")
@@ -102,6 +111,7 @@ object SupabaseRepository {
         fullName: String,
         email: String,
         role: String,
+        createProfileIfMissing: Boolean,
         callback: (Result<AppUser>) -> Unit
     ) = runAsync(callback) {
         val body = JSONObject()
@@ -109,7 +119,11 @@ object SupabaseRepository {
             .put("id_token", idToken)
         val response = request("POST", "$SUPABASE_AUTH_URL/token?grant_type=id_token", body)
         saveSession(context, response, "google")
-        upsertUserProfileOrCurrent(context, fullName.ifBlank { "Pengguna" }, role, "google", email)
+        if (createProfileIfMissing) {
+            upsertUserProfileOrCurrent(context, fullName.ifBlank { "Pengguna" }, role, "google", email, restoreDeleted = true)
+        } else {
+            requireUserProfile(context)
+        }
     }
 
     fun loadUserProfile(context: Context, uid: String, callback: (Result<AppUser>) -> Unit) =
@@ -124,6 +138,7 @@ object SupabaseRepository {
         context: Context,
         eventName: String,
         category: String,
+        location: String,
         capacity: Int,
         description: String,
         posterUri: Uri? = null,
@@ -139,6 +154,7 @@ object SupabaseRepository {
             .put("eventId", eventId)
             .put("eventName", eventName)
             .put("category", category)
+            .put("location", location)
             .put("capacity", capacity)
             .put("description", description)
             .put("organizerId", user.uid)
@@ -158,6 +174,23 @@ object SupabaseRepository {
     fun loadEvents(callback: (Result<List<Event>>) -> Unit) = runAsync(callback) {
         val response = request("GET", "$SUPABASE_REST_URL/events")
         parseEvents(response.getJSONArray("data"))
+    }
+
+    fun loadOrganizerEvents(uid: String, callback: (Result<List<Event>>) -> Unit) = runAsync(callback) {
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/events?organizerId=eq.${encode(uid)}&order=createdAt.desc"
+        )
+        parseEvents(response.getJSONArray("data"))
+    }
+
+    fun loadEventById(eventId: String, callback: (Result<Event>) -> Unit) = runAsync(callback) {
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/events?eventId=eq.${encode(eventId)}&limit=1"
+        )
+        val events = parseEvents(response.getJSONArray("data"))
+        events.firstOrNull() ?: throw IllegalStateException("Event tidak ditemukan.")
     }
 
     fun loadOrganizerStats(uid: String, callback: (Result<Pair<Int, Long>>) -> Unit) =
@@ -182,7 +215,7 @@ object SupabaseRepository {
 
     fun deleteCurrentUser(context: Context, callback: (Result<Unit>) -> Unit) = runAsync(callback) {
         val user = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
-        deleteUserProfile(context, user.uid)
+        markUserProfileDeleted(context, user.uid)
         runCatching {
             request("DELETE", "$SUPABASE_AUTH_URL/user", bearer = accessToken(context))
         }
@@ -194,20 +227,13 @@ object SupabaseRepository {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().clear().apply()
     }
 
-    private fun ensureUserProfile(
-        context: Context,
-        fallbackName: String,
-        fallbackRole: String,
-        provider: String
-    ): AppUser {
+    private fun requireUserProfile(context: Context): AppUser {
         val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
-        val profile = fetchUserProfile(context, current.uid)
-        return if (profile != null) {
-            saveUserToPrefs(context, profile)
-            profile
-        } else {
-            upsertUserProfileOrCurrent(context, fallbackName, fallbackRole, provider)
-        }
+        return fetchUserProfile(context, current.uid)?.also { saveUserToPrefs(context, it) }
+            ?: run {
+                signOut(context)
+                throw IllegalStateException("Profil akun tidak ditemukan. Silakan daftar ulang atau hubungi admin.")
+            }
     }
 
     private fun upsertUserProfileOrCurrent(
@@ -215,10 +241,11 @@ object SupabaseRepository {
         fullName: String,
         role: String,
         provider: String,
-        emailOverride: String? = null
+        emailOverride: String? = null,
+        restoreDeleted: Boolean = false
     ): AppUser {
         return runCatching {
-            upsertUserProfile(context, fullName, role, provider, emailOverride)
+            upsertUserProfile(context, fullName, role, provider, emailOverride, restoreDeleted)
         }.getOrElse { exception ->
             if (!isMissingUsersTableError(exception)) throw exception
             val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
@@ -238,7 +265,8 @@ object SupabaseRepository {
         fullName: String,
         role: String,
         provider: String,
-        emailOverride: String? = null
+        emailOverride: String? = null,
+        restoreDeleted: Boolean = false
     ): AppUser {
         val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
         val email = emailOverride?.ifBlank { null } ?: current.email
@@ -248,9 +276,16 @@ object SupabaseRepository {
             .put("email", email)
             .put("role", role)
             .put("provider", provider)
+            .put("deletedAt", JSONObject.NULL)
 
         val token = accessToken(context)
-        val existing = fetchUserProfile(context, current.uid)
+        val existing = fetchUserProfileState(context, current.uid)
+        if (existing?.isDeleted == true && !restoreDeleted) {
+            throw IllegalStateException("Akun ini sudah dihapus dan tidak bisa digunakan untuk login.")
+        }
+        if (!restoreDeleted && existing?.isDeleted != true) {
+            body.remove("deletedAt")
+        }
         if (existing == null) {
             request("POST", "$SUPABASE_REST_URL/users", body, bearer = token, prefer = "return=minimal")
         } else {
@@ -268,7 +303,54 @@ object SupabaseRepository {
         return user
     }
 
+    private fun restoreEmailAccountIfDeleted(
+        context: Context,
+        fullName: String,
+        email: String,
+        password: String,
+        role: String
+    ): AppUser {
+        val response = runCatching {
+            request(
+                "POST",
+                "$SUPABASE_AUTH_URL/token?grant_type=password",
+                JSONObject().put("email", email).put("password", password)
+            )
+        }.getOrElse { exception ->
+            if (isInvalidLoginCredentialsError(exception)) {
+                throw IllegalStateException("Email pernah terdaftar. Gunakan password lama atau reset password terlebih dahulu untuk membuat ulang akun.")
+            }
+            throw exception
+        }
+
+        saveSession(context, response, "email")
+        val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
+        val profile = fetchUserProfileState(context, current.uid)
+        if (profile != null && !profile.isDeleted) {
+            signOut(context)
+            throw IllegalStateException("Email sudah terdaftar. Silakan login menggunakan email tersebut.")
+        }
+
+        return upsertUserProfileOrCurrent(
+            context = context,
+            fullName = fullName,
+            role = role,
+            provider = "email",
+            emailOverride = email,
+            restoreDeleted = true
+        )
+    }
+
     private fun fetchUserProfile(context: Context, uid: String): AppUser? {
+        val state = fetchUserProfileState(context, uid) ?: return null
+        if (state.isDeleted) {
+            signOut(context)
+            throw IllegalStateException("Akun ini sudah dihapus dan tidak bisa digunakan untuk login.")
+        }
+        return state.user
+    }
+
+    private fun fetchUserProfileState(context: Context, uid: String): ProfileState? {
         val response = runCatching {
             request(
                 "GET",
@@ -282,16 +364,19 @@ object SupabaseRepository {
         val rows = response.getJSONArray("data")
         if (rows.length() == 0) return null
         val item = rows.getJSONObject(0)
-        return AppUser(
-            uid = item.optString("uid", uid),
-            email = item.optString("email", ""),
-            fullName = item.optString("fullName", "Pengguna"),
-            role = item.optString("role", "Mahasiswa"),
-            provider = item.optString("provider", "email")
+        return ProfileState(
+            user = AppUser(
+                uid = item.optString("uid", uid),
+                email = item.optString("email", ""),
+                fullName = item.optString("fullName", "Pengguna"),
+                role = item.optString("role", "Mahasiswa"),
+                provider = item.optString("provider", "email")
+            ),
+            isDeleted = isDeletedProfile(item)
         )
     }
 
-    private fun deleteUserProfile(context: Context, uid: String) {
+    private fun markUserProfileDeleted(context: Context, uid: String) {
         val token = accessToken(context)
         if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
 
@@ -304,15 +389,23 @@ object SupabaseRepository {
 
         if (existingProfile == null) return
 
+        val body = JSONObject()
+            .put("fullName", "")
+            .put("email", existingProfile.email)
+            .put("role", "Deleted")
+            .put("provider", existingProfile.provider)
+            .put("deletedAt", currentTimestamp())
+
         val response = request(
-            "DELETE",
+            "PATCH",
             "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}",
+            body,
             bearer = token,
             prefer = "return=representation"
         )
-        val deletedRows = response.optJSONArray("data") ?: JSONArray()
-        if (deletedRows.length() == 0) {
-            throw IllegalStateException("Profil users tidak terhapus. Pastikan policy DELETE public.users mengizinkan user menghapus profilnya sendiri.")
+        val updatedRows = response.optJSONArray("data") ?: JSONArray()
+        if (updatedRows.length() == 0) {
+            throw IllegalStateException("Profil users tidak diperbarui. Pastikan policy UPDATE public.users mengizinkan user menghapus akunnya sendiri.")
         }
     }
 
@@ -372,6 +465,7 @@ object SupabaseRepository {
                     id = item.optString("eventId", item.optString("id", "")),
                     eventName = item.optString("eventName", ""),
                     category = item.optString("category", ""),
+                    location = item.optString("location", ""),
                     description = item.optString("description", ""),
                     organizerId = item.optString("organizerId", ""),
                     organizerName = item.optString("organizerName", ""),
@@ -495,6 +589,16 @@ object SupabaseRepository {
     }
 
     private fun encode(value: String): String = URLEncoder.encode(value, "UTF-8")
+
+    private fun currentTimestamp(): String {
+        return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }.format(Date())
+    }
+
+    private fun isDeletedProfile(item: JSONObject): Boolean {
+        return !item.isNull("deletedAt") || item.optString("role").equals("Deleted", ignoreCase = true)
+    }
 
     private fun parseErrorMessage(text: String): String {
         if (text.isBlank()) return ""

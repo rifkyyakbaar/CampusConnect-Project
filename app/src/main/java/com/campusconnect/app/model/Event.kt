@@ -4,6 +4,7 @@ data class Event(
     var id: String = "",
     var eventName: String = "",
     var category: String = "",
+    var location: String = "",
     var description: String = "",
     var organizerId: String = "",
     var organizerName: String = "",

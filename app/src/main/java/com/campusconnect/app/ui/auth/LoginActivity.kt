@@ -47,7 +47,8 @@ class LoginActivity : AppCompatActivity() {
             idToken = idToken,
             fullName = account.displayName ?: "Pengguna",
             email = account.email ?: "",
-            role = "Mahasiswa"
+            role = "Mahasiswa",
+            createProfileIfMissing = false
         ) { result ->
             result
                 .onSuccess { user -> openDashboard(user.role) }

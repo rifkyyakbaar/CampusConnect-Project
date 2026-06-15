@@ -4,16 +4,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
+import com.campusconnect.app.model.Event
+import com.campusconnect.app.ui.mahasiswa.DetailEventActivity
 import com.campusconnect.app.ui.profile.ProfileActivity
 
 class DashboardPanitiaActivity : AppCompatActivity() {
+    private val myEvents = mutableListOf<Event>()
+    private lateinit var adapter: EventPanitiaAdapter
+    private lateinit var rvPanitiaEvents: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard_panitia)
 
+        setupMyEventsList()
         loadPanitiaName()
         profilepanitia()
         createevent()
@@ -23,6 +33,20 @@ class DashboardPanitiaActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         loadMyEventsStats()
+        loadMyManagedEvents()
+    }
+
+    private fun setupMyEventsList() {
+        rvPanitiaEvents = findViewById(R.id.rvPanitiaEvents)
+        adapter = EventPanitiaAdapter(myEvents) { event ->
+            startActivity(Intent(this, DetailEventActivity::class.java).apply {
+                putExtra("eventId", event.id)
+                putExtra("source", "panitia")
+            })
+        }
+
+        rvPanitiaEvents.layoutManager = LinearLayoutManager(this)
+        rvPanitiaEvents.adapter = adapter
     }
 
     private fun loadPanitiaName() {
@@ -70,6 +94,36 @@ class DashboardPanitiaActivity : AppCompatActivity() {
                 }
                 .onFailure {
                     showDefaultStats()
+                }
+        }
+    }
+
+    private fun loadMyManagedEvents() {
+        val label = findViewById<TextView>(R.id.tvMyEventsLabel)
+        val user = SupabaseRepository.currentUser(this) ?: run {
+            myEvents.clear()
+            adapter.notifyDataSetChanged()
+            label.text = "My Managed Events"
+            return
+        }
+
+        SupabaseRepository.loadOrganizerEvents(user.uid) { result ->
+            result
+                .onSuccess { events ->
+                    myEvents.clear()
+                    myEvents.addAll(events)
+                    adapter.notifyDataSetChanged()
+                    label.text = if (events.isEmpty()) {
+                        "My Managed Events - No events yet"
+                    } else {
+                        "My Managed Events"
+                    }
+                }
+                .onFailure { exception ->
+                    myEvents.clear()
+                    adapter.notifyDataSetChanged()
+                    label.text = "My Managed Events - Failed to load"
+                    Toast.makeText(this, exception.localizedMessage ?: "Gagal memuat event.", Toast.LENGTH_SHORT).show()
                 }
         }
     }

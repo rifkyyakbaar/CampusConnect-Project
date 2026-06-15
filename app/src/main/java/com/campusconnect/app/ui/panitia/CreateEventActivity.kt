@@ -58,10 +58,11 @@ class CreateEventActivity : AppCompatActivity() {
         val btnSubmit = findViewById<Button>(R.id.btnSubmitEvent)
         val eventName = findViewById<EditText>(R.id.etEventName).text.toString().trim()
         val category = findViewById<EditText>(R.id.etCategory).text.toString().trim()
+        val location = findViewById<EditText>(R.id.etLocation).text.toString().trim()
         val capacityText = findViewById<EditText>(R.id.etCapacity).text.toString().trim()
         val description = findViewById<EditText>(R.id.etDescription).text.toString().trim()
 
-        if (eventName.isEmpty() || category.isEmpty() || capacityText.isEmpty() || description.isEmpty()) {
+        if (eventName.isEmpty() || category.isEmpty() || location.isEmpty() || capacityText.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Lengkapi semua data", Toast.LENGTH_SHORT).show()
             return
         }
@@ -84,7 +85,7 @@ class CreateEventActivity : AppCompatActivity() {
         }
 
         setSubmitLoading(btnSubmit, true)
-        SupabaseRepository.createEvent(this, eventName, category, capacity, description, selectedPosterUri) { result ->
+        SupabaseRepository.createEvent(this, eventName, category, location, capacity, description, selectedPosterUri) { result ->
             result
                 .onSuccess {
                     Toast.makeText(this, "Event berhasil dibuat", Toast.LENGTH_SHORT).show()

@@ -5,13 +5,18 @@ create table if not exists public.users (
     role text not null default 'Mahasiswa',
     provider text not null default 'email',
     "createdAt" timestamptz not null default now(),
-    "updatedAt" timestamptz not null default now()
+    "updatedAt" timestamptz not null default now(),
+    "deletedAt" timestamptz
 );
+
+alter table public.users
+add column if not exists "deletedAt" timestamptz;
 
 create table if not exists public.events (
     "eventId" uuid primary key,
     "eventName" text not null,
     category text not null default '',
+    location text not null default '',
     capacity integer not null default 0,
     description text not null default '',
     "organizerId" uuid not null references auth.users(id) on delete cascade,
@@ -21,6 +26,9 @@ create table if not exists public.events (
     registrants integer not null default 0,
     "createdAt" timestamptz not null default now()
 );
+
+alter table public.events
+add column if not exists location text not null default '';
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
