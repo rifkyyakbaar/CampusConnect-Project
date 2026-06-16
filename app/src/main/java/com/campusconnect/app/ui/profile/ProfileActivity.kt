@@ -15,7 +15,10 @@ import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.ui.auth.LoginActivity
 import com.campusconnect.app.ui.mahasiswa.HomeMahasiswaActivity
+import com.campusconnect.app.ui.mahasiswa.HistoryActivity
+import com.campusconnect.app.ui.mahasiswa.TicketActivity
 import com.campusconnect.app.ui.panitia.DashboardPanitiaActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
@@ -48,11 +51,15 @@ class ProfileActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageView>(R.id.btnBack)
         btnBack.setOnClickListener {
             if (userRole.equals("Panitia", ignoreCase = true)) {
-                startActivity(Intent(this, DashboardPanitiaActivity::class.java))
+                startActivity(Intent(this, DashboardPanitiaActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                })
             } else {
-                startActivity(Intent(this, HomeMahasiswaActivity::class.java))
+                startActivity(Intent(this, HomeMahasiswaActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                })
             }
-            finish()
+            overridePendingTransition(0, 0)
         }
 
         loadProfile()
@@ -71,6 +78,8 @@ class ProfileActivity : AppCompatActivity() {
             intent.putExtra("EXTRA_ROLE", tvProfileRole.text.toString())
             startActivity(intent)
         }
+
+        setupBottomNavigation()
     }
 
     private fun loadProfile() {
@@ -152,6 +161,49 @@ class ProfileActivity : AppCompatActivity() {
         startActivity(Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigation.selectedItemId = R.id.nav_profile
+
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_profile -> true
+
+                R.id.nav_home -> {
+                    if (userRole.equals("Panitia", ignoreCase = true)) {
+                        startActivity(Intent(this, DashboardPanitiaActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+                    } else {
+                        startActivity(Intent(this, HomeMahasiswaActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+                    }
+                    overridePendingTransition(0, 0)
+                    true
+                }
+
+                R.id.nav_ticket -> {
+                    startActivity(Intent(this, TicketActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    overridePendingTransition(0, 0)
+                    true
+                }
+
+                R.id.nav_history -> {
+                    startActivity(Intent(this, HistoryActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    overridePendingTransition(0, 0)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun showMessage(message: String) {

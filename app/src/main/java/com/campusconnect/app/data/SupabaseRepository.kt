@@ -143,6 +143,7 @@ object SupabaseRepository {
         description: String,
         eventDate: String,
         posterUri: Uri? = null,
+        eventPrice: Int = 0,
         callback: (Result<Unit>) -> Unit
     ) = runAsync(callback) {
         val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
@@ -164,6 +165,7 @@ object SupabaseRepository {
             .put("status", "pending")
             .put("eventDate", eventDate)
             .put("registrants", 0)
+            .put("eventPrice", eventPrice)
         request("POST", "$SUPABASE_REST_URL/events", body, bearer = accessToken(context), prefer = "return=minimal")
         Unit
     }
@@ -554,7 +556,8 @@ object SupabaseRepository {
                     status = item.optString("status", "pending"),
                     posterUrl = item.optString("posterUrl", ""),
                     eventDate = item.optString("eventDate", ""),
-                    createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt")
+                    createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt"),
+                    eventPrice = item.optInt("eventPrice", 0)
                 )
             )
         }
