@@ -26,6 +26,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var tvProfileEmail: TextView
     private lateinit var btnLogout: Button
     private lateinit var tvDeleteAccount: TextView
+    private lateinit var tvEditProfile: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,7 @@ class ProfileActivity : AppCompatActivity() {
         tvProfileName = findViewById(R.id.tvProfileName)
         tvProfileRole = findViewById(R.id.tvProfileRole)
         tvProfileEmail = findViewById(R.id.tvProfileEmail)
+        tvEditProfile = findViewById(R.id.tvEditProfile)
         btnLogout = findViewById(R.id.btnLogout)
         tvDeleteAccount = findViewById(R.id.tvDeleteAccount)
 
@@ -60,6 +62,14 @@ class ProfileActivity : AppCompatActivity() {
 
         tvDeleteAccount.setOnClickListener {
             confirmDeleteAccount()
+        }
+
+        tvEditProfile.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            intent.putExtra("EXTRA_NAME", tvProfileName.text.toString())
+            intent.putExtra("EXTRA_EMAIL", tvProfileEmail.text.toString())
+            intent.putExtra("EXTRA_ROLE", tvProfileRole.text.toString())
+            startActivity(intent)
         }
     }
 

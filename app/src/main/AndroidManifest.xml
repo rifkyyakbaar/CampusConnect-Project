@@ -56,6 +56,10 @@
             android:name=".ui.mahasiswa.HistoryActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:launchMode="singleTop"
+            android:exported="false" />
+        <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity
