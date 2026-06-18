@@ -34,6 +34,9 @@ add column if not exists location text not null default '';
 alter table public.events
 add column if not exists "eventDate" text not null default '';
 
+alter table public.events
+add column if not exists "eventPrice" integer not null default 0;
+
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
     'event-posters',

@@ -143,6 +143,7 @@ object SupabaseRepository {
         description: String,
         eventDate: String,
         posterUri: Uri? = null,
+        eventPrice: Int = 0,
         callback: (Result<Unit>) -> Unit
     ) = runAsync(callback) {
         val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
@@ -164,6 +165,7 @@ object SupabaseRepository {
             .put("status", "pending")
             .put("eventDate", eventDate)
             .put("registrants", 0)
+            .put("eventPrice", eventPrice)
         request("POST", "$SUPABASE_REST_URL/events", body, bearer = accessToken(context), prefer = "return=minimal")
         Unit
     }
@@ -244,6 +246,45 @@ object SupabaseRepository {
     fun sendPasswordReset(email: String, callback: (Result<Unit>) -> Unit) = runAsync(callback) {
         val body = JSONObject().put("email", email)
         request("POST", "$SUPABASE_AUTH_URL/recover", body)
+        Unit
+    }
+
+    fun updateUserNameAndEmail(
+        context: Context,
+        uid: String,
+        newName: String,
+        newEmail: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+        val token = accessToken(context)
+        if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
+
+        // 1. Update nama di tabel public.users
+        val body = JSONObject()
+            .put("fullName", newName)
+
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}",
+            body,
+            bearer = token,
+            prefer = "return=minimal"
+        )
+
+        // 2. Jika email diubah, update auth email Supabase (opsional)
+        // Jika Anda hanya ingin mengubah nama di database, hapus blok ini.
+        val current = currentUser(context)
+        if (current != null && current.email != newEmail && current.provider == "email") {
+            val emailBody = JSONObject().put("email", newEmail)
+            request("PUT", "$SUPABASE_AUTH_URL/user", emailBody, bearer = token)
+        }
+
+        // 3. Simpan perubahan ke penyimpanan lokal (SharedPreferences)
+        val updatedUser = current?.copy(fullName = newName, email = newEmail)
+        if (updatedUser != null) {
+            saveUserToPrefs(context, updatedUser)
+        }
+
         Unit
     }
 
@@ -515,7 +556,8 @@ object SupabaseRepository {
                     status = item.optString("status", "pending"),
                     posterUrl = item.optString("posterUrl", ""),
                     eventDate = item.optString("eventDate", ""),
-                    createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt")
+                    createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt"),
+                    eventPrice = item.optInt("eventPrice", 0)
                 )
             )
         }

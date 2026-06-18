@@ -13,5 +13,6 @@ data class Event(
     var status: String = "pending",
     var posterUrl: String = "",
     var eventDate: String = "",
-    var createdAt: String? = null
+    var createdAt: String? = null,
+    var eventPrice: Int = 0
 )

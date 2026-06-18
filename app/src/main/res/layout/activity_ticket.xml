@@ -37,10 +37,12 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="32dp"
+        android:layout_marginBottom="24dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="12dp"
         app:cardBackgroundColor="@color/bg_input"
-        app:layout_constraintTop_toBottomOf="@id/btnBack">
+        app:layout_constraintTop_toBottomOf="@id/btnBack"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -186,5 +188,17 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_input"
+        app:itemIconTint="@color/warna_primer"
+        app:itemTextColor="@color/warna_primer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

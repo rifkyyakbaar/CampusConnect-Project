@@ -109,6 +109,9 @@ class DetailEventActivity : AppCompatActivity() {
         } else {
             startActivity(Intent(this, CheckoutActivity::class.java).apply {
                 putExtra("eventId", event.id)
+                putExtra("eventPrice", event.eventPrice)
+                putExtra("eventName", event.eventName)
+                putExtra("eventDate", event.eventDate)
             })
         }
     }
