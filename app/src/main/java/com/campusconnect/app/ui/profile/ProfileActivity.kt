@@ -16,6 +16,7 @@ import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.ui.auth.LoginActivity
 import com.campusconnect.app.ui.mahasiswa.HomeMahasiswaActivity
 import com.campusconnect.app.ui.mahasiswa.HistoryActivity
+import com.campusconnect.app.ui.mahasiswa.ManageTicketActivity
 import com.campusconnect.app.ui.mahasiswa.TicketActivity
 import com.campusconnect.app.ui.panitia.DashboardPanitiaActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -186,7 +187,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_ticket -> {
-                    startActivity(Intent(this, TicketActivity::class.java).apply {
+                    startActivity(Intent(this, ManageTicketActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     })
                     overridePendingTransition(0, 0)

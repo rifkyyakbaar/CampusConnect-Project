@@ -210,7 +210,7 @@ class HomeMahasiswaActivity : AppCompatActivity() {
 
                 R.id.nav_ticket -> {
                     startActivity(
-                        Intent(this, TicketActivity::class.java).apply {
+                        Intent(this, ManageTicketActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
                     )

@@ -52,7 +52,7 @@ class HistoryActivity : AppCompatActivity() {
                     startActivity(
                         Intent(
                             this,
-                            TicketActivity::class.java
+                            ManageTicketActivity::class.java
                         ).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }

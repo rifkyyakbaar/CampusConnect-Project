@@ -45,6 +45,9 @@
             android:name=".ui.mahasiswa.TicketActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.mahasiswa.ManageTicketActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.mahasiswa.CheckoutActivity"
             android:exported="false" />
         <activity
