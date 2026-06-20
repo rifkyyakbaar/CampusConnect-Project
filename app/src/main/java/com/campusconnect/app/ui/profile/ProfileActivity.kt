@@ -101,18 +101,25 @@ class ProfileActivity : AppCompatActivity() {
                     tvProfileEmail.text = profile.email.ifBlank { "-" }
                 }
                 .onFailure { exception ->
-                    tvProfileRole.text = providerLabel(user.provider)
-                    showMessage(exception.localizedMessage ?: "Gagal memuat profil.")
+                    val errorMsg = exception.localizedMessage ?: ""
+                    // Handle JWT Expired error
+                    if (errorMsg.contains("JWT", ignoreCase = true) || errorMsg.contains("expired", ignoreCase = true)) {
+                        Toast.makeText(this, "Sesi telah habis, silakan login kembali", Toast.LENGTH_LONG).show()
+                        logout()
+                    } else {
+                        tvProfileRole.text = providerLabel(user.provider)
+                        showMessage(errorMsg.ifBlank { "Gagal memuat profil." })
+                    }
                 }
         }
     }
 
     private fun logout() {
         SupabaseRepository.signOut(this)
-        GoogleSignIn.getClient(this, googleSignInOptions()).signOut()
-            .addOnCompleteListener {
-                openLogin()
-            }
+        val client = GoogleSignIn.getClient(this, googleSignInOptions())
+        client.signOut().addOnCompleteListener {
+            openLogin()
+        }
     }
 
     private fun confirmDeleteAccount() {

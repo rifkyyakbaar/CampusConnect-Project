@@ -12,8 +12,8 @@ import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
 import com.campusconnect.app.ui.panitia.ManagePesertaActivity
+import com.campusconnect.app.utils.setBlinkOnClick
 import java.net.URL
-
 
 class DetailEventActivity : AppCompatActivity() {
     private lateinit var ivDetailPoster: ImageView
@@ -24,6 +24,7 @@ class DetailEventActivity : AppCompatActivity() {
     private lateinit var tvDetailDescription: TextView
     private lateinit var tvTicketsLeft: TextView
     private lateinit var btnJoinEvent: Button
+    private lateinit var btnBack: ImageView
     private var eventId: String = ""
     private var source: String = ""
 
@@ -48,6 +49,7 @@ class DetailEventActivity : AppCompatActivity() {
         tvDetailDescription = findViewById(R.id.tvDetailDescription)
         tvTicketsLeft = findViewById(R.id.tvTicketsLeft)
         btnJoinEvent = findViewById(R.id.btnJoinEvent)
+        btnBack = findViewById(R.id.btnBack)
     }
 
     private fun setupInitialState() {
@@ -62,6 +64,10 @@ class DetailEventActivity : AppCompatActivity() {
             "Manage Participants"
         } else {
             "Join Event"
+        }
+
+        btnBack.setBlinkOnClick {
+            finish()
         }
     }
 
@@ -94,7 +100,7 @@ class DetailEventActivity : AppCompatActivity() {
         val ticketsLeft = (event.capacity - event.registrants).coerceAtLeast(0)
         tvTicketsLeft.text = "$ticketsLeft / ${event.capacity}"
         btnJoinEvent.isEnabled = true
-        btnJoinEvent.setOnClickListener {
+        btnJoinEvent.setBlinkOnClick {
             openAction(event)
         }
 

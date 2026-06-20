@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusConnectProject">
         <activity
+            android:name=".ui.mahasiswa.CategoryEventsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
         <activity
@@ -58,6 +61,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.mahasiswa.HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mahasiswa.NotificationActivity"
             android:exported="false" />
         <activity
             android:name=".ui.profile.EditProfileActivity"

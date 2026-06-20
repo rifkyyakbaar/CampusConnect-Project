@@ -21,12 +21,27 @@
             android:orientation="vertical"
             android:paddingBottom="24dp">
 
-            <ImageView
-                android:id="@+id/ivDetailPoster"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop"
-                android:background="@color/bg_input" />
+                android:layout_height="250dp">
+
+                <ImageView
+                    android:id="@+id/ivDetailPoster"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@color/bg_input" />
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/ic_launcher_background"
+                    android:padding="8dp"
+                    android:src="@android:drawable/ic_menu_revert"
+                    app:tint="@color/white" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -62,7 +77,7 @@
                     android:id="@+id/tvDetailTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Annual Inter-University Hackathon: CodeTheFuture"
+                    android:text="Annual Inter-University Hackathon"
                     android:textColor="@color/teks_utama"
                     android:textSize="22sp"
                     android:textStyle="bold"
@@ -86,7 +101,7 @@
                         android:id="@+id/tvDetailLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Main Auditorium, Building A"
+                        android:text="Main Auditorium"
                         android:textColor="@color/teks_sekunder"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -94,7 +109,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/garis_pembatas"
+                    android:background="@color/bg_input"
                     android:layout_marginBottom="24dp"/>
 
                 <TextView
@@ -110,7 +125,7 @@
                     android:id="@+id/tvDetailDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Join over 500 developers for 48 hours of building, learning, and networking. This annual hackathon brings together the brightest minds across universities to solve real-world problems using technology. \n\nWhat to expect:\n- Mentorship from industry experts\n- Free food and swags\n- Grand prize of $5000"
+                    android:text="Description goes here..."
                     android:textColor="@color/teks_sekunder"
                     android:textSize="14sp"
                     android:lineSpacingExtra="4dp" />
@@ -125,7 +140,7 @@
         android:orientation="horizontal"
         android:padding="16dp"
         android:background="@color/bg_utama"
-        android:elevation="16dp"
+        android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -147,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="15 / 500"
-                android:textColor="@color/teks_warning"
+                android:textColor="@color/teks_utama"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
