@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="COMPETITION"
+                    android:id="@+id/tvCategory"
                     android:textColor="@color/warna_primer"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -168,14 +168,24 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="24dp"/>
 
+                <TextView
+                    android:id="@+id/tvTicketStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmed"
+                    android:textColor="@android:color/holo_green_light"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"/>
+
                 <ImageView
                     android:id="@+id/ivQRCode"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:background="@color/garis_pembatas"
                     android:contentDescription="@null"
                     android:padding="8dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="fitCenter" />
 
                 <TextView
                     android:id="@+id/tvTicketID"

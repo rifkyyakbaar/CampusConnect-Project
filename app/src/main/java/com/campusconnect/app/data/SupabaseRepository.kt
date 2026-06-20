@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.webkit.MimeTypeMap
 import com.campusconnect.app.model.Event
+import com.campusconnect.app.model.Ticket
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -224,6 +225,93 @@ object SupabaseRepository {
         Unit
     }
 
+    fun createTicket(
+        context: Context,
+        eventId: String,
+        eventName: String,
+        category: String,
+        eventDate: String,
+        eventLocation: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        val ticketId = "CC-" +
+                UUID.randomUUID()
+                    .toString()
+                    .substring(0, 8)
+                    .uppercase()
+
+        val body = JSONObject()
+            .put("ticketId", ticketId)
+            .put("userId", user.uid)
+            .put("eventId", eventId)
+            .put("eventName", eventName)
+            .put("category", category)
+            .put("eventDate", eventDate)
+            .put("eventLocation", eventLocation)
+            .put("attendeeName", user.fullName)
+            .put("attendeeRole", user.role)
+            .put("status", "Confirmed")
+
+        request(
+            "POST",
+            "$SUPABASE_REST_URL/tickets",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        Unit
+    }
+
+    fun loadUserTickets(
+        context: Context,
+        callback: (Result<List<Ticket>>) -> Unit
+    ) = runAsync(callback) {
+
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/tickets?userId=eq.${encode(user.uid)}&order=createdAt.desc",
+            bearer = accessToken(context)
+        )
+
+        val rows = response.getJSONArray("data")
+        val tickets = mutableListOf<Ticket>()
+
+        for (i in 0 until rows.length()) {
+
+            val item = rows.getJSONObject(i)
+
+            tickets.add(
+                Ticket(
+                    ticketId = item.optString("ticketId"),
+                    userId = item.optString("userId"),
+
+                    eventId = item.optString("eventId"),
+                    eventName = item.optString("eventName"),
+                    category = item.optString("category"),
+                    eventDate = item.optString("eventDate"),
+                    eventLocation = item.optString("eventLocation"),
+
+                    attendeeName = item.optString("attendeeName"),
+                    attendeeRole = item.optString("attendeeRole"),
+
+                    status = item.optString("status"),
+
+                    createdAt = item.optString("createdAt")
+                )
+            )
+        }
+
+        tickets
+    }
+    
     fun loadApprovedEvents(
         callback: (Result<List<Event>>) -> Unit
     ) = runAsync(callback) {

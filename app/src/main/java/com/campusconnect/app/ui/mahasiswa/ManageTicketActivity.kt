@@ -9,6 +9,7 @@ import com.campusconnect.app.R
 import com.campusconnect.app.databinding.ActivityManageTicketBinding
 import com.campusconnect.app.model.Ticket
 import com.campusconnect.app.ui.profile.ProfileActivity
+import com.campusconnect.app.data.SupabaseRepository
 
 class ManageTicketActivity : AppCompatActivity() {
 
@@ -24,7 +25,7 @@ class ManageTicketActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
-        loadDummyTickets()
+        loadUserTickets()
         setupBottomNavigation()
     }
 
@@ -41,6 +42,8 @@ class ManageTicketActivity : AppCompatActivity() {
             intent.putExtra("eventLocation", ticket.eventLocation)
             intent.putExtra("category", ticket.category)
             intent.putExtra("status", ticket.status)
+            intent.putExtra("attendeeName", ticket.attendeeName)
+            intent.putExtra("attendeeRole", ticket.attendeeRole)
 
             startActivity(intent)
         }
@@ -51,40 +54,31 @@ class ManageTicketActivity : AppCompatActivity() {
         binding.rvTickets.adapter = adapter
     }
 
-    private fun loadDummyTickets() {
+    private fun loadUserTickets() {
 
-        tickets.add(
-            Ticket(
-                "CC-8924-XYZ",
-                "1",
-                "Seminar Nasional AI",
-                "Seminar",
-                "20 Juni 2026",
-                "Aula FT Unram",
-                "Confirmed"
-            )
-        )
+        SupabaseRepository.loadUserTickets(this) { result ->
 
-        tickets.add(
-            Ticket(
-                "CC-6543-ABC",
-                "2",
-                "Workshop Android",
-                "Workshop",
-                "25 Juni 2026",
-                "Gedung Kuliah Bersama",
-                "Confirmed"
-            )
-        )
+            result.onSuccess { ticketList ->
 
-        adapter.notifyDataSetChanged()
+                tickets.clear()
+                tickets.addAll(ticketList)
 
-        if (tickets.isEmpty()) {
-            binding.layoutEmpty.visibility = View.VISIBLE
-            binding.rvTickets.visibility = View.GONE
-        } else {
-            binding.layoutEmpty.visibility = View.GONE
-            binding.rvTickets.visibility = View.VISIBLE
+                adapter.notifyDataSetChanged()
+
+                if (tickets.isEmpty()) {
+                    binding.layoutEmpty.visibility = View.VISIBLE
+                    binding.rvTickets.visibility = View.GONE
+                } else {
+                    binding.layoutEmpty.visibility = View.GONE
+                    binding.rvTickets.visibility = View.VISIBLE
+                }
+            }
+
+            result.onFailure {
+
+                binding.layoutEmpty.visibility = View.VISIBLE
+                binding.rvTickets.visibility = View.GONE
+            }
         }
     }
 

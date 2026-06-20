@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+
 import androidx.appcompat.app.AppCompatActivity
 import com.campusconnect.app.R
 import com.campusconnect.app.databinding.ActivityCheckoutBinding
@@ -16,6 +17,8 @@ import java.util.Locale
 class CheckoutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCheckoutBinding
+    private var eventCategory: String = ""
+    private var eventLocation: String = ""
     private var eventPrice: Int = 0
     private var eventId: String = ""
     private var eventName: String = ""
@@ -32,6 +35,8 @@ class CheckoutActivity : AppCompatActivity() {
         eventId = intent.getStringExtra("eventId").orEmpty()
         eventName = intent.getStringExtra("eventName").orEmpty()
         eventDate = intent.getStringExtra("eventDate").orEmpty()
+        eventCategory = intent.getStringExtra("category").orEmpty()
+        eventLocation = intent.getStringExtra("location").orEmpty()
 
         // Determine if event is free or paid
         isFreeEvent = eventPrice == 0
@@ -92,22 +97,42 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun processRegistration() {
-        // Function to save data to Supabase
-        // In a real implementation, this would:
-        // 1. Create/update registration record in database
-        // 2. Decrease available tickets
-        // 3. Generate and show ticket
 
-        Toast.makeText(this, "Registration berhasil! Ticket generated.", Toast.LENGTH_SHORT).show()
+        SupabaseRepository.createTicket(
+            context = this,
+            eventId = eventId,
+            eventName = eventName,
+            category = eventCategory,
+            eventDate = eventDate,
+            eventLocation = eventLocation
+        ) { result ->
 
-        // Schedule H-1 reminder notification
-        scheduleEventReminder()
+            result.onSuccess {
 
-        // Navigate to ticket screen after successful registration
-        startActivity(Intent(this, TicketActivity::class.java).apply {
-            putExtra("eventId", eventId)
-        })
-        finish()
+                Toast.makeText(
+                    this,
+                    "Registration berhasil! Ticket generated.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                scheduleEventReminder()
+
+                startActivity(
+                    Intent(this, ManageTicketActivity::class.java)
+                )
+
+                finish()
+            }
+
+            result.onFailure {
+
+                Toast.makeText(
+                    this,
+                    it.message,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
     }
 
     private fun scheduleEventReminder() {
