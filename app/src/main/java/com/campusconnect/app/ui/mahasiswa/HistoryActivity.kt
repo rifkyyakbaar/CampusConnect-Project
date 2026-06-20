@@ -16,8 +16,6 @@ class HistoryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_history)
 
         val btnReview = findViewById<Button>(R.id.btnReview)
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigation.selectedItemId = R.id.nav_history
 
         btnReview.setOnClickListener {
             startActivity(
@@ -28,45 +26,53 @@ class HistoryActivity : AppCompatActivity() {
             )
         }
 
+        setupBottomNavigation()
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigation.selectedItemId = R.id.nav_history
+
         bottomNavigation.setOnItemSelectedListener { item ->
-
-            when(item.itemId){
-
+            when (item.itemId) {
                 R.id.nav_home -> {
                     startActivity(
                         Intent(
                             this,
                             HomeMahasiswaActivity::class.java
-                        )
+                        ).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
                     )
+                    overridePendingTransition(0, 0)
                     true
                 }
 
                 R.id.nav_ticket -> {
-
                     startActivity(
                         Intent(
                             this,
                             TicketActivity::class.java
-                        )
+                        ).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
                     )
-
+                    overridePendingTransition(0, 0)
                     true
                 }
 
-                R.id.nav_history -> {
-                    true
-                }
+                R.id.nav_history -> true
 
                 R.id.nav_profile -> {
-
                     startActivity(
                         Intent(
                             this,
                             ProfileActivity::class.java
-                        )
+                        ).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
                     )
-
+                    overridePendingTransition(0, 0)
                     true
                 }
 

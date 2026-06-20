@@ -15,7 +15,10 @@ import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.ui.auth.LoginActivity
 import com.campusconnect.app.ui.mahasiswa.HomeMahasiswaActivity
+import com.campusconnect.app.ui.mahasiswa.HistoryActivity
+import com.campusconnect.app.ui.mahasiswa.TicketActivity
 import com.campusconnect.app.ui.panitia.DashboardPanitiaActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
@@ -26,6 +29,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var tvProfileEmail: TextView
     private lateinit var btnLogout: Button
     private lateinit var tvDeleteAccount: TextView
+    private lateinit var tvEditProfile: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,17 +44,22 @@ class ProfileActivity : AppCompatActivity() {
         tvProfileName = findViewById(R.id.tvProfileName)
         tvProfileRole = findViewById(R.id.tvProfileRole)
         tvProfileEmail = findViewById(R.id.tvProfileEmail)
+        tvEditProfile = findViewById(R.id.tvEditProfile)
         btnLogout = findViewById(R.id.btnLogout)
         tvDeleteAccount = findViewById(R.id.tvDeleteAccount)
 
         val btnBack = findViewById<ImageView>(R.id.btnBack)
         btnBack.setOnClickListener {
             if (userRole.equals("Panitia", ignoreCase = true)) {
-                startActivity(Intent(this, DashboardPanitiaActivity::class.java))
+                startActivity(Intent(this, DashboardPanitiaActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                })
             } else {
-                startActivity(Intent(this, HomeMahasiswaActivity::class.java))
+                startActivity(Intent(this, HomeMahasiswaActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                })
             }
-            finish()
+            overridePendingTransition(0, 0)
         }
 
         loadProfile()
@@ -61,6 +70,16 @@ class ProfileActivity : AppCompatActivity() {
         tvDeleteAccount.setOnClickListener {
             confirmDeleteAccount()
         }
+
+        tvEditProfile.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            intent.putExtra("EXTRA_NAME", tvProfileName.text.toString())
+            intent.putExtra("EXTRA_EMAIL", tvProfileEmail.text.toString())
+            intent.putExtra("EXTRA_ROLE", tvProfileRole.text.toString())
+            startActivity(intent)
+        }
+
+        setupBottomNavigation()
     }
 
     private fun loadProfile() {
@@ -142,6 +161,49 @@ class ProfileActivity : AppCompatActivity() {
         startActivity(Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigation.selectedItemId = R.id.nav_profile
+
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_profile -> true
+
+                R.id.nav_home -> {
+                    if (userRole.equals("Panitia", ignoreCase = true)) {
+                        startActivity(Intent(this, DashboardPanitiaActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+                    } else {
+                        startActivity(Intent(this, HomeMahasiswaActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+                    }
+                    overridePendingTransition(0, 0)
+                    true
+                }
+
+                R.id.nav_ticket -> {
+                    startActivity(Intent(this, TicketActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    overridePendingTransition(0, 0)
+                    true
+                }
+
+                R.id.nav_history -> {
+                    startActivity(Intent(this, HistoryActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    overridePendingTransition(0, 0)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun showMessage(message: String) {
