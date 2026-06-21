@@ -3,6 +3,7 @@ package com.campusconnect.app.ui.admin
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -12,6 +13,7 @@ import com.campusconnect.app.R
 import com.campusconnect.app.adapter.EventAdminAdapter
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
+import com.campusconnect.app.ui.auth.WelcomeActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DashboardAdminActivity : AppCompatActivity() {
@@ -19,13 +21,10 @@ class DashboardAdminActivity : AppCompatActivity() {
     private lateinit var rvAdminApprovals: RecyclerView
     private lateinit var tvPendingApprovalMessage: TextView
 
-    // Semua event dari server (tidak pernah diubah kecuali saat reload)
     private val allEvents = mutableListOf<Event>()
-    // Event yang sedang ditampilkan (hasil filter)
     private val displayList = mutableListOf<Event>()
     private lateinit var adapter: EventAdminAdapter
 
-    // Filter pills
     private lateinit var pillPending: CardView
     private lateinit var pillApproved: CardView
     private lateinit var pillRejected: CardView
@@ -39,26 +38,24 @@ class DashboardAdminActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard_admin)
 
-        rvAdminApprovals = findViewById(R.id.rvAdminApprovals)
+        rvAdminApprovals         = findViewById(R.id.rvAdminApprovals)
         tvPendingApprovalMessage = findViewById(R.id.tvPendingApprovalMessage)
+        pillPending              = findViewById(R.id.pillPending)
+        pillApproved             = findViewById(R.id.pillApproved)
+        pillRejected             = findViewById(R.id.pillRejected)
+        tvPillPending            = findViewById(R.id.tvPillPending)
+        tvPillApproved           = findViewById(R.id.tvPillApproved)
+        tvPillRejected           = findViewById(R.id.tvPillRejected)
 
-        pillPending  = findViewById(R.id.pillPending)
-        pillApproved = findViewById(R.id.pillApproved)
-        pillRejected = findViewById(R.id.pillRejected)
-        tvPillPending  = findViewById(R.id.tvPillPending)
-        tvPillApproved = findViewById(R.id.tvPillApproved)
-        tvPillRejected = findViewById(R.id.tvPillRejected)
-
-        // Adapter menunjuk ke displayList — kita update displayList lalu notify
         adapter = EventAdminAdapter(displayList) { event ->
             val intent = Intent(this, VerifyEventActivity::class.java)
             intent.putExtra("eventId", event.id)
             startActivity(intent)
         }
-
         rvAdminApprovals.layoutManager = LinearLayoutManager(this)
         rvAdminApprovals.adapter = adapter
 
+        setupLogoutButton()
         setupPillListeners()
         setupBottomNavigation()
         loadEvents()
@@ -67,6 +64,16 @@ class DashboardAdminActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         loadEvents()
+    }
+
+    private fun setupLogoutButton() {
+        findViewById<ImageView>(R.id.btnAdminLogout).setOnClickListener {
+            // Admin tidak punya sesi Supabase (login bypass), jadi cukup
+            // arahkan langsung ke WelcomeActivity dan bersihkan back stack.
+            startActivity(Intent(this, WelcomeActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            })
+        }
     }
 
     private fun setupPillListeners() {
@@ -107,7 +114,6 @@ class DashboardAdminActivity : AppCompatActivity() {
             result.onSuccess { events ->
                 allEvents.clear()
                 allEvents.addAll(events)
-                // Kartu kuning selalu dari data global, bukan hasil filter
                 updatePendingMessage(allEvents.count { it.status.equals("pending", ignoreCase = true) })
                 applyStatusFilter()
             }
@@ -124,24 +130,22 @@ class DashboardAdminActivity : AppCompatActivity() {
     }
 
     private fun updatePillStates() {
-        // Reset semua ke nonaktif
         setPillInactive(pillPending,  tvPillPending)
         setPillInactive(pillApproved, tvPillApproved)
         setPillInactive(pillRejected, tvPillRejected)
 
-        // Aktifkan pill yang dipilih dengan warna semantik masing-masing
         when (selectedEventStatus) {
             "pending" -> {
-                pillPending.setCardBackgroundColor(Color.parseColor("#FEF3C7")) // bg_warning
-                tvPillPending.setTextColor(Color.parseColor("#92400E"))         // teks_warning
+                pillPending.setCardBackgroundColor(Color.parseColor("#FEF3C7"))
+                tvPillPending.setTextColor(Color.parseColor("#92400E"))
             }
             "approved" -> {
-                pillApproved.setCardBackgroundColor(Color.parseColor("#10B981")) // bg_terima
+                pillApproved.setCardBackgroundColor(Color.parseColor("#10B981"))
                 tvPillApproved.setTextColor(Color.WHITE)
             }
             "rejected" -> {
-                pillRejected.setCardBackgroundColor(Color.parseColor("#FEE2E2")) // bg_tolak
-                tvPillRejected.setTextColor(Color.parseColor("#DC2626"))         // teks_tolak
+                pillRejected.setCardBackgroundColor(Color.parseColor("#FEE2E2"))
+                tvPillRejected.setTextColor(Color.parseColor("#DC2626"))
             }
         }
     }
@@ -153,8 +157,8 @@ class DashboardAdminActivity : AppCompatActivity() {
 
     private fun updatePendingMessage(pendingCount: Int) {
         tvPendingApprovalMessage.text = when (pendingCount) {
-            0 -> "No events waiting for approval."
-            1 -> "You have 1 event waiting for approval."
+            0    -> "No events waiting for approval."
+            1    -> "You have 1 event waiting for approval."
             else -> "You have $pendingCount events waiting for approval."
         }
     }

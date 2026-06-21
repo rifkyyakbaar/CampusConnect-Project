@@ -26,6 +26,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Tombol Logout di pojok kanan atas -->
+    <ImageView
+        android:id="@+id/btnAdminLogout"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="16dp"
+        android:padding="4dp"
+        android:src="@drawable/ic_logout"
+        android:contentDescription="Logout"
+        app:tint="#B0B0B0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
