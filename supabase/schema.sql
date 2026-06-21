@@ -22,6 +22,7 @@ create table if not exists public.events (
     "organizerId" uuid not null references auth.users(id) on delete cascade,
     "organizerName" text not null default '',
     "posterUrl" text not null default '',
+    "headerImageUrl" text not null default '',
     status text not null default 'pending',
     registrants integer not null default 0,
     "eventDate" text not null default '',
@@ -37,12 +38,29 @@ add column if not exists "eventDate" text not null default '';
 alter table public.events
 add column if not exists "eventPrice" integer not null default 0;
 
+alter table public.events
+add column if not exists "headerImageUrl" text not null default '';
+
+create table if not exists public.reviews (
+    reviewid uuid primary key,
+    ticketid text not null,
+    eventid uuid not null references public.events("eventId") on delete cascade,
+    userid uuid not null references auth.users(id) on delete cascade,
+    attendeename text not null default '',
+    rating integer not null check (rating between 1 and 5),
+    comment text not null default '',
+    createdat timestamptz not null default now(),
+    unique (ticketid)
+);
+
+alter table public.reviews enable row level security;
+
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
     'event-posters',
     'event-posters',
     true,
-    5242880,
+    8388608,
     array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 )
 on conflict (id) do update set
@@ -117,6 +135,26 @@ to authenticated
 with check (
     bucket_id = 'event-posters'
     and auth.uid()::text = (storage.foldername(name))[1]
+);
+
+drop policy if exists "Users can create own reviews" on public.reviews;
+create policy "Users can create own reviews"
+on public.reviews for insert
+to authenticated
+with check (auth.uid() = userid);
+
+drop policy if exists "Users and organizers can read reviews" on public.reviews;
+create policy "Users and organizers can read reviews"
+on public.reviews for select
+to authenticated
+using (
+    auth.uid() = userid
+    or exists (
+        select 1
+        from public.events
+        where public.events."eventId" = reviews.eventid
+        and public.events."organizerId" = auth.uid()
+    )
 );
 
 notify pgrst, 'reload schema';

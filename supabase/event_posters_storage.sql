@@ -3,7 +3,7 @@ values (
     'event-posters',
     'event-posters',
     true,
-    5242880,
+    8388608,
     array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 )
 on conflict (id) do update set

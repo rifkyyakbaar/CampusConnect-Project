@@ -12,6 +12,7 @@ data class Event(
     var registrants: Int = 0,
     var status: String = "pending",
     var posterUrl: String = "",
+    var headerImageUrl: String = "",
     var eventDate: String = "",
     var createdAt: String? = null,
     var eventPrice: Int = 0,

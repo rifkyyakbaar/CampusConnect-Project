@@ -12,6 +12,7 @@ import com.campusconnect.app.utils.setBlinkOnClick
 
 class EventMahasiswaAdapter(
     private val eventList: List<Event>,
+    private val useHeaderImage: Boolean = false,
     private val onClick: (Event) -> Unit
 ) : RecyclerView.Adapter<EventMahasiswaAdapter.EventViewHolder>() {
 
@@ -29,10 +30,16 @@ class EventMahasiswaAdapter(
         if (eventList.isEmpty()) return
 
         val event = eventList[position % eventList.size]
+        val imageUrl = if (useHeaderImage) {
+            event.headerImageUrl.ifBlank { event.posterUrl }
+        } else {
+            event.posterUrl
+        }
 
         Glide.with(holder.itemView.context)
-            .load(event.posterUrl)
+            .load(imageUrl)
             .placeholder(R.drawable.ic_launcher_background)
+            .centerCrop()
             .into(holder.imgPoster)
 
         holder.itemView.setBlinkOnClick { onClick(event) }

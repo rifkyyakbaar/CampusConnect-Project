@@ -102,6 +102,7 @@ class EventAdminAdapter(
                 .load(event.posterUrl)
                 .placeholder(R.drawable.logo_campus_connect)
                 .error(R.drawable.logo_campus_connect)
+                .centerCrop()
                 .into(holder.imgPoster)
         }
 

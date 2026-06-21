@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_scan_result"
+    android:paddingStart="28dp"
+    android:paddingEnd="28dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="28dp">
+
+    <!-- Drag handle, pola umum bottom sheet -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_drag_handle" />
+
+    <!-- Lingkaran icon besar -->
+    <FrameLayout
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_dialog_icon_circle"
+        android:id="@+id/iconCircle">
+
+        <ImageView
+            android:id="@+id/ivDialogIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_check_circle"
+            app:tint="@color/white" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/teks_utama"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Tiket Berhasil Digunakan" />
+
+    <TextView
+        android:id="@+id/tvDialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="@color/teks_sekunder"
+        android:textSize="14sp"
+        android:lineSpacingExtra="2dp"
+        android:text="Peserta berhasil melakukan check-in." />
+
+    <!-- Card info peserta (nama + role), hanya ditampilkan untuk mode panitia -->
+    <LinearLayout
+        android:id="@+id/layoutAttendeeInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_input_rounded"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvAttendeeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/teks_utama"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="Nama Peserta" />
+
+        <TextView
+            android:id="@+id/tvAttendeeRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/teks_sekunder"
+            android:textSize="13sp"
+            android:text="Mahasiswa" />
+
+    </LinearLayout>
+
+    <!-- Tombol untuk mode panitia: Selesai + Scan Lagi berdampingan -->
+    <LinearLayout
+        android:id="@+id/layoutButtonsPanitia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSelesai"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Selesai"
+            android:textAllCaps="false"
+            android:textColor="@color/teks_utama"
+            app:cornerRadius="14dp"
+            app:backgroundTint="@color/bg_input"
+            app:strokeColor="#33FFFFFF"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnScanLagi"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Scan Lagi"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:cornerRadius="14dp"
+            app:backgroundTint="@color/warna_primer" />
+
+    </LinearLayout>
+
+    <!-- Tombol untuk mode peserta: satu tombol OK full width -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnOkPeserta"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="24dp"
+        android:text="OK"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        app:cornerRadius="14dp"
+        app:backgroundTint="@color/warna_primer" />
+
+</LinearLayout>

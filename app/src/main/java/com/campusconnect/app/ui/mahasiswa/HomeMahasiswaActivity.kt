@@ -22,6 +22,7 @@ class HomeMahasiswaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeMahasiswaBinding
     private lateinit var adapter: EventMahasiswaAdapter
+    private lateinit var headerAdapter: EventMahasiswaAdapter
 
     private val sliderHandler = Handler(Looper.getMainLooper())
     private val sliderRunnable = Runnable {
@@ -60,18 +61,19 @@ class HomeMahasiswaActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerViews() {
+        headerAdapter = EventMahasiswaAdapter(filteredEvents, useHeaderImage = true) { event ->
+            openEventDetail(event)
+        }
+
         adapter = EventMahasiswaAdapter(filteredEvents) { event ->
-            val intent = Intent(this, DetailEventActivity::class.java)
-            intent.putExtra("eventId", event.id)
-            intent.putExtra("eventPrice", event.eventPrice)
-            startActivity(intent)
+            openEventDetail(event)
         }
 
         binding.rvEvents.adapter = adapter
         binding.rvEvents.offscreenPageLimit = 3
         setupPageTransformer(binding.rvEvents)
 
-        binding.vpEventSlider.adapter = adapter
+        binding.vpEventSlider.adapter = headerAdapter
         binding.vpEventSlider.offscreenPageLimit = 3
         setupPageTransformer(binding.vpEventSlider)
 
@@ -82,6 +84,13 @@ class HomeMahasiswaActivity : AppCompatActivity() {
                 sliderHandler.postDelayed(sliderRunnable, 3000)
             }
         })
+    }
+
+    private fun openEventDetail(event: Event) {
+            val intent = Intent(this, DetailEventActivity::class.java)
+            intent.putExtra("eventId", event.id)
+            intent.putExtra("eventPrice", event.eventPrice)
+            startActivity(intent)
     }
 
     private fun setupListeners() {
@@ -119,6 +128,7 @@ class HomeMahasiswaActivity : AppCompatActivity() {
         filteredEvents.clear()
         filteredEvents.addAll(results)
         adapter.notifyDataSetChanged()
+        headerAdapter.notifyDataSetChanged()
     }
 
     private fun loadEvents() {

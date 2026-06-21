@@ -8,6 +8,7 @@ import android.webkit.MimeTypeMap
 import com.campusconnect.app.model.Event
 import com.campusconnect.app.model.Ticket
 import com.campusconnect.app.model.Peserta
+import com.campusconnect.app.model.Review
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -146,7 +147,8 @@ object SupabaseRepository {
         capacity: Int,
         description: String,
         eventDate: String,
-        posterUri: Uri? = null,
+        generalImageUri: Uri? = null,
+        headerImageUri: Uri? = null,
         eventPrice: Int = 0,
         paymentType: String,
         paymentInfo: String,
@@ -155,8 +157,11 @@ object SupabaseRepository {
         val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
         val organizer = fetchUserProfile(context, user.uid) ?: user
         val eventId = UUID.randomUUID().toString()
-        val posterUrl = posterUri?.let {
-            uploadEventPoster(context, it, user.uid, eventId)
+        val posterUrl = generalImageUri?.let {
+            uploadEventPoster(context, it, user.uid, eventId, "general")
+        }.orEmpty()
+        val headerImageUrl = headerImageUri?.let {
+            uploadEventPoster(context, it, user.uid, eventId, "header")
         }.orEmpty()
         val body = JSONObject()
             .put("eventId", eventId)
@@ -168,6 +173,7 @@ object SupabaseRepository {
             .put("organizerId", user.uid)
             .put("organizerName", organizer.fullName.ifBlank { "Panitia" })
             .put("posterUrl", posterUrl)
+            .put("headerImageUrl", headerImageUrl)
             .put("status", "pending")
             .put("eventDate", eventDate)
             .put("registrants", 0)
@@ -485,6 +491,99 @@ object SupabaseRepository {
         Unit
     }
 
+    fun createReview(
+        context: Context,
+        ticketId: String,
+        eventId: String,
+        rating: Int,
+        comment: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+        val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+        if (ticketId.isBlank() || eventId.isBlank()) {
+            throw IllegalStateException("Data tiket tidak lengkap.")
+        }
+        if (rating !in 1..5) {
+            throw IllegalStateException("Rating harus diisi antara 1 sampai 5.")
+        }
+        if (hasReviewedSync(context, ticketId)) {
+            throw IllegalStateException("Tiket ini sudah pernah direview.")
+        }
+
+        val ticket = fetchTicketById(context, ticketId)
+        if (ticket.userId != user.uid) {
+            throw IllegalStateException("Kamu hanya bisa memberi review untuk tiket milikmu.")
+        }
+        if (!ticket.eventId.equals(eventId, ignoreCase = true)) {
+            throw IllegalStateException("Data event pada tiket tidak sesuai.")
+        }
+        if (!ticket.status.equals("USED", ignoreCase = true)) {
+            throw IllegalStateException("Review hanya bisa diberikan setelah tiket digunakan.")
+        }
+
+        val body = JSONObject()
+            .put("reviewid", UUID.randomUUID().toString())
+            .put("ticketid", ticket.ticketId)
+            .put("eventid", ticket.eventId)
+            .put("userid", user.uid)
+            .put("attendeename", ticket.attendeeName)
+            .put("rating", rating)
+            .put("comment", comment)
+
+        request(
+            "POST",
+            "$SUPABASE_REST_URL/reviews",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        Unit
+    }
+
+    fun hasReviewed(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Boolean>) -> Unit
+    ) = runAsync(callback) {
+        if (ticketId.isBlank()) false else hasReviewedSync(context, ticketId)
+    }
+
+    fun getReviewByTicketId(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Review?>) -> Unit
+    ) = runAsync(callback) {
+        if (ticketId.isBlank()) return@runAsync null
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/reviews?ticketid=eq.${encode(ticketId)}&limit=1",
+            bearer = accessToken(context)
+        )
+        val rows = response.getJSONArray("data")
+        if (rows.length() == 0) null else parseReview(rows.getJSONObject(0))
+    }
+
+    private fun hasReviewedSync(context: Context, ticketId: String): Boolean {
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/reviews?ticketid=eq.${encode(ticketId)}&select=reviewid&limit=1",
+            bearer = accessToken(context)
+        )
+        return response.getJSONArray("data").length() > 0
+    }
+
+    private fun fetchTicketById(context: Context, ticketId: String): Ticket {
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/tickets?ticketid=eq.${encode(ticketId)}&limit=1",
+            bearer = accessToken(context)
+        )
+        val rows = response.getJSONArray("data")
+        if (rows.length() == 0) throw IllegalStateException("Tiket tidak ditemukan.")
+        return parseTicket(rows.getJSONObject(0))
+    }
+
     private fun parseTicket(item: JSONObject): Ticket {
         return Ticket(
             ticketId = item.optString("ticketid"),
@@ -498,6 +597,19 @@ object SupabaseRepository {
             attendeeRole = item.optString("attendeerole"),
             status = item.optString("status"),
             paymentProofUrl = item.optString("paymentproofurl"),
+            createdAt = item.optString("createdat")
+        )
+    }
+
+    private fun parseReview(item: JSONObject): Review {
+        return Review(
+            reviewId = item.optString("reviewid"),
+            ticketId = item.optString("ticketid"),
+            eventId = item.optString("eventid"),
+            userId = item.optString("userid"),
+            attendeeName = item.optString("attendeename"),
+            rating = item.optInt("rating"),
+            comment = item.optString("comment"),
             createdAt = item.optString("createdat")
         )
     }
@@ -986,17 +1098,25 @@ object SupabaseRepository {
                     registrants = item.optInt("registrants", 0),
                     status = item.optString("status", "pending"),
                     posterUrl = item.optString("posterUrl", ""),
+                    headerImageUrl = item.optString("headerImageUrl", ""),
                     eventDate = item.optString("eventDate", ""),
                     createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt"),
                     eventPrice = item.optInt("eventPrice", 0),
                     paymentType = item.optString("paymentType", "FREE"),
-                    paymentInfo = item.optString("paymentInfo", "")                )
+                    paymentInfo = item.optString("paymentInfo", "")
+                )
             )
         }
         return events
     }
 
-    private fun uploadEventPoster(context: Context, posterUri: Uri, userId: String, eventId: String): String {
+    private fun uploadEventPoster(
+        context: Context,
+        posterUri: Uri,
+        userId: String,
+        eventId: String,
+        imageType: String
+    ): String {
         val token = accessToken(context)
         if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
 
@@ -1010,7 +1130,7 @@ object SupabaseRepository {
             .getExtensionFromMimeType(mimeType)
             ?.takeIf { it.isNotBlank() }
             ?: "jpg"
-        val objectPath = "$userId/$eventId.$extension"
+        val objectPath = "$userId/$eventId-$imageType.$extension"
         val bytes = contentResolver.openInputStream(posterUri)?.use { it.readBytes() }
             ?: throw IllegalStateException("Gambar poster tidak bisa dibaca.")
 
