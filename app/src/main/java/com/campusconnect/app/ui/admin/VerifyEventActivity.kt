@@ -97,8 +97,9 @@ class VerifyEventActivity : AppCompatActivity() {
                 tvDescription.text = event.description
 
                 Glide.with(this)
-                    .load(event.posterUrl)
+                    .load(event.headerImageUrl.ifBlank { event.posterUrl })
                     .placeholder(R.drawable.logo_campus_connect)
+                    .centerCrop()
                     .into(imgPoster)
 
             }.onFailure {

@@ -126,7 +126,23 @@ object SupabaseRepository {
         if (createProfileIfMissing) {
             upsertUserProfileOrCurrent(context, fullName.ifBlank { "Pengguna" }, role, "google", email, restoreDeleted = true)
         } else {
-            requireUserProfile(context)
+            val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
+            val profile = fetchUserProfileState(context, current.uid)
+            when {
+                profile == null -> {
+                    signOut(context)
+                    throw IllegalStateException("Profil akun tidak ditemukan. Silakan daftar ulang atau hubungi admin.")
+                }
+                profile.isDeleted -> upsertUserProfileOrCurrent(
+                    context = context,
+                    fullName = fullName.ifBlank { "Pengguna" },
+                    role = role,
+                    provider = "google",
+                    emailOverride = email,
+                    restoreDeleted = true
+                )
+                else -> profile.user.also { saveUserToPrefs(context, it) }
+            }
         }
     }
 
@@ -146,7 +162,8 @@ object SupabaseRepository {
         capacity: Int,
         description: String,
         eventDate: String,
-        posterUri: Uri? = null,
+        generalImageUri: Uri? = null,
+        headerImageUri: Uri? = null,
         eventPrice: Int = 0,
         paymentType: String,
         paymentInfo: String,
@@ -155,8 +172,11 @@ object SupabaseRepository {
         val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
         val organizer = fetchUserProfile(context, user.uid) ?: user
         val eventId = UUID.randomUUID().toString()
-        val posterUrl = posterUri?.let {
-            uploadEventPoster(context, it, user.uid, eventId)
+        val posterUrl = generalImageUri?.let {
+            uploadEventPoster(context, it, user.uid, eventId, "general")
+        }.orEmpty()
+        val headerImageUrl = headerImageUri?.let {
+            uploadEventPoster(context, it, user.uid, eventId, "header")
         }.orEmpty()
         val body = JSONObject()
             .put("eventId", eventId)
@@ -168,6 +188,7 @@ object SupabaseRepository {
             .put("organizerId", user.uid)
             .put("organizerName", organizer.fullName.ifBlank { "Panitia" })
             .put("posterUrl", posterUrl)
+            .put("headerImageUrl", headerImageUrl)
             .put("status", "pending")
             .put("eventDate", eventDate)
             .put("registrants", 0)
@@ -648,10 +669,18 @@ object SupabaseRepository {
         }
 
     fun deleteCurrentUser(context: Context, callback: (Result<Unit>) -> Unit) = runAsync(callback) {
-        val user = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
-        markUserProfileDeleted(context, user.uid)
+        currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
+        val token = accessToken(context)
+        if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
+
         runCatching {
-            request("DELETE", "$SUPABASE_AUTH_URL/user", bearer = accessToken(context))
+            request("DELETE", "$SUPABASE_AUTH_URL/user", bearer = token)
+        }.getOrElse { exception ->
+            throw IllegalStateException(
+                "Akun belum bisa dihapus sepenuhnya, sehingga email masih terdaftar. " +
+                    "Silakan coba login ulang lalu hapus akun kembali.",
+                exception
+            )
         }
         signOut(context)
         Unit
@@ -954,17 +983,25 @@ object SupabaseRepository {
                     registrants = item.optInt("registrants", 0),
                     status = item.optString("status", "pending"),
                     posterUrl = item.optString("posterUrl", ""),
+                    headerImageUrl = item.optString("headerImageUrl", ""),
                     eventDate = item.optString("eventDate", ""),
                     createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt"),
                     eventPrice = item.optInt("eventPrice", 0),
                     paymentType = item.optString("paymentType", "FREE"),
-                    paymentInfo = item.optString("paymentInfo", "")                )
+                    paymentInfo = item.optString("paymentInfo", "")
+                )
             )
         }
         return events
     }
 
-    private fun uploadEventPoster(context: Context, posterUri: Uri, userId: String, eventId: String): String {
+    private fun uploadEventPoster(
+        context: Context,
+        posterUri: Uri,
+        userId: String,
+        eventId: String,
+        imageType: String
+    ): String {
         val token = accessToken(context)
         if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
 
@@ -978,7 +1015,7 @@ object SupabaseRepository {
             .getExtensionFromMimeType(mimeType)
             ?.takeIf { it.isNotBlank() }
             ?: "jpg"
-        val objectPath = "$userId/$eventId.$extension"
+        val objectPath = "$userId/$eventId-$imageType.$extension"
         val bytes = contentResolver.openInputStream(posterUri)?.use { it.readBytes() }
             ?: throw IllegalStateException("Gambar poster tidak bisa dibaca.")
 

@@ -136,7 +136,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun confirmDeleteAccount() {
         AlertDialog.Builder(this)
             .setTitle("Hapus akun?")
-            .setMessage("Akun akan dinonaktifkan dan tidak bisa digunakan untuk login lagi.")
+            .setMessage("Akun akan dihapus dan email bisa digunakan untuk daftar ulang.")
             .setNegativeButton("Batal", null)
             .setPositiveButton("Hapus") { _, _ ->
                 deleteAccount()

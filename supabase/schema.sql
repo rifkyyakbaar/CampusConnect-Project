@@ -22,6 +22,7 @@ create table if not exists public.events (
     "organizerId" uuid not null references auth.users(id) on delete cascade,
     "organizerName" text not null default '',
     "posterUrl" text not null default '',
+    "headerImageUrl" text not null default '',
     status text not null default 'pending',
     registrants integer not null default 0,
     "eventDate" text not null default '',
@@ -37,12 +38,15 @@ add column if not exists "eventDate" text not null default '';
 alter table public.events
 add column if not exists "eventPrice" integer not null default 0;
 
+alter table public.events
+add column if not exists "headerImageUrl" text not null default '';
+
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
     'event-posters',
     'event-posters',
     true,
-    5242880,
+    8388608,
     array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 )
 on conflict (id) do update set

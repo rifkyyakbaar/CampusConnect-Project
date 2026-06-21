@@ -1,18 +1,17 @@
 package com.campusconnect.app.ui.mahasiswa
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
 import com.campusconnect.app.utils.setBlinkOnClick
-import java.net.URL
 
 class DetailEventActivity : AppCompatActivity() {
 
@@ -100,7 +99,7 @@ class DetailEventActivity : AppCompatActivity() {
 
         btnJoinEvent.setBlinkOnClick { joinEvent(event) }
 
-        loadPoster(event.posterUrl)
+        loadPoster(event.headerImageUrl.ifBlank { event.posterUrl })
     }
 
     private fun joinEvent(event: Event) {
@@ -132,14 +131,11 @@ class DetailEventActivity : AppCompatActivity() {
 
     private fun loadPoster(posterUrl: String) {
         if (posterUrl.isBlank()) return
-        Thread {
-            val bitmap = runCatching {
-                URL(posterUrl).openStream().use { BitmapFactory.decodeStream(it) }
-            }.getOrNull()
-            if (bitmap != null) {
-                runOnUiThread { ivDetailPoster.setImageBitmap(bitmap) }
-            }
-        }.start()
+        Glide.with(this)
+            .load(posterUrl)
+            .placeholder(R.drawable.ic_launcher_background)
+            .centerCrop()
+            .into(ivDetailPoster)
     }
 
     private fun formatDate(rawDate: String?): String {

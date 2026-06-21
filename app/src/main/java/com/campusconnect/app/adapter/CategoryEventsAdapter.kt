@@ -51,6 +51,7 @@ class CategoryEventsAdapter(private val onItemClick: (Event) -> Unit) :
                     binding.tvEventPrice.text = formatPrice(event.eventPrice)
                     Glide.with(binding.ivEventPoster.context)
                         .load(event.posterUrl)
+                        .centerCrop()
                         .into(binding.ivEventPoster)
                     binding.root.setBlinkOnClick { onItemClick(event) }
                 }
@@ -61,6 +62,7 @@ class CategoryEventsAdapter(private val onItemClick: (Event) -> Unit) :
                     binding.tvEventDetail.text = event.description
                     Glide.with(binding.ivEventPoster.context)
                         .load(event.posterUrl)
+                        .centerCrop()
                         .into(binding.ivEventPoster)
                     binding.root.setBlinkOnClick { onItemClick(event) }
                 }

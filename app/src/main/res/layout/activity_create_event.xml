@@ -37,24 +37,24 @@
         </RelativeLayout>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cvUploadPoster"
+            android:id="@+id/cvUploadHeaderImage"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             app:cardBackgroundColor="#20FFFFFF"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp">
 
             <ImageView
-                android:id="@+id/ivPosterPreview"
+                android:id="@+id/ivHeaderImagePreview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="Event poster preview"
+                android:contentDescription="Event header preview"
                 android:scaleType="centerCrop"
                 android:visibility="gone" />
 
             <LinearLayout
-                android:id="@+id/layoutUploadPosterPlaceholder"
+                android:id="@+id/layoutUploadHeaderPlaceholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -71,11 +71,84 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Event poster"
+                    android:text="Gambar header"
                     android:textColor="#B0B0B0"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Landscape min 800x360 px, max 8 MB"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="12sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Dipakai sebagai gambar lebar di home dan detail event."
+            android:textColor="#CCFFFFFF"
+            android:textSize="12sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvUploadGeneralImage"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="#20FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/ivGeneralImagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Event general image preview"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/layoutUploadGeneralPlaceholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_camera"
+                    app:tint="#B0B0B0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Gambar umum"
+                    android:textColor="#B0B0B0"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Portrait min 600x800 px, max 8 MB"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Dipakai pada kartu event peserta. Gambar yang terlalu panjang akan otomatis dipotong mengikuti frame."
+            android:textColor="#CCFFFFFF"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="wrap_content"
