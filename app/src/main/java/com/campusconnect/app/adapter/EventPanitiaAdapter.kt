@@ -12,7 +12,8 @@ import com.campusconnect.app.model.Event
 
 class EventPanitiaAdapter(
     private val eventList: List<Event>,
-    private val onDetailClick: (Event) -> Unit
+    private val onDetailClick: (Event) -> Unit,
+    private val onEditClick: (Event) -> Unit
 ) : RecyclerView.Adapter<EventPanitiaAdapter.EventViewHolder>() {
 
     class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,6 +23,7 @@ class EventPanitiaAdapter(
         val tvCapacity: TextView = itemView.findViewById(R.id.tvCapacity)
         val tvRegistrants: TextView = itemView.findViewById(R.id.tvRegistrants)
         val btnViewDetail: Button = itemView.findViewById(R.id.btnViewDetail)
+        val btnEditEvent: Button = itemView.findViewById(R.id.btnEditEvent)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -42,6 +44,9 @@ class EventPanitiaAdapter(
         holder.tvRegistrants.text = "Registrants : ${event.registrants}"
         holder.btnViewDetail.setOnClickListener {
             onDetailClick(event)
+        }
+        holder.btnEditEvent.setOnClickListener {
+            onEditClick(event)
         }
     }
 

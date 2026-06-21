@@ -39,12 +39,21 @@ class DashboardPanitiaActivity : AppCompatActivity() {
 
     private fun setupMyEventsList() {
         rvPanitiaEvents = findViewById(R.id.rvPanitiaEvents)
-        adapter = EventPanitiaAdapter(myEvents) { event ->
-            startActivity(Intent(this, DetailPanitiaEventActivity::class.java).apply {
-                putExtra("eventId", event.id)
-                putExtra("source", "panitia")
-            })
-        }
+        adapter = EventPanitiaAdapter(
+            eventList = myEvents,
+            onDetailClick = { event ->
+                startActivity(Intent(this, DetailPanitiaEventActivity::class.java).apply {
+                    putExtra("eventId", event.id)
+                    putExtra("source", "panitia")
+                })
+            },
+            onEditClick = { event ->
+                startActivity(Intent(this, CreateEventActivity::class.java).apply {
+                    putExtra("mode", "edit")
+                    putExtra("eventId", event.id)
+                })
+            }
+        )
 
         rvPanitiaEvents.layoutManager = LinearLayoutManager(this)
         rvPanitiaEvents.adapter = adapter

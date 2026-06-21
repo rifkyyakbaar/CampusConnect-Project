@@ -12,6 +12,7 @@ import com.campusconnect.app.model.Review
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
+import java.net.URLDecoder
 import java.net.URLEncoder
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -184,6 +185,62 @@ object SupabaseRepository {
         Unit
     }
 
+    fun updateEvent(
+        context: Context,
+        eventId: String,
+        eventName: String,
+        category: String,
+        location: String,
+        capacity: Int,
+        description: String,
+        eventDate: String,
+        generalImageUri: Uri? = null,
+        headerImageUri: Uri? = null,
+        existingPosterUrl: String = "",
+        existingHeaderImageUrl: String = "",
+        eventPrice: Int = 0,
+        paymentType: String,
+        paymentInfo: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+        val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+        val existingEvent = loadEventByIdSync(eventId)
+        if (existingEvent.organizerId != user.uid) {
+            throw IllegalStateException("Kamu hanya bisa mengedit event milikmu sendiri.")
+        }
+
+        val posterUrl = generalImageUri?.let {
+            uploadEventPoster(context, it, user.uid, eventId, "general", existingPosterUrl)
+        } ?: existingPosterUrl
+        val headerImageUrl = headerImageUri?.let {
+            uploadEventPoster(context, it, user.uid, eventId, "header", existingHeaderImageUrl)
+        } ?: existingHeaderImageUrl
+
+        val body = JSONObject()
+            .put("eventName", eventName)
+            .put("category", category)
+            .put("location", location)
+            .put("capacity", capacity)
+            .put("description", description)
+            .put("posterUrl", posterUrl)
+            .put("headerImageUrl", headerImageUrl)
+            .put("status", "pending")
+            .put("eventDate", eventDate)
+            .put("eventPrice", eventPrice)
+            .put("paymentType", paymentType)
+            .put("paymentInfo", paymentInfo)
+
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/events?eventId=eq.${encode(eventId)}",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        Unit
+    }
+
     fun loadPendingEvents(callback: (Result<List<Event>>) -> Unit) = runAsync(callback) {
         val response = request("GET", "$SUPABASE_REST_URL/events?status=eq.pending&order=createdAt.desc")
         parseEvents(response.getJSONArray("data"))
@@ -208,12 +265,16 @@ object SupabaseRepository {
     }
 
     fun loadEventById(eventId: String, callback: (Result<Event>) -> Unit) = runAsync(callback) {
+        loadEventByIdSync(eventId)
+    }
+
+    private fun loadEventByIdSync(eventId: String): Event {
         val response = request(
             "GET",
             "$SUPABASE_REST_URL/events?eventId=eq.${encode(eventId)}&limit=1"
         )
         val events = parseEvents(response.getJSONArray("data"))
-        events.firstOrNull() ?: throw IllegalStateException("Event tidak ditemukan.")
+        return events.firstOrNull() ?: throw IllegalStateException("Event tidak ditemukan.")
     }
 
     private fun incrementEventRegistrants(context: Context, eventId: String) {
@@ -1083,7 +1144,8 @@ object SupabaseRepository {
         posterUri: Uri,
         userId: String,
         eventId: String,
-        imageType: String
+        imageType: String,
+        existingImageUrl: String = ""
     ): String {
         val token = accessToken(context)
         if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
@@ -1098,7 +1160,8 @@ object SupabaseRepository {
             .getExtensionFromMimeType(mimeType)
             ?.takeIf { it.isNotBlank() }
             ?: "jpg"
-        val objectPath = "$userId/$eventId-$imageType.$extension"
+        val objectPath = existingEventPosterObjectPath(existingImageUrl, userId, eventId, imageType)
+            ?: "$userId/$eventId-$imageType.$extension"
         val bytes = contentResolver.openInputStream(posterUri)?.use { it.readBytes() }
             ?: throw IllegalStateException("Gambar poster tidak bisa dibaca.")
 
@@ -1109,7 +1172,7 @@ object SupabaseRepository {
                 bytes = bytes,
                 contentType = mimeType,
                 bearer = token,
-                upsert = false
+                upsert = true
             )
         }.getOrElse { exception ->
             if (isMissingEventPostersBucketError(exception)) {
@@ -1120,7 +1183,34 @@ object SupabaseRepository {
             throw exception
         }
 
-        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$EVENT_POSTERS_BUCKET/$objectPath"
+        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$EVENT_POSTERS_BUCKET/$objectPath?v=${System.currentTimeMillis()}"
+    }
+
+    private fun existingEventPosterObjectPath(
+        imageUrl: String,
+        userId: String,
+        eventId: String,
+        imageType: String
+    ): String? {
+        if (imageUrl.isBlank()) return null
+
+        val cleanUrl = imageUrl.substringBefore("?")
+        val publicMarker = "/storage/v1/object/public/$EVENT_POSTERS_BUCKET/"
+        val privateMarker = "/storage/v1/object/$EVENT_POSTERS_BUCKET/"
+        val encodedPath = when {
+            publicMarker in cleanUrl -> cleanUrl.substringAfter(publicMarker)
+            privateMarker in cleanUrl -> cleanUrl.substringAfter(privateMarker)
+            else -> return null
+        }
+
+        val path = runCatching {
+            URLDecoder.decode(encodedPath, Charsets.UTF_8.name())
+        }.getOrDefault(encodedPath)
+
+        if (!path.startsWith("$userId/")) return null
+        if (!path.substringAfterLast("/").startsWith("$eventId-$imageType.")) return null
+
+        return path
     }
 
     private fun uploadPaymentProof(

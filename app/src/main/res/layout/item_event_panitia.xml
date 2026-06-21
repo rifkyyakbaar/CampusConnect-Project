@@ -57,15 +57,34 @@
             android:textColor="#B0B0B0"
             android:layout_marginTop="4dp" />
 
-        <Button
-            android:id="@+id/btnViewDetail"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Detail"
             android:layout_marginTop="12dp"
-            android:backgroundTint="@color/warna_primer"
-            android:textColor="@color/white"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnViewDetail"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="View Detail"
+                android:backgroundTint="@color/warna_primer"
+                android:textColor="@color/white"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnEditEvent"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="Edit Event"
+                android:backgroundTint="#4B5563"
+                android:textColor="@color/white"
+                android:textAllCaps="false" />
+        </LinearLayout>
 
     </LinearLayout>
 

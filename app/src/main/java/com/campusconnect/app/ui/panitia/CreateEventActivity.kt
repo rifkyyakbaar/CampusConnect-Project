@@ -15,13 +15,16 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import com.bumptech.glide.Glide
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
+import com.campusconnect.app.model.Event
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -53,10 +56,15 @@ class CreateEventActivity : AppCompatActivity() {
     )
 
     private val eventStartCalendar = Calendar.getInstance()
+    private val categoryOptions = listOf("Seminar", "Workshop", "Dies Natalies", "Lainnya")
     private var selectedGeneralImageUri: Uri? = null
     private var selectedHeaderImageUri: Uri? = null
     private var selectedEventDate = ""
     private var selectedEventTime = ""
+    private var isEditMode = false
+    private var editingEventId = ""
+    private var existingPosterUrl = ""
+    private var existingHeaderImageUrl = ""
 
     private val pickHeaderImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -99,6 +107,7 @@ class CreateEventActivity : AppCompatActivity() {
         setupEventStartPickers()
         setupPosterPicker()
         ensurePanitiaAccess()
+        setupEditModeIfNeeded()
 
         val btnSubmit = findViewById<Button>(R.id.btnSubmitEvent)
         btnSubmit.setOnClickListener {
@@ -123,11 +132,52 @@ class CreateEventActivity : AppCompatActivity() {
     }
 
     private fun setupCategoryDropdown() {
-        val categories = listOf("Seminar", "Workshop", "Dies Natalies", "Lainnya")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories).apply {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryOptions).apply {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
         findViewById<Spinner>(R.id.spCategory).adapter = adapter
+    }
+
+    private fun setupEditModeIfNeeded() {
+        isEditMode = intent.getStringExtra("mode").equals("edit", ignoreCase = true)
+        editingEventId = intent.getStringExtra("eventId").orEmpty()
+        if (!isEditMode || editingEventId.isBlank()) return
+
+        findViewById<TextView>(R.id.tvCreateEventTitle).text = "Edit Event"
+        findViewById<Button>(R.id.btnSubmitEvent).text = "Simpan Perubahan"
+
+        SupabaseRepository.loadEventById(editingEventId) { result ->
+            result
+                .onSuccess { event -> populateEditForm(event) }
+                .onFailure { exception ->
+                    Toast.makeText(this, exception.localizedMessage ?: "Gagal memuat event.", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+        }
+    }
+
+    private fun populateEditForm(event: Event) {
+        existingPosterUrl = event.posterUrl
+        existingHeaderImageUrl = event.headerImageUrl
+
+        findViewById<EditText>(R.id.etEventName).setText(event.eventName)
+        findViewById<EditText>(R.id.etLocation).setText(event.location)
+        findViewById<EditText>(R.id.etCapacity).setText(event.capacity.toString())
+        findViewById<EditText>(R.id.etDescription).setText(event.description)
+        findViewById<EditText>(R.id.etTicketPrice).setText(if (event.eventPrice > 0) event.eventPrice.toString() else "")
+        findViewById<EditText>(R.id.etPaymentInfo).setText(event.paymentInfo)
+
+        val categoryIndex = categoryOptions.indexOfFirst { it.equals(event.category, ignoreCase = true) }
+        if (categoryIndex >= 0) findViewById<Spinner>(R.id.spCategory).setSelection(categoryIndex)
+
+        val parts = event.eventDate.split(" ", limit = 2)
+        selectedEventDate = parts.getOrNull(0).orEmpty()
+        selectedEventTime = parts.getOrNull(1).orEmpty()
+        findViewById<EditText>(R.id.etEventDate).setText(selectedEventDate)
+        findViewById<EditText>(R.id.etEventTime).setText(selectedEventTime)
+
+        showExistingImage(event.headerImageUrl, R.id.ivHeaderImagePreview, R.id.layoutUploadHeaderPlaceholder)
+        showExistingImage(event.posterUrl, R.id.ivGeneralImagePreview, R.id.layoutUploadGeneralPlaceholder)
     }
 
     private fun setupEventStartPickers() {
@@ -184,7 +234,9 @@ class CreateEventActivity : AppCompatActivity() {
             return
         }
 
-        if (selectedHeaderImageUri == null || selectedGeneralImageUri == null) {
+        val hasHeaderImage = selectedHeaderImageUri != null || existingHeaderImageUrl.isNotBlank()
+        val hasGeneralImage = selectedGeneralImageUri != null || existingPosterUrl.isNotBlank()
+        if (!hasHeaderImage || !hasGeneralImage) {
             Toast.makeText(this, "Lengkapi gambar header dan gambar umum", Toast.LENGTH_SHORT).show()
             return
         }
@@ -225,30 +277,57 @@ class CreateEventActivity : AppCompatActivity() {
         }
 
         setSubmitLoading(btnSubmit, true)
-        SupabaseRepository.createEvent(
-            context = this,
-            eventName = eventName,
-            category = category,
-            location = location,
-            capacity = capacity,
-            description = description,
-            eventDate = eventDate,
-            generalImageUri = selectedGeneralImageUri,
-            headerImageUri = selectedHeaderImageUri,
-            eventPrice = ticketPrice,
-            paymentType = paymentType,
-            paymentInfo = paymentInfo
-        ) { result ->
-            result
-                .onSuccess {
-                    Toast.makeText(this, "Event berhasil dibuat", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-                .onFailure { exception ->
-                    showPublishError(exception.message.orEmpty())
-                    setSubmitLoading(btnSubmit, false)
-                }
+        if (isEditMode) {
+            SupabaseRepository.updateEvent(
+                context = this,
+                eventId = editingEventId,
+                eventName = eventName,
+                category = category,
+                location = location,
+                capacity = capacity,
+                description = description,
+                eventDate = eventDate,
+                generalImageUri = selectedGeneralImageUri,
+                headerImageUri = selectedHeaderImageUri,
+                existingPosterUrl = existingPosterUrl,
+                existingHeaderImageUrl = existingHeaderImageUrl,
+                eventPrice = ticketPrice,
+                paymentType = paymentType,
+                paymentInfo = paymentInfo
+            ) { result ->
+                handlePublishResult(result, "Event berhasil diperbarui dan kembali menunggu approval.")
+            }
+        } else {
+            SupabaseRepository.createEvent(
+                context = this,
+                eventName = eventName,
+                category = category,
+                location = location,
+                capacity = capacity,
+                description = description,
+                eventDate = eventDate,
+                generalImageUri = selectedGeneralImageUri,
+                headerImageUri = selectedHeaderImageUri,
+                eventPrice = ticketPrice,
+                paymentType = paymentType,
+                paymentInfo = paymentInfo
+            ) { result ->
+                handlePublishResult(result, "Event berhasil dibuat")
+            }
         }
+    }
+
+    private fun handlePublishResult(result: Result<Unit>, successMessage: String) {
+        val btnSubmit = findViewById<Button>(R.id.btnSubmitEvent)
+        result
+            .onSuccess {
+                Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .onFailure { exception ->
+                showPublishError(exception.message.orEmpty())
+                setSubmitLoading(btnSubmit, false)
+            }
     }
 
     private fun ensurePanitiaAccess() {
@@ -261,13 +340,30 @@ class CreateEventActivity : AppCompatActivity() {
 
     private fun setSubmitLoading(button: Button, loading: Boolean) {
         button.isEnabled = !loading
-        button.text = if (loading) "Publishing..." else "Publish Event"
+        button.text = when {
+            loading && isEditMode -> "Menyimpan..."
+            loading -> "Publishing..."
+            isEditMode -> "Simpan Perubahan"
+            else -> "Publish Event"
+        }
     }
 
     private fun showSelectedImage(uri: Uri, imageViewId: Int, placeholderId: Int) {
         findViewById<ImageView>(imageViewId).apply {
             setImageURI(uri)
             visibility = View.VISIBLE
+        }
+        findViewById<LinearLayout>(placeholderId).visibility = View.GONE
+    }
+
+    private fun showExistingImage(imageUrl: String, imageViewId: Int, placeholderId: Int) {
+        if (imageUrl.isBlank()) return
+        findViewById<ImageView>(imageViewId).apply {
+            visibility = View.VISIBLE
+            Glide.with(this@CreateEventActivity)
+                .load(imageUrl)
+                .centerCrop()
+                .into(this)
         }
         findViewById<LinearLayout>(placeholderId).visibility = View.GONE
     }

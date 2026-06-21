@@ -137,6 +137,19 @@ with check (
     and auth.uid()::text = (storage.foldername(name))[1]
 );
 
+drop policy if exists "Authenticated users can update own event posters" on storage.objects;
+create policy "Authenticated users can update own event posters"
+on storage.objects for update
+to authenticated
+using (
+    bucket_id = 'event-posters'
+    and auth.uid()::text = (storage.foldername(name))[1]
+)
+with check (
+    bucket_id = 'event-posters'
+    and auth.uid()::text = (storage.foldername(name))[1]
+);
+
 drop policy if exists "Users can create own reviews" on public.reviews;
 create policy "Users can create own reviews"
 on public.reviews for insert
