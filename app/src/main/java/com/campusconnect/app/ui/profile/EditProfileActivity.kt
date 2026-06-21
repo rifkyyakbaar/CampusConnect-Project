@@ -71,6 +71,8 @@ class EditProfileActivity : AppCompatActivity() {
         // Kunci kolom role
         etEditRole.isEnabled = false
         etEditRole.isFocusable = false
+        etEditEmail.isEnabled = false
+        etEditEmail.isFocusable = false
 
         // --- PERUBAHAN UTAMA ADA DI SINI (BAGIAN 3) ---
         // Kita tidak lagi mengambil dari SharedPreferences karena akan hilang saat logout.
