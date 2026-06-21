@@ -31,6 +31,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var tvProfileEmail: TextView
     private lateinit var btnLogout: Button
     private lateinit var tvDeleteAccount: TextView
+    private lateinit var tvChangePassword: TextView
     private lateinit var tvEditProfile: TextView
 
     // Variabel penampung foto profil
@@ -55,8 +56,15 @@ class ProfileActivity : AppCompatActivity() {
         tvProfileRole = findViewById(R.id.tvProfileRole)
         tvProfileEmail = findViewById(R.id.tvProfileEmail)
         tvEditProfile = findViewById(R.id.tvEditProfile)
+        tvChangePassword = findViewById<TextView>(R.id.tvChangePassword)
+
         btnLogout = findViewById(R.id.btnLogout)
         tvDeleteAccount = findViewById(R.id.tvDeleteAccount)
+
+        tvChangePassword.setOnClickListener {
+            val intent = Intent(this, ChangePasswordActivity::class.java)
+            startActivity(intent)
+        }
 
         // Hubungkan ID foto profil
         ivUserAvatar = findViewById(R.id.ivUserAvatar)
@@ -168,7 +176,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun providerLabel(provider: String): String {
-        return if (provider.equals("google", ignoreCase = true)) "Google" else "Email/Password"
+        return if (provider.equals("google", ignoreCase = true)) "Google" else ""
     }
 
     private fun setAccountActionEnabled(isEnabled: Boolean) {
@@ -183,7 +191,20 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigation() {
+        val user = SupabaseRepository.currentUser(this)
+        // Ambil role pengguna, jika null anggap sebagai Mahasiswa
+        val userRole = user?.role ?: "Mahasiswa/Peserta"
+
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+
+        // Menyembunyikan navbar jika yang login adalah Panitia
+        if (userRole.equals("Panitia", ignoreCase = true)) {
+            bottomNavigation.visibility = android.view.View.GONE
+        } else {
+            bottomNavigation.visibility = android.view.View.VISIBLE
+        }
+
+        // Set item yang terpilih ke Profile
         bottomNavigation.selectedItemId = R.id.nav_profile
 
         bottomNavigation.setOnItemSelectedListener { item ->

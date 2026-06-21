@@ -640,12 +640,44 @@ object SupabaseRepository {
         Unit
     }
 
-    fun updatePassword(context: Context, newPassword: String, callback: (Result<Unit>) -> Unit) =
-        runAsync(callback) {
-            val body = JSONObject().put("password", newPassword)
-            request("PUT", "$SUPABASE_AUTH_URL/user", body, bearer = accessToken(context))
-            Unit
+    fun updatePassword(
+        context: Context,
+        newPassword: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+        val token = accessToken(context)
+        if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
+
+        val url = java.net.URL("$SUPABASE_AUTH_URL/user")
+        val connection = url.openConnection() as java.net.HttpURLConnection
+
+        try {
+            connection.requestMethod = "PUT"
+
+            // PENTING: Menggunakan SUPABASE_ANON_KEY yang ada di file Anda
+            connection.setRequestProperty("apikey", SUPABASE_ANON_KEY)
+            connection.setRequestProperty("Authorization", "Bearer $token")
+            connection.setRequestProperty("Content-Type", "application/json")
+
+            connection.doOutput = true
+
+            // Membuat format JSON manual berisi password baru
+            val jsonInputString = "{\"password\":\"$newPassword\"}"
+
+            connection.outputStream.use { os ->
+                val input = jsonInputString.toByteArray(Charsets.UTF_8)
+                os.write(input, 0, input.size)
+            }
+
+            val responseCode = connection.responseCode
+            if (responseCode !in 200..299) {
+                val errorStream = connection.errorStream?.bufferedReader()?.readText()
+                throw Exception("Server menolak: $errorStream")
+            }
+        } finally {
+            connection.disconnect()
         }
+    }
 
     fun deleteCurrentUser(context: Context, callback: (Result<Unit>) -> Unit) = runAsync(callback) {
         val user = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")
