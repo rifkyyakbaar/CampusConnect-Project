@@ -9,7 +9,6 @@
     android:background="@color/bg_utama"
     tools:context=".ui.profile.ProfileActivity">
 
-    <!-- Top App Bar - Clean Header (Back and Notif removed as requested) -->
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -57,8 +56,8 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@null"
                     android:padding="12dp"
-                    android:src="@android:drawable/ic_menu_camera"
-                    app:tint="@color/teks_sekunder" />
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_camera" />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -72,7 +71,7 @@
                     android:id="@+id/tvProfileName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Naufal Pramudya"
+                    tools:text="Nama Pengguna"
                     android:textColor="@color/teks_utama"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -82,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Mahasiswa Informatika"
+                    tools:text="Role Pengguna"
                     android:textColor="@color/warna_primer"
                     android:textSize="14sp" />
 
@@ -91,14 +90,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="naufal.pramudya@student.unram.ac.id"
+                    tools:text="email@pengguna.com"
                     android:textColor="@color/teks_sekunder"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Label Kategori "General" -->
     <TextView
         android:id="@+id/tvGeneralLabel"
         android:layout_width="wrap_content"
@@ -112,7 +110,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cvUserInfo" />
 
-    <!-- Container Menu General -->
     <LinearLayout
         android:id="@+id/menuContainer"
         android:layout_width="match_parent"
@@ -121,7 +118,6 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/tvGeneralLabel">
 
-        <!-- Menu: Edit Profile -->
         <TextView
             android:id="@+id/tvEditProfile"
             android:layout_width="match_parent"
@@ -142,7 +138,6 @@
             android:layout_marginHorizontal="24dp"
             android:background="@color/garis_pembatas" />
 
-        <!-- Menu: Change Password -->
         <TextView
             android:id="@+id/tvChangePassword"
             android:layout_width="match_parent"
@@ -163,7 +158,6 @@
             android:layout_marginHorizontal="24dp"
             android:background="@color/garis_pembatas" />
 
-        <!-- Menu: Delete Account -->
         <TextView
             android:id="@+id/tvDeleteAccount"
             android:layout_width="match_parent"
@@ -179,7 +173,6 @@
             app:drawableTint="@color/teks_tolak" />
     </LinearLayout>
 
-    <!-- Tombol Logout -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
@@ -195,7 +188,6 @@
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation" />
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"

@@ -28,6 +28,7 @@ object SupabaseRepository {
     private const val PAYMENT_PROOFS_BUCKET = "payment-proofs"
     private const val EVENT_POSTERS_BUCKET = "event-posters"
     private const val PREF_NAME = "supabase_session"
+    private const val AVATARS_BUCKET = "avatars"
     private val mainHandler = Handler(Looper.getMainLooper())
 
     data class AppUser(
@@ -660,6 +661,53 @@ object SupabaseRepository {
     fun signOut(context: Context) {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().clear().apply()
     }
+
+    fun uploadUserAvatar(
+        context: Context,
+        avatarUri: Uri,
+        userId: String,
+        callback: (Result<String>) -> Unit
+    ) = runAsync(callback) {
+        val token = accessToken(context)
+        if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
+
+        val contentResolver = context.contentResolver
+        val mimeType = contentResolver.getType(avatarUri) ?: "image/jpeg"
+
+        val objectPath = "$userId/avatar.jpg"
+
+        val bytes = contentResolver.openInputStream(avatarUri)?.use { it.readBytes() }
+            ?: throw IllegalStateException("Gambar tidak bisa dibaca.")
+
+        // Upload file ke bucket
+        requestBinary(
+            method = "POST",
+            url = "$SUPABASE_PROJECT_URL/storage/v1/object/$AVATARS_BUCKET/$objectPath",
+            bytes = bytes,
+            contentType = mimeType,
+            bearer = token,
+            upsert = true
+        )
+
+        // --- TRIK STEMPEL WAKTU ---
+        // Catat waktu upload terakhir ke dalam HP agar URL bisa berubah secara otomatis
+        context.getSharedPreferences("supabase_session", Context.MODE_PRIVATE).edit()
+            .putLong("avatar_version", System.currentTimeMillis())
+            .apply()
+        // -------------------------
+
+        getAvatarUrl(context, userId)
+    }
+
+    // UBAH FUNGSI INI: Tambahkan parameter `context` untuk membaca stempel waktu
+    fun getAvatarUrl(context: Context, userId: String): String {
+        val prefs = context.getSharedPreferences("supabase_session", Context.MODE_PRIVATE)
+        val version = prefs.getLong("avatar_version", 0) // Ambil stempel waktu
+
+        // Tambahkan ?v=versi di belakang URL untuk menembus cache server
+        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$AVATARS_BUCKET/$userId/avatar.jpg?v=$version"
+    }
+
 
     private fun requireUserProfile(context: Context): AppUser {
         val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")

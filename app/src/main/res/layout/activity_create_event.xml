@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama"
+    android:background="@drawable/bg_main_gradient"
     android:fillViewport="true"
     tools:context=".ui.panitia.CreateEventActivity">
 
@@ -24,14 +24,14 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@android:drawable/ic_menu_revert"
-                app:tint="@color/teks_utama" />
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="Create New Event"
-                android:textColor="@color/teks_utama"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </RelativeLayout>
@@ -41,11 +41,9 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/bg_input"
+            app:cardBackgroundColor="#20FFFFFF"
             app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/garis_pembatas"
-            app:strokeWidth="1dp">
+            app:cardElevation="0dp">
 
             <ImageView
                 android:id="@+id/ivPosterPreview"
@@ -67,14 +65,14 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_menu_camera"
-                    app:tint="@color/teks_sekunder" />
+                    app:tint="#B0B0B0" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Event poster"
-                    android:textColor="@color/teks_sekunder"
+                    android:textColor="#B0B0B0"
                     android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -83,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Name"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
@@ -93,8 +91,8 @@
             android:layout_height="55dp"
             android:background="@drawable/bg_input_rounded"
             android:hint="Enter event name"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="16dp"/>
 
@@ -115,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Category"
-                    android:textColor="@color/teks_utama"
+                    android:textColor="@color/white"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
@@ -138,7 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Capacity"
-                    android:textColor="@color/teks_utama"
+                    android:textColor="@color/white"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
@@ -149,8 +147,8 @@
                     android:background="@drawable/bg_input_rounded"
                     android:inputType="number"
                     android:hint="e.g. 500"
-                    android:textColor="@color/teks_utama"
-                    android:textColorHint="@color/teks_sekunder"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF"
                     android:paddingHorizontal="16dp"/>
             </LinearLayout>
         </LinearLayout>
@@ -159,7 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ticket Price (Optional)"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
@@ -170,8 +168,8 @@
             android:background="@drawable/bg_input_rounded"
             android:inputType="number"
             android:hint="Leave empty for free event"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="16dp"/>
 
@@ -179,7 +177,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Payment Information"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
@@ -189,16 +187,17 @@
             android:layout_height="80dp"
             android:background="@drawable/bg_input_rounded"
             android:gravity="top"
-            android:hint="Contoh : Bank BCA 123456789              a.n. Panitia Informatika"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:hint="Payment details..."
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:padding="16dp"
             android:layout_marginBottom="16dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
@@ -207,9 +206,9 @@
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:background="@drawable/bg_input_rounded"
-            android:hint="e.g. Main Auditorium, Building A"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:hint="e.g. Main Auditorium"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="16dp"/>
 
@@ -217,7 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Start"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
@@ -238,8 +237,8 @@
                 android:focusable="false"
                 android:hint="Date"
                 android:paddingHorizontal="16dp"
-                android:textColor="@color/teks_utama"
-                android:textColorHint="@color/teks_sekunder" />
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF" />
 
             <EditText
                 android:id="@+id/etEventTime"
@@ -252,15 +251,15 @@
                 android:focusable="false"
                 android:hint="Time"
                 android:paddingHorizontal="16dp"
-                android:textColor="@color/teks_utama"
-                android:textColorHint="@color/teks_sekunder" />
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
@@ -271,8 +270,8 @@
             android:background="@drawable/bg_input_rounded"
             android:gravity="top|start"
             android:hint="Detail about the event..."
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:padding="16dp"
             android:layout_marginBottom="32dp"/>
 

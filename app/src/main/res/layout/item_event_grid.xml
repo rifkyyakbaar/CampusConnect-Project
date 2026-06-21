@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#20FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background" />
+            android:background="#1AFFFFFF" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,22 +34,9 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Event Name"
-                android:textColor="@color/teks_utama"
+                android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
-
-            <!-- Hidden in Grid Mode as per request -->
-            <TextView
-                android:id="@+id/tvEventDate"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvEventDetail"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvEventPrice"

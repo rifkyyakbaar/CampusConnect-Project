@@ -79,9 +79,6 @@
             android:name=".ui.mahasiswa.HistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.mahasiswa.NotificationActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.profile.EditProfileActivity"
             android:launchMode="singleTop"
             android:exported="false" />

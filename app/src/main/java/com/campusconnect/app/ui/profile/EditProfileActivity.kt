@@ -1,16 +1,42 @@
 package com.campusconnect.app.ui.profile
 
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView // <-- Tambahan import untuk TextView
+import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 
 class EditProfileActivity : AppCompatActivity() {
+
+    // 1. Variabel untuk menyimpan gambar sementara dari galeri
+    private var selectedImageUri: Uri? = null
+    private lateinit var ivEditAvatar: ImageView
+
+    // 2. Pemanggil Galeri HP
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            selectedImageUri = uri
+
+            // --- KUNCI PENGHAPUS WARNA ABU-ABU XML ---
+            ivEditAvatar.setPadding(0, 0, 0, 0)
+            ivEditAvatar.imageTintList = null
+            // -----------------------------------------
+
+            Glide.with(this)
+                .load(uri)
+                .centerCrop()
+                .placeholder(android.R.drawable.ic_menu_camera)
+                .into(ivEditAvatar)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +49,11 @@ class EditProfileActivity : AppCompatActivity() {
         val etEditEmail = findViewById<EditText>(R.id.etEditEmail)
         val etEditRole = findViewById<EditText>(R.id.etEditRole)
         val btnSaveChanges = findViewById<Button>(R.id.btnSaveChanges)
-
-        // <-- TAMBAHAN 1: Hubungkan TextView untuk judul nama di bawah avatar
         val tvEditNameTitle = findViewById<TextView>(R.id.tvEditNameTitle)
+
+        // ID tambahan untuk upload foto
+        val tvUploadPhoto = findViewById<TextView>(R.id.tvUploadPhoto)
+        ivEditAvatar = findViewById(R.id.ivEditAvatar)
 
         // Tangkap data dari ProfileActivity
         val currentName = intent.getStringExtra("EXTRA_NAME")
@@ -34,19 +62,36 @@ class EditProfileActivity : AppCompatActivity() {
 
         etEditName.setText(currentName)
         etEditEmail.setText(currentEmail)
-
-        // <-- TAMBAHAN 2: Tampilkan nama asli di bawah foto profil
         tvEditNameTitle.text = currentName
 
         // Membersihkan format string untuk mengambil Role-nya saja
         val cleanRole = currentRole?.split(" - ")?.firstOrNull() ?: currentRole
         etEditRole.setText(cleanRole)
 
-        // KUNCI KOLOM ROLE: Agar pengguna tidak bisa mengedit rolenya secara manual
+        // Kunci kolom role
         etEditRole.isEnabled = false
         etEditRole.isFocusable = false
 
-        // LOGIKA TOMBOL SAVE CHANGES
+        // --- PERUBAHAN UTAMA ADA DI SINI (BAGIAN 3) ---
+        // Kita tidak lagi mengambil dari SharedPreferences karena akan hilang saat logout.
+        // Sebagai gantinya, kita ambil UID user saat ini, lalu menyusun URL-nya langsung.
+        val user = SupabaseRepository.currentUser(this)
+        if (user != null) {
+            // Aplikasi langsung menebak URL foto dari server Supabase menggunakan UID
+            val avatarUrl = SupabaseRepository.getAvatarUrl(this, user.uid)
+
+            // Panggil loadImageFromUrl. Fungsi ObjectKey (Anti-Cache)
+            // sudah ada di dalam fungsi loadImageFromUrl di bawah.
+            loadImageFromUrl(avatarUrl, ivEditAvatar)
+        }
+        // -----------------------------------------------
+
+        // 4. Klik tulisan biru untuk membuka galeri
+        tvUploadPhoto.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
+
+        // 5. LOGIKA TOMBOL SAVE CHANGES
         btnSaveChanges.setOnClickListener {
             val newName = etEditName.text.toString().trim()
             val newEmail = etEditEmail.text.toString().trim()
@@ -60,25 +105,55 @@ class EditProfileActivity : AppCompatActivity() {
             btnSaveChanges.isEnabled = false
             btnSaveChanges.text = "Menyimpan..."
 
-            val user = SupabaseRepository.currentUser(this)
-            if (user != null) {
-                // MENGGUNAKAN FUNGSI BARU YANG BARU KITA TAMBAHKAN
-                SupabaseRepository.updateUserNameAndEmail(this, user.uid, newName, newEmail) { result: Result<Unit> ->
-                    result
-                        .onSuccess {
-                            Toast.makeText(this@EditProfileActivity, "Profil berhasil diperbarui!", Toast.LENGTH_SHORT).show()
-                            finish() // Kembali ke halaman Profile
-                        }
-                        .onFailure { exception ->
-                            Toast.makeText(this@EditProfileActivity, "Gagal: ${exception.message}", Toast.LENGTH_LONG).show()
+            val currentUser = SupabaseRepository.currentUser(this)
+            if (currentUser != null) {
+                // --- SKENARIO A: Jika User Memilih Foto Baru ---
+                if (selectedImageUri != null) {
+                    SupabaseRepository.uploadUserAvatar(this, selectedImageUri!!, currentUser.uid) { uploadResult: Result<String> ->
+                        uploadResult.onSuccess {
+                            // Jika upload foto berhasil, baru simpan data nama & email
+                            saveProfileData(currentUser.uid, newName, newEmail, btnSaveChanges)
+                        }.onFailure { exception ->
+                            Toast.makeText(this, "Gagal upload foto: ${exception.message}", Toast.LENGTH_LONG).show()
                             btnSaveChanges.isEnabled = true
                             btnSaveChanges.text = "Save Changes"
                         }
+                    }
+                }
+                // --- SKENARIO B: Jika User Hanya Edit Nama (Tanpa ganti foto) ---
+                else {
+                    saveProfileData(currentUser.uid, newName, newEmail, btnSaveChanges)
                 }
             } else {
                 Toast.makeText(this, "Sesi habis, silakan login ulang.", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
+    }
+
+    // Fungsi Pembantu (Helper) untuk mengeksekusi update nama & email
+    private fun saveProfileData(uid: String, name: String, email: String, btnSaveChanges: Button) {
+        SupabaseRepository.updateUserNameAndEmail(this, uid, name, email) { result ->
+            result.onSuccess {
+                Toast.makeText(this@EditProfileActivity, "Profil berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+                finish() // Kembali ke halaman Profile
+            }.onFailure { exception ->
+                Toast.makeText(this@EditProfileActivity, "Gagal: ${exception.message}", Toast.LENGTH_LONG).show()
+                btnSaveChanges.isEnabled = true
+                btnSaveChanges.text = "Save Changes"
+            }
+        }
+    }
+
+    private fun loadImageFromUrl(url: String, imageView: ImageView) {
+        imageView.setPadding(0, 0, 0, 0)
+        imageView.imageTintList = null
+
+        Glide.with(imageView.context)
+            .load(url)
+            .centerCrop()
+            .placeholder(android.R.drawable.ic_menu_camera)
+            .error(android.R.drawable.ic_menu_camera)
+            .into(imageView)
     }
 }
