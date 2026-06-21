@@ -7,8 +7,7 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="18dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="#20FFFFFF">
+    app:cardElevation="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,52 +15,77 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Nama -->
-        <TextView
-            android:id="@+id/tvParticipantName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nama Peserta"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"/>
-
-        <!-- Role -->
-        <TextView
-            android:id="@+id/tvParticipantRole"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Mahasiswa"
-            android:textSize="14sp"
-            android:textColor="#B0B0B0"/>
-
-        <!-- Status -->
-        <TextView
-            android:id="@+id/tvParticipantStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="PENDING"
-            android:textStyle="bold"
-            android:textColor="#F59E0B"/>
-
-        <!-- Tombol -->
-        <LinearLayout
+        <!-- Baris atas: info peserta (kiri) + tombol Lihat Review (kanan) -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:layout_marginBottom="8dp">
+
+            <!-- Info peserta -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_toStartOf="@id/btnReview"
+                android:layout_alignParentStart="true">
+
+                <TextView
+                    android:id="@+id/tvParticipantName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Peserta"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#111827"/>
+
+                <TextView
+                    android:id="@+id/tvParticipantRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Mahasiswa"
+                    android:textSize="14sp"
+                    android:textColor="#6B7280"/>
+
+                <TextView
+                    android:id="@+id/tvParticipantStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="PENDING"
+                    android:textStyle="bold"
+                    android:textColor="#2563EB"/>
+            </LinearLayout>
+
+            <!-- Tombol Lihat Review — pojok kanan atas, hanya muncul jika USED -->
+            <Button
+                android:id="@+id/btnReview"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="Lihat Review"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:backgroundTint="#F59E0B"
+                android:paddingHorizontal="12dp"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+        <!-- Tombol aksi bawah — hanya untuk event berbayar -->
+        <LinearLayout
+            android:id="@+id/layoutActionButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/btnViewProof"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:backgroundTint="#30FFFFFF"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
-                android:text="Bukti"/>
+                android:text="Lihat Bukti"/>
 
             <Space
                 android:layout_width="8dp"
@@ -72,24 +96,22 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/warna_primer"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
-                android:text="Approve"/>
+                android:text="Approve"
+                android:visibility="gone"/>
 
             <Space
+                android:id="@+id/spaceApprove"
                 android:layout_width="8dp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/btnReject"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:backgroundTint="#20DC2626"
-                android:textColor="#DC2626"
-                android:textAllCaps="false"
-                android:text="Reject"/>
+                android:text="Reject"
+                android:visibility="gone"/>
         </LinearLayout>
 
     </LinearLayout>
