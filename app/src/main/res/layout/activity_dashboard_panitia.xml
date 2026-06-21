@@ -135,18 +135,137 @@
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 
+    <HorizontalScrollView
+        android:id="@+id/scrollFilterStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        android:paddingStart="24dp"
+        android:paddingEnd="12dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutStats">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnFilterAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/warna_primer"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="All"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnFilterWaiting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#30FFFFFF"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="Waiting"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnFilterApproved"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#30FFFFFF"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="Approved"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnFilterRejected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#30FFFFFF"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="Rejected"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnFilterFinished"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#30FFFFFF"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="Finished"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
     <TextView
         android:id="@+id/tvMyEventsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="My Managed Events"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutStats" />
+        app:layout_constraintTop_toBottomOf="@id/scrollFilterStatus" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPanitiaEvents"

@@ -6,6 +6,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.campusconnect.app.R
@@ -16,15 +17,34 @@ import com.campusconnect.app.ui.panitia.DetailPanitiaEventActivity
 import com.campusconnect.app.ui.profile.ProfileActivity
 
 class DashboardPanitiaActivity : AppCompatActivity() {
+
+    // Data mentah hasil load dari server, tidak pernah difilter langsung.
+    private val allEvents = mutableListOf<Event>()
+
+    // List yang benar-benar dibaca oleh adapter (hasil filter dari allEvents).
+    // EventPanitiaAdapter memegang referensi List ini langsung di constructor
+    // dan membaca isinya tiap kali notifyDataSetChanged() dipanggil, jadi
+    // filter dilakukan dengan clear()+addAll() ke list yang sama ini,
+    // bukan dengan mengganti referensi list baru.
     private val myEvents = mutableListOf<Event>()
+
     private lateinit var adapter: EventPanitiaAdapter
     private lateinit var rvPanitiaEvents: RecyclerView
+
+    private var selectedFilter = "all" // all | waiting | approved | rejected | finished
+
+    private lateinit var btnFilterAll: CardView
+    private lateinit var btnFilterWaiting: CardView
+    private lateinit var btnFilterApproved: CardView
+    private lateinit var btnFilterRejected: CardView
+    private lateinit var btnFilterFinished: CardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard_panitia)
 
         setupMyEventsList()
+        setupFilterNavbar()
         loadPanitiaName()
         profilepanitia()
         createevent()
@@ -57,6 +77,101 @@ class DashboardPanitiaActivity : AppCompatActivity() {
 
         rvPanitiaEvents.layoutManager = LinearLayoutManager(this)
         rvPanitiaEvents.adapter = adapter
+    }
+
+    private fun setupFilterNavbar() {
+        btnFilterAll = findViewById(R.id.btnFilterAll)
+        btnFilterWaiting = findViewById(R.id.btnFilterWaiting)
+        btnFilterApproved = findViewById(R.id.btnFilterApproved)
+        btnFilterRejected = findViewById(R.id.btnFilterRejected)
+        btnFilterFinished = findViewById(R.id.btnFilterFinished)
+
+        btnFilterAll.setOnClickListener { selectFilter("all") }
+        btnFilterWaiting.setOnClickListener { selectFilter("waiting") }
+        btnFilterApproved.setOnClickListener { selectFilter("approved") }
+        btnFilterRejected.setOnClickListener { selectFilter("rejected") }
+        btnFilterFinished.setOnClickListener { selectFilter("finished") }
+
+        updateFilterVisualState()
+    }
+
+    private fun selectFilter(filter: String) {
+        if (selectedFilter == filter) return
+        selectedFilter = filter
+        updateFilterVisualState()
+        applyFilter()
+    }
+
+    private fun updateFilterVisualState() {
+        val activeColor = when (selectedFilter) {
+            "waiting" -> getColor(R.color.bg_warning)
+            "approved" -> getColor(R.color.bg_terima)
+            "rejected" -> getColor(R.color.bg_tolak)
+            "finished" -> getColor(R.color.teks_sekunder)
+            else -> getColor(R.color.warna_primer)
+        }
+        val activeTextColor = when (selectedFilter) {
+            "waiting" -> getColor(R.color.teks_warning)
+            "rejected" -> getColor(R.color.teks_tolak)
+            else -> getColor(R.color.black)
+        }
+
+        val inactiveBg = android.graphics.Color.parseColor("#30FFFFFF")
+        val inactiveText = getColor(R.color.white)
+
+        val pills = mapOf(
+            "all" to btnFilterAll,
+            "waiting" to btnFilterWaiting,
+            "approved" to btnFilterApproved,
+            "rejected" to btnFilterRejected,
+            "finished" to btnFilterFinished
+        )
+
+        pills.forEach { (key, card) ->
+            val label = card.getChildAt(0) as? TextView
+            if (key == selectedFilter) {
+                card.setCardBackgroundColor(activeColor)
+                label?.setTextColor(activeTextColor)
+            } else {
+                card.setCardBackgroundColor(inactiveBg)
+                label?.setTextColor(inactiveText)
+            }
+        }
+    }
+
+    private fun applyFilter() {
+        val filtered = when (selectedFilter) {
+            "waiting" -> allEvents.filter {
+                it.status.equals("pending", ignoreCase = true)
+            }
+            "approved" -> allEvents.filter {
+                it.status.equals("approved", ignoreCase = true) &&
+                        !EventPanitiaAdapter.isEventFinished(it)
+            }
+            "rejected" -> allEvents.filter {
+                it.status.equals("rejected", ignoreCase = true)
+            }
+            "finished" -> allEvents.filter {
+                it.status.equals("approved", ignoreCase = true) &&
+                        EventPanitiaAdapter.isEventFinished(it)
+            }
+            else -> allEvents.toList() // "all"
+        }
+
+        myEvents.clear()
+        myEvents.addAll(filtered)
+        adapter.notifyDataSetChanged()
+
+        updateLabel(filtered.isEmpty())
+    }
+
+    private fun updateLabel(isEmpty: Boolean) {
+        val label = findViewById<TextView>(R.id.tvMyEventsLabel)
+        label.text = if (isEmpty) {
+            "My Managed Events - No events yet"
+        } else {
+            "My Managed Events"
+        }
     }
 
     private fun loadPanitiaName() {
@@ -109,30 +224,22 @@ class DashboardPanitiaActivity : AppCompatActivity() {
     }
 
     private fun loadMyManagedEvents() {
-        val label = findViewById<TextView>(R.id.tvMyEventsLabel)
         val user = SupabaseRepository.currentUser(this) ?: run {
-            myEvents.clear()
-            adapter.notifyDataSetChanged()
-            label.text = "My Managed Events"
+            allEvents.clear()
+            applyFilter()
             return
         }
 
         SupabaseRepository.loadOrganizerEvents(user.uid) { result ->
             result
                 .onSuccess { events ->
-                    myEvents.clear()
-                    myEvents.addAll(events)
-                    adapter.notifyDataSetChanged()
-                    label.text = if (events.isEmpty()) {
-                        "My Managed Events - No events yet"
-                    } else {
-                        "My Managed Events"
-                    }
+                    allEvents.clear()
+                    allEvents.addAll(events)
+                    applyFilter()
                 }
                 .onFailure { exception ->
-                    myEvents.clear()
-                    adapter.notifyDataSetChanged()
-                    label.text = "My Managed Events - Failed to load"
+                    allEvents.clear()
+                    applyFilter()
                     Toast.makeText(this, exception.localizedMessage ?: "Gagal memuat event.", Toast.LENGTH_SHORT).show()
                 }
         }

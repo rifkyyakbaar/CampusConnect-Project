@@ -78,7 +78,12 @@ class LoginActivity : AppCompatActivity() {
 
         btnGoogleSignIn.setOnClickListener {
             setLoading(true)
-            googleSignInLauncher.launch(googleSignInIntent())
+            // Sign out dari Google dulu supaya picker akun selalu muncul,
+            // tidak langsung re-use akun yang ter-ban di cache.
+            val googleClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+            googleClient.signOut().addOnCompleteListener {
+                googleSignInLauncher.launch(googleSignInIntent())
+            }
         }
 
         tvSignUp.setOnClickListener {

@@ -9,6 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.campusconnect.app.R
 import com.campusconnect.app.model.Event
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class EventPanitiaAdapter(
     private val eventList: List<Event>,
@@ -34,12 +37,25 @@ class EventPanitiaAdapter(
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = eventList[position]
-        val status = event.status.ifBlank { "pending" }
+        val rawStatus = event.status.ifBlank { "pending" }
+
+        // Status efektif yang ditampilkan di badge card: kalau event
+        // sudah "approved" tapi waktunya sudah lewat, badge tampil
+        // "FINISHED" (abu-abu) — supaya selalu konsisten dengan kategori
+        // filter navbar di atas, bukan hanya membaca status mentah dari
+        // database (yang memang tidak pernah menyimpan nilai "finished").
+        val displayStatus = if (
+            rawStatus.equals("approved", ignoreCase = true) && isEventFinished(event)
+        ) {
+            "finished"
+        } else {
+            rawStatus
+        }
 
         holder.tvEventName.text = event.eventName.ifBlank { "Untitled Event" }
         holder.tvCategory.text = event.category.ifBlank { "-" }
-        holder.tvStatus.text = status.uppercase()
-        holder.tvStatus.setTextColor(statusColor(status))
+        holder.tvStatus.text = displayStatus.uppercase()
+        holder.tvStatus.setTextColor(statusColor(displayStatus))
         holder.tvCapacity.text = "Capacity : ${event.capacity}"
         holder.tvRegistrants.text = "Registrants : ${event.registrants}"
         holder.btnViewDetail.setOnClickListener {
@@ -56,7 +72,24 @@ class EventPanitiaAdapter(
         return when {
             status.equals("approved", ignoreCase = true) -> Color.rgb(22, 163, 74)
             status.equals("rejected", ignoreCase = true) -> Color.rgb(220, 38, 38)
+            status.equals("finished", ignoreCase = true) -> Color.rgb(176, 176, 176)
             else -> Color.rgb(245, 158, 11)
+        }
+    }
+
+    companion object {
+        /**
+         * Event dianggap selesai jika waktu sekarang sudah melewati
+         * eventDate (format gabungan "yyyy-MM-dd HH:mm" dari
+         * CreateEventActivity). Dipakai juga oleh DashboardPanitiaActivity
+         * untuk filter "Finished" — logic harus identik di kedua tempat.
+         */
+        fun isEventFinished(event: Event): Boolean {
+            return runCatching {
+                val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+                val eventDateTime = format.parse(event.eventDate) ?: return false
+                eventDateTime.before(Date())
+            }.getOrDefault(false)
         }
     }
 }
