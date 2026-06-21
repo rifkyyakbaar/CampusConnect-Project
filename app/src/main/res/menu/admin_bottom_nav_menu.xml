@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_manage_event"
+        android:icon="@drawable/ic_manage_event"
+        android:title="Manage Event"/>
+
+    <item
+        android:id="@+id/nav_manage_user"
+        android:icon="@drawable/ic_manage_user"
+        android:title="Manage User"/>
+
+</menu>

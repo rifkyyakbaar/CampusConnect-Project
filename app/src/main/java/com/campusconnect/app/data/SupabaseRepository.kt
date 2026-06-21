@@ -9,6 +9,7 @@ import com.campusconnect.app.model.Event
 import com.campusconnect.app.model.Ticket
 import com.campusconnect.app.model.Peserta
 import com.campusconnect.app.model.Review
+import com.campusconnect.app.model.User
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -42,7 +43,8 @@ object SupabaseRepository {
 
     private data class ProfileState(
         val user: AppUser,
-        val isDeleted: Boolean
+        val isDeleted: Boolean,
+        val accountStatus: String = "ACTIVE"
     )
 
     fun currentUser(context: Context): AppUser? {
@@ -130,6 +132,79 @@ object SupabaseRepository {
         } else {
             requireUserProfile(context)
         }
+    }
+    fun loadAllUsers(context: Context, callback: (Result<List<User>>) -> Unit) =
+        runAsync(callback) {
+            // Filter di server: hanya role Mahasiswa dan Panitia
+            val response = request(
+                "GET",
+                "$SUPABASE_REST_URL/users?role=in.(Mahasiswa,Panitia)&order=createdAt.desc"
+            )
+            parseUsers(response.getJSONArray("data"))
+        }
+
+    fun loadUsersByRole(context: Context, role: String, callback: (Result<List<User>>) -> Unit) =
+        runAsync(callback) {
+            val response = request(
+                "GET",
+                "$SUPABASE_REST_URL/users?role=eq.${encode(role)}&order=createdAt.desc"
+            )
+            parseUsers(response.getJSONArray("data"))
+        }
+
+    fun banUser(context: Context, uid: String, callback: (Result<Unit>) -> Unit) =
+        runAsync(callback) {
+            val body = JSONObject().put("account_status", "BANNED")
+            request(
+                "PATCH",
+                "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}",
+                body,
+                prefer = "return=minimal"
+            )
+            Unit
+        }
+
+    fun unbanUser(context: Context, uid: String, callback: (Result<Unit>) -> Unit) =
+        runAsync(callback) {
+            val body = JSONObject().put("account_status", "ACTIVE")
+            request(
+                "PATCH",
+                "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}",
+                body,
+                prefer = "return=minimal"
+            )
+            Unit
+        }
+
+    fun deleteUserByAdmin(context: Context, uid: String, callback: (Result<Unit>) -> Unit) =
+        runAsync(callback) {
+            val body = JSONObject().put("account_status", "DELETED")
+            request(
+                "PATCH",
+                "$SUPABASE_REST_URL/users?uid=eq.${encode(uid)}",
+                body,
+                prefer = "return=minimal"
+            )
+            Unit
+        }
+
+    private fun parseUsers(rows: JSONArray): List<User> {
+        val users = mutableListOf<User>()
+        for (i in 0 until rows.length()) {
+            val item = rows.getJSONObject(i)
+            users.add(
+                User(
+                    uid              = item.optString("uid", ""),
+                    fullName         = item.optString("fullName", ""),
+                    email            = item.optString("email", ""),
+                    role             = item.optString("role", ""),
+                    profileImageUrl  = item.optString("profileImageUrl", ""),
+                    accountStatus    = item.optString("account_status", "ACTIVE"),
+                    createdAt        = item.optString("createdAt", "")
+                )
+            )
+        }
+        return users
     }
 
     fun loadUserProfile(context: Context, uid: String, callback: (Result<AppUser>) -> Unit) =
@@ -1029,10 +1104,23 @@ object SupabaseRepository {
 
     private fun fetchUserProfile(context: Context, uid: String): AppUser? {
         val state = fetchUserProfileState(context, uid) ?: return null
+
         if (state.isDeleted) {
             signOut(context)
             throw IllegalStateException("Akun ini sudah dihapus dan tidak bisa digunakan untuk login.")
         }
+
+        when (state.accountStatus.uppercase()) {
+            "BANNED" -> {
+                signOut(context)
+                throw IllegalStateException("Akun Anda sedang diblokir sementara oleh administrator.")
+            }
+            "DELETED" -> {
+                signOut(context)
+                throw IllegalStateException("Akun Anda telah dihapus oleh administrator.")
+            }
+        }
+
         return state.user
     }
 
@@ -1058,9 +1146,11 @@ object SupabaseRepository {
                 role = item.optString("role", "Mahasiswa"),
                 provider = item.optString("provider", "email")
             ),
-            isDeleted = isDeletedProfile(item)
+            isDeleted = isDeletedProfile(item),
+            accountStatus = item.optString("account_status", "ACTIVE")  // <-- baru
         )
     }
+
 
     private fun markUserProfileDeleted(context: Context, uid: String) {
         val token = accessToken(context)

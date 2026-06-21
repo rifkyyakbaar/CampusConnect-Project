@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#1C1C1C">
+
+    <!-- Drag handle -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_drag_handle" />
+
+    <!-- Nama user -->
+    <TextView
+        android:id="@+id/tvSheetUserName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nama User"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <!-- Email user -->
+    <TextView
+        android:id="@+id/tvSheetUserEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="email@example.com"
+        android:textColor="@color/teks_sekunder"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Pesan jika sudah DELETED -->
+    <TextView
+        android:id="@+id/tvSheetDeletedInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="User ini telah dihapus dan tidak dapat diakses."
+        android:textColor="@color/teks_sekunder"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone" />
+
+    <!-- Tombol Ban (hanya muncul jika ACTIVE) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBanUser"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="10dp"
+        android:text="Ban User"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/bg_warning"
+        android:textColor="@color/teks_warning"
+        app:cornerRadius="12dp"
+        android:visibility="gone"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+    <!-- Tombol Unban (hanya muncul jika BANNED) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUnbanUser"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="10dp"
+        android:text="Unban User"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/bg_terima"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp"
+        android:visibility="gone"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+    <!-- Tombol Hapus (muncul kecuali sudah DELETED) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDeleteUser"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="10dp"
+        android:text="Hapus User"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/bg_tolak"
+        android:textColor="@color/teks_tolak"
+        app:cornerRadius="12dp"
+        android:visibility="gone"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+    <!-- Tombol Batal -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelUserAction"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Batal"
+        android:textSize="15sp"
+        app:backgroundTint="#30FFFFFF"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+</LinearLayout>
