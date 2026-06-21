@@ -27,6 +27,7 @@ object SupabaseRepository {
     private const val PAYMENT_PROOFS_BUCKET = "payment-proofs"
     private const val EVENT_POSTERS_BUCKET = "event-posters"
     private const val PREF_NAME = "supabase_session"
+    private const val AVATARS_BUCKET = "avatars"
     private val mainHandler = Handler(Looper.getMainLooper())
 
     data class AppUser(
@@ -659,6 +660,48 @@ object SupabaseRepository {
     fun signOut(context: Context) {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().clear().apply()
     }
+
+    // GANTI fungsi uploadUserAvatar lama dengan versi ini
+    fun uploadUserAvatar(
+        context: Context,
+        avatarUri: Uri,
+        userId: String,
+        callback: (Result<String>) -> Unit
+    ) = runAsync(callback) {
+        val token = accessToken(context)
+        if (token.isBlank()) throw IllegalStateException("Sesi login tidak valid. Silakan login ulang.")
+
+        val contentResolver = context.contentResolver
+        val mimeType = contentResolver.getType(avatarUri) ?: "image/jpeg"
+
+        // REVISI 1: Kita patenkan nama akhirannya menjadi avatar.jpg agar polanya seragam dan mudah ditebak
+        val objectPath = "$userId/avatar.jpg"
+
+        val bytes = contentResolver.openInputStream(avatarUri)?.use { it.readBytes() }
+            ?: throw IllegalStateException("Gambar tidak bisa dibaca.")
+
+        // Upload file ke bucket storage Supabase
+        requestBinary(
+            method = "POST",
+            url = "$SUPABASE_PROJECT_URL/storage/v1/object/$AVATARS_BUCKET/$objectPath",
+            bytes = bytes,
+            contentType = mimeType,
+            bearer = token,
+            upsert = true // Tetap TRUE agar menimpa foto lama jika ganti foto lagi
+        )
+
+        // Dapatkan URL publik gambar hasil upload
+        val avatarUrl = getAvatarUrl(userId)
+
+        // REVISI 2: KITA HAPUS penyimpanan SharedPreferences di sini agar tidak hilang saat logout!
+
+        avatarUrl
+    }
+
+    fun getAvatarUrl(userId: String): String {
+        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$AVATARS_BUCKET/$userId/avatar.jpg"
+    }
+
 
     private fun requireUserProfile(context: Context): AppUser {
         val current = currentUser(context) ?: throw IllegalStateException("User tidak ditemukan.")

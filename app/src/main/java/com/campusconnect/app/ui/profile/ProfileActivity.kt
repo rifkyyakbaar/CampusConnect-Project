@@ -3,6 +3,7 @@ package com.campusconnect.app.ui.profile
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.ui.auth.LoginActivity
@@ -30,19 +33,22 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var tvDeleteAccount: TextView
     private lateinit var tvEditProfile: TextView
 
+    // Variabel penampung foto profil
+    private lateinit var ivUserAvatar: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
-        
-        val mainView = findViewById<android.view.View>(R.id.main)
-        if (mainView != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-                insets
-            }
-        }
+
+//        val mainView = findViewById<android.view.View>(R.id.main)
+//        if (mainView != null) {
+//            ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
+//                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//                insets
+//            }
+//        }
 
         // Inisialisasi View
         tvProfileName = findViewById(R.id.tvProfileName)
@@ -52,11 +58,11 @@ class ProfileActivity : AppCompatActivity() {
         btnLogout = findViewById(R.id.btnLogout)
         tvDeleteAccount = findViewById(R.id.tvDeleteAccount)
 
-        // Tombol Back dan Notif sudah dihapus dari XML, pastikan tidak ada kode yang memanggilnya di sini
-        // Hal ini untuk mencegah NullPointerException (Penyebab Crash)
+        // Hubungkan ID foto profil
+        ivUserAvatar = findViewById(R.id.ivUserAvatar)
 
         loadProfile()
-        
+
         btnLogout.setOnClickListener {
             logout()
         }
@@ -76,6 +82,12 @@ class ProfileActivity : AppCompatActivity() {
         setupBottomNavigation()
     }
 
+    // onResume agar halaman otomatis me-refresh foto/nama setelah dari halaman Edit Profil
+    override fun onResume() {
+        super.onResume()
+        loadProfile()
+    }
+
     private fun loadProfile() {
         val user = SupabaseRepository.currentUser(this) ?: run {
             openLogin()
@@ -84,6 +96,13 @@ class ProfileActivity : AppCompatActivity() {
 
         tvProfileName.text = user.fullName.ifBlank { "Pengguna" }
         tvProfileEmail.text = user.email.ifBlank { "-" }
+
+        // --- PERUBAHAN UTAMA ADA DI SINI ---
+        // Aplikasi langsung menebak URL gambar dari server Supabase menggunakan UID
+        // Jadi, foto tidak akan pernah hilang meskipun cache atau SharedPreferences dibersihkan (Logout)
+        val avatarUrl = SupabaseRepository.getAvatarUrl(user.uid)
+        loadImageFromUrl(avatarUrl, ivUserAvatar)
+        // -----------------------------------
 
         SupabaseRepository.loadUserProfile(this, user.uid) { result ->
             result
@@ -208,5 +227,24 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun showMessage(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Fungsi Pemuat Gambar Internet SAKTI (Menggunakan Glide)
+    private fun loadImageFromUrl(url: String, imageView: ImageView) {
+        // --- DUA BARIS KUNCI PENGHAPUS ABU-ABU ---
+        imageView.setPadding(0, 0, 0, 0)
+        imageView.imageTintList = null
+        // -----------------------------------------
+
+        // Trik agar Glide selalu memuat foto terbaru, bukan cache lama
+        val signature = ObjectKey(System.currentTimeMillis().toString())
+
+        Glide.with(imageView.context)
+            .load(url)
+            .signature(signature)
+            .centerCrop()
+            .placeholder(android.R.drawable.ic_menu_camera)
+            .error(android.R.drawable.ic_menu_camera) // Jika gagal/belum ada foto, kembali ke ikon kamera
+            .into(imageView)
     }
 }
