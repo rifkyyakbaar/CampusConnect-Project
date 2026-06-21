@@ -2,25 +2,34 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="warna_aksen">#00BFA5</color>
-    <color name="bg_header_admin">#000000</color>
-    <color name="bg_warning">#FEF3C7</color>
-    <color name="teks_warning">#92400E</color>
-    <color name="ikon_warning">#D97706</color>
-    <color name="warna_warning">#D97706</color>
-    <color name="garis_pembatas">#1A1A1A</color>
-    <color name="bg_tolak">#FEE2E2</color>
-    <color name="teks_tolak">#DC2626</color>
-    <color name="bg_terima">#10B981</color>
 
-    <!-- M-Tix Inspired Palette -->
-    <color name="bg_utama">#000000</color>
-    <color name="bg_gradient_start">#082020</color>
-    <color name="bg_gradient_end">#000000</color>
-    <color name="teks_putih">#FFFFFF</color>
-    <color name="teks_utama">#FFFFFF</color>
-    <color name="teks_sekunder">#B0B0B0</color>
-    <color name="warna_primer">#00BFA5</color>
-    <color name="bg_input">#1A1A1A</color>
-    <color name="bg_card_transparan">#1AFFFFFF</color>
+    <!-- Modern Clean Palette -->
+    <color name="blue_dark">#0D47A1</color>
+    <color name="blue_primary">#1565C0</color>
+    <color name="blue_light_gradient">#42A5F5</color>
+    <color name="bg_off_white">#F8F9FA</color>
+
+    <!-- Gradient Colors -->
+    <color name="bg_gradient_start">#1565C0</color>
+    <color name="bg_gradient_end">#42A5F5</color>
+
+    <!-- UI Semantic Colors -->
+    <color name="bg_utama">@color/bg_off_white</color>
+    <color name="warna_primer">@color/blue_dark</color>
+    <color name="warna_aksen">@color/blue_light_gradient</color>
+    <color name="teks_utama">#212121</color>
+    <color name="teks_sekunder">#757575</color>
+    <color name="bg_input">#FFFFFF</color>
+    <color name="garis_pembatas">#EEEEEE</color>
+
+    <!-- Status Colors -->
+    <color name="bg_warning">#FFF9C4</color>
+    <color name="teks_warning">#F57F17</color>
+    <color name="warna_warning">#FFB300</color>
+    <color name="bg_terima">#C8E6C9</color>
+    <color name="bg_tolak">#FFCDD2</color>
+    <color name="teks_tolak">#B71C1C</color>
+
+    <!-- Helpers -->
+    <color name="bottom_nav_bg">@color/blue_dark</color>
 </resources>
