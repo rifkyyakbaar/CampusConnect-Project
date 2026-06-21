@@ -70,6 +70,12 @@
             android:name=".ui.mahasiswa.HomeMahasiswaActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.mahasiswa.PaymentConfirmationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mahasiswa.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.mahasiswa.HistoryActivity"
             android:exported="false" />
         <activity
