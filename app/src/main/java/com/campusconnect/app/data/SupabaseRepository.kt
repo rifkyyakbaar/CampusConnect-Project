@@ -661,7 +661,6 @@ object SupabaseRepository {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().clear().apply()
     }
 
-    // GANTI fungsi uploadUserAvatar lama dengan versi ini
     fun uploadUserAvatar(
         context: Context,
         avatarUri: Uri,
@@ -674,32 +673,38 @@ object SupabaseRepository {
         val contentResolver = context.contentResolver
         val mimeType = contentResolver.getType(avatarUri) ?: "image/jpeg"
 
-        // REVISI 1: Kita patenkan nama akhirannya menjadi avatar.jpg agar polanya seragam dan mudah ditebak
         val objectPath = "$userId/avatar.jpg"
 
         val bytes = contentResolver.openInputStream(avatarUri)?.use { it.readBytes() }
             ?: throw IllegalStateException("Gambar tidak bisa dibaca.")
 
-        // Upload file ke bucket storage Supabase
+        // Upload file ke bucket
         requestBinary(
             method = "POST",
             url = "$SUPABASE_PROJECT_URL/storage/v1/object/$AVATARS_BUCKET/$objectPath",
             bytes = bytes,
             contentType = mimeType,
             bearer = token,
-            upsert = true // Tetap TRUE agar menimpa foto lama jika ganti foto lagi
+            upsert = true
         )
 
-        // Dapatkan URL publik gambar hasil upload
-        val avatarUrl = getAvatarUrl(userId)
+        // --- TRIK STEMPEL WAKTU ---
+        // Catat waktu upload terakhir ke dalam HP agar URL bisa berubah secara otomatis
+        context.getSharedPreferences("supabase_session", Context.MODE_PRIVATE).edit()
+            .putLong("avatar_version", System.currentTimeMillis())
+            .apply()
+        // -------------------------
 
-        // REVISI 2: KITA HAPUS penyimpanan SharedPreferences di sini agar tidak hilang saat logout!
-
-        avatarUrl
+        getAvatarUrl(context, userId)
     }
 
-    fun getAvatarUrl(userId: String): String {
-        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$AVATARS_BUCKET/$userId/avatar.jpg"
+    // UBAH FUNGSI INI: Tambahkan parameter `context` untuk membaca stempel waktu
+    fun getAvatarUrl(context: Context, userId: String): String {
+        val prefs = context.getSharedPreferences("supabase_session", Context.MODE_PRIVATE)
+        val version = prefs.getLong("avatar_version", 0) // Ambil stempel waktu
+
+        // Tambahkan ?v=versi di belakang URL untuk menembus cache server
+        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$AVATARS_BUCKET/$userId/avatar.jpg?v=$version"
     }
 
 

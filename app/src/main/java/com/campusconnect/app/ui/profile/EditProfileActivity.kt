@@ -78,7 +78,7 @@ class EditProfileActivity : AppCompatActivity() {
         val user = SupabaseRepository.currentUser(this)
         if (user != null) {
             // Aplikasi langsung menebak URL foto dari server Supabase menggunakan UID
-            val avatarUrl = SupabaseRepository.getAvatarUrl(user.uid)
+            val avatarUrl = SupabaseRepository.getAvatarUrl(this, user.uid)
 
             // Panggil loadImageFromUrl. Fungsi ObjectKey (Anti-Cache)
             // sudah ada di dalam fungsi loadImageFromUrl di bawah.
@@ -145,22 +145,15 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    // Fungsi Pemuat Gambar Internet SAKTI (Menggunakan Glide)
     private fun loadImageFromUrl(url: String, imageView: ImageView) {
-        // --- KUNCI PENGHAPUS WARNA ABU-ABU XML ---
         imageView.setPadding(0, 0, 0, 0)
         imageView.imageTintList = null
-        // -----------------------------------------
-
-        // Trik agar Glide selalu memuat foto terbaru menggunakan timestamp, bukan cache lama
-        val signature = ObjectKey(System.currentTimeMillis().toString())
 
         Glide.with(imageView.context)
             .load(url)
-            .signature(signature) // Memaksa refresh gambar terbaru
             .centerCrop()
             .placeholder(android.R.drawable.ic_menu_camera)
-            .error(android.R.drawable.ic_menu_camera) // Jika gagal/belum ada foto, kembali ke ikon kamera
+            .error(android.R.drawable.ic_menu_camera)
             .into(imageView)
     }
 }

@@ -100,7 +100,7 @@ class ProfileActivity : AppCompatActivity() {
         // --- PERUBAHAN UTAMA ADA DI SINI ---
         // Aplikasi langsung menebak URL gambar dari server Supabase menggunakan UID
         // Jadi, foto tidak akan pernah hilang meskipun cache atau SharedPreferences dibersihkan (Logout)
-        val avatarUrl = SupabaseRepository.getAvatarUrl(user.uid)
+        val avatarUrl = SupabaseRepository.getAvatarUrl(this, user.uid)
         loadImageFromUrl(avatarUrl, ivUserAvatar)
         // -----------------------------------
 
@@ -229,22 +229,15 @@ class ProfileActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    // Fungsi Pemuat Gambar Internet SAKTI (Menggunakan Glide)
     private fun loadImageFromUrl(url: String, imageView: ImageView) {
-        // --- DUA BARIS KUNCI PENGHAPUS ABU-ABU ---
         imageView.setPadding(0, 0, 0, 0)
         imageView.imageTintList = null
-        // -----------------------------------------
-
-        // Trik agar Glide selalu memuat foto terbaru, bukan cache lama
-        val signature = ObjectKey(System.currentTimeMillis().toString())
 
         Glide.with(imageView.context)
             .load(url)
-            .signature(signature)
             .centerCrop()
             .placeholder(android.R.drawable.ic_menu_camera)
-            .error(android.R.drawable.ic_menu_camera) // Jika gagal/belum ada foto, kembali ke ikon kamera
+            .error(android.R.drawable.ic_menu_camera)
             .into(imageView)
     }
 }
