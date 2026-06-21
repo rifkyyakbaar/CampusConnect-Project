@@ -8,6 +8,7 @@ import android.webkit.MimeTypeMap
 import com.campusconnect.app.model.Event
 import com.campusconnect.app.model.Ticket
 import com.campusconnect.app.model.Peserta
+import com.campusconnect.app.model.Review
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -1187,5 +1188,85 @@ object SupabaseRepository {
             val result = runCatching(block)
             mainHandler.post { callback(result) }
         }.start()
+    }
+
+    fun createReview(
+        context: Context,
+        ticketId: String,
+        eventId: String,
+        rating: Int,
+        comment: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        val body = JSONObject()
+            .put("ticketid",     ticketId)
+            .put("eventid",      eventId)
+            .put("userid",       user.uid)
+            .put("attendeename", user.fullName)
+            .put("rating",       rating)
+            .put("comment",      comment)
+            .put("createdat",    currentTimestamp())
+
+        request(
+            "POST",
+            "$SUPABASE_REST_URL/reviews",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        Unit
+    }
+
+    fun getReviewByTicketId(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Review?>) -> Unit
+    ) = runAsync(callback) {
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/reviews?ticketid=eq.${encode(ticketId)}&limit=1",
+            bearer = accessToken(context)
+        )
+
+        val rows = response.getJSONArray("data")
+        if (rows.length() == 0) {
+            null
+        } else {
+            parseReview(rows.getJSONObject(0))
+        }
+    }
+
+    fun hasReviewed(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Boolean>) -> Unit
+    ) = runAsync(callback) {
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/reviews?ticketid=eq.${encode(ticketId)}&select=reviewid&limit=1",
+            bearer = accessToken(context)
+        )
+
+        response.getJSONArray("data").length() > 0
+    }
+
+    private fun parseReview(item: JSONObject): Review {
+        return Review(
+            reviewId     = item.optString("reviewid"),
+            ticketId     = item.optString("ticketid"),
+            eventId      = item.optString("eventid"),
+            userId       = item.optString("userid"),
+            attendeeName = item.optString("attendeename"),
+            rating       = item.optInt("rating", 0),
+            comment      = item.optString("comment"),
+            createdAt    = item.optString("createdat")
+        )
     }
 }

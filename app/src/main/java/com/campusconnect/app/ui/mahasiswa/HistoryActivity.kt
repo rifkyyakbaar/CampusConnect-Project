@@ -31,47 +31,46 @@ class HistoryActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Reload tiap kali kembali ke halaman ini, supaya tiket yang
-        // baru saja di-scan panitia (CONFIRMED -> USED) langsung muncul.
         loadHistory()
     }
 
     private fun initViews() {
-        rvHistory = findViewById(R.id.rvHistory)
-        layoutEmptyHistory = findViewById(R.id.layoutEmptyHistory)
+        rvHistory           = findViewById(R.id.rvHistory)
+        layoutEmptyHistory  = findViewById(R.id.layoutEmptyHistory)
     }
 
     private fun setupRecyclerView() {
-
-        adapter = TicketAdapter { ticket ->
-
-            val intent = Intent(this, TicketActivity::class.java)
-
-            intent.putExtra("ticketId", ticket.ticketId)
-            intent.putExtra("eventId", ticket.eventId)
-            intent.putExtra("eventName", ticket.eventName)
-            intent.putExtra("eventDate", ticket.eventDate)
-            intent.putExtra("eventLocation", ticket.eventLocation)
-            intent.putExtra("category", ticket.category)
-            intent.putExtra("status", ticket.status)
-            intent.putExtra("attendeeName", ticket.attendeeName)
-            intent.putExtra("attendeeRole", ticket.attendeeRole)
-
-            startActivity(intent)
-        }
-
+        adapter = TicketAdapter(
+            onClick = { ticket ->
+                // Buka detail tiket
+                startActivity(Intent(this, TicketActivity::class.java).apply {
+                    putExtra("ticketId",      ticket.ticketId)
+                    putExtra("eventId",       ticket.eventId)
+                    putExtra("eventName",     ticket.eventName)
+                    putExtra("eventDate",     ticket.eventDate)
+                    putExtra("eventLocation", ticket.eventLocation)
+                    putExtra("category",      ticket.category)
+                    putExtra("status",        ticket.status)
+                    putExtra("attendeeName",  ticket.attendeeName)
+                    putExtra("attendeeRole",  ticket.attendeeRole)
+                })
+            },
+            onReview = { ticket ->
+                // Langsung ke halaman review dari item history
+                startActivity(Intent(this, ReviewActivity::class.java).apply {
+                    putExtra("ticketId", ticket.ticketId)
+                    putExtra("eventId",  ticket.eventId)
+                })
+            }
+        )
         rvHistory.layoutManager = LinearLayoutManager(this)
         rvHistory.adapter = adapter
     }
 
     private fun loadHistory() {
-
         SupabaseRepository.loadHistoryTickets(this) { result ->
-
             result.onSuccess { tickets ->
-
                 adapter.submitList(tickets)
-
                 if (tickets.isEmpty()) {
                     layoutEmptyHistory.visibility = View.VISIBLE
                     rvHistory.visibility = View.GONE
@@ -80,7 +79,6 @@ class HistoryActivity : AppCompatActivity() {
                     rvHistory.visibility = View.VISIBLE
                 }
             }
-
             result.onFailure {
                 layoutEmptyHistory.visibility = View.VISIBLE
                 rvHistory.visibility = View.GONE
@@ -91,50 +89,27 @@ class HistoryActivity : AppCompatActivity() {
     private fun setupBottomNavigation() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.selectedItemId = R.id.nav_history
-
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
-                    startActivity(
-                        Intent(
-                            this,
-                            HomeMahasiswaActivity::class.java
-                        ).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                    )
-                    overridePendingTransition(0, 0)
-                    true
+                    startActivity(Intent(this, HomeMahasiswaActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    overridePendingTransition(0, 0); true
                 }
-
                 R.id.nav_ticket -> {
-                    startActivity(
-                        Intent(
-                            this,
-                            ManageTicketActivity::class.java
-                        ).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                    )
-                    overridePendingTransition(0, 0)
-                    true
+                    startActivity(Intent(this, ManageTicketActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    overridePendingTransition(0, 0); true
                 }
-
                 R.id.nav_history -> true
-
                 R.id.nav_profile -> {
-                    startActivity(
-                        Intent(
-                            this,
-                            ProfileActivity::class.java
-                        ).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                    )
-                    overridePendingTransition(0, 0)
-                    true
+                    startActivity(Intent(this, ProfileActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    overridePendingTransition(0, 0); true
                 }
-
                 else -> false
             }
         }
