@@ -7,8 +7,8 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="10dp"
     app:cardCornerRadius="24dp"
-    app:cardElevation="8dp"
-    app:cardBackgroundColor="@color/bg_input">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#20FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
                 android:id="@+id/tvCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SEMINAR"
+                android:text="CATEGORY"
                 android:textColor="@color/warna_primer"
                 android:textStyle="bold"
                 android:textSize="12sp"/>
@@ -35,8 +35,8 @@
                 android:id="@+id/tvEventName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Seminar Nasional AI"
-                android:textColor="@color/teks_utama"
+                android:text="Event Name"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_marginTop="8dp"/>
@@ -45,8 +45,8 @@
                 android:id="@+id/tvDateVenue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20 Juni 2026 • Aula FT Unram"
-                android:textColor="@color/teks_sekunder"
+                android:text="Date &amp; Venue"
+                android:textColor="#B0B0B0"
                 android:textSize="14sp"
                 android:layout_marginTop="8dp"/>
 
@@ -70,15 +70,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ticket ID"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tvTicketId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CC-8924-XYZ"
-                android:textColor="@color/teks_utama"
+                android:text="CC-XXXX-XXXX"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="15sp"
                 android:layout_marginTop="4dp"/>
@@ -93,7 +93,7 @@
                 <View
                     android:layout_width="10dp"
                     android:layout_height="10dp"
-                    android:backgroundTint="#4CAF50"
+                    android:backgroundTint="#00BFA5"
                     android:background="@drawable/bg_badge"/>
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Confirmed"
-                    android:textColor="#4CAF50"
+                    android:textColor="#00BFA5"
                     android:textStyle="bold"
                     android:textSize="14sp"
                     android:layout_marginStart="8dp"/>

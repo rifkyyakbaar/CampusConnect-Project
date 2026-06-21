@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama"
+    android:background="@drawable/bg_main_gradient"
     tools:context=".ui.auth.WelcomeActivity">
 
     <androidx.cardview.widget.CardView
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="CampusConnect"
-        android:textColor="@color/warna_primer"
+        android:textColor="@color/white"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="Smart Mobile Platform for Campus\nEvents"
-        android:textColor="@color/teks_sekunder"
+        android:textColor="#B0B0B0"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

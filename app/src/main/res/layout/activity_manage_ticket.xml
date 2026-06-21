@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama"
+    android:background="@drawable/bg_main_gradient"
     tools:context=".ui.mahasiswa.ManageTicketActivity">
 
     <!-- Header Section -->
@@ -14,8 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/bg_utama"
-        android:elevation="4dp"
+        android:background="#1AFFFFFF"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -23,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="My Tickets"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="28sp"
             android:layout_marginStart="24dp"
@@ -34,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View all booked events"
-            android:textColor="@color/teks_sekunder"
+            android:textColor="#B0B0B0"
             android:textSize="14sp"
             android:layout_marginTop="4dp"
             android:layout_marginStart="24dp" />
@@ -48,7 +47,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="25dp"
-            app:cardBackgroundColor="@color/bg_input"
+            app:cardBackgroundColor="#20FFFFFF"
             app:cardElevation="0dp">
 
             <LinearLayout
@@ -62,7 +61,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_menu_search"
-                    app:tint="@color/teks_sekunder"/>
+                    app:tint="@color/white"/>
 
                 <EditText
                     android:id="@+id/etSearchTicket"
@@ -70,8 +69,8 @@
                     android:layout_height="match_parent"
                     android:background="@null"
                     android:hint="Search your ticket..."
-                    android:textColor="@color/teks_utama"
-                    android:textColorHint="@color/teks_sekunder"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF"
                     android:textSize="14sp"
                     android:paddingStart="12dp"
                     android:maxLines="1"
@@ -98,7 +97,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_menu_sort_by_size"
-                    app:tint="@color/teks_utama" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/tvSortLabel"
@@ -106,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Date: Nearest"
-                    android:textColor="@color/teks_utama"
+                    android:textColor="@color/white"
                     android:textSize="13sp" />
             </LinearLayout>
         </RelativeLayout>
@@ -147,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No tickets yet"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp"/>
@@ -156,7 +155,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Try another search or browse events"
-            android:textColor="@color/teks_sekunder"
+            android:textColor="#B0B0B0"
             android:textSize="14sp"
             android:layout_marginTop="4dp"/>
     </LinearLayout>
@@ -166,9 +165,9 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_input"
-        app:itemIconTint="@color/warna_primer"
-        app:itemTextColor="@color/warna_primer"
+        android:background="#1A1A1A"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent" />
 

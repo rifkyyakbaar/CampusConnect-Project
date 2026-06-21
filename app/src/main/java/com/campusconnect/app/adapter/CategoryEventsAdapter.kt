@@ -48,8 +48,6 @@ class CategoryEventsAdapter(private val onItemClick: (Event) -> Unit) :
             when (binding) {
                 is ItemEventGridBinding -> {
                     binding.tvEventName.text = event.eventName
-                    binding.tvEventDate.text = event.eventDate
-                    binding.tvEventDetail.text = event.description
                     binding.tvEventPrice.text = formatPrice(event.eventPrice)
                     Glide.with(binding.ivEventPoster.context)
                         .load(event.posterUrl)
@@ -60,6 +58,7 @@ class CategoryEventsAdapter(private val onItemClick: (Event) -> Unit) :
                     binding.tvEventName.text = event.eventName
                     binding.tvEventDate.text = event.eventDate
                     binding.tvEventPrice.text = formatPrice(event.eventPrice)
+                    binding.tvEventDetail.text = event.description
                     Glide.with(binding.ivEventPoster.context)
                         .load(event.posterUrl)
                         .into(binding.ivEventPoster)

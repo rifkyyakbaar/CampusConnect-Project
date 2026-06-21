@@ -4,14 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama">
+    android:background="@drawable/bg_main_gradient">
 
     <LinearLayout
         android:id="@+id/headerCheckout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_utama"
-        android:elevation="4dp"
+        android:background="#1AFFFFFF"
         android:orientation="horizontal"
         android:padding="20dp"
         android:gravity="center_vertical"
@@ -22,14 +21,14 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@android:drawable/ic_menu_revert"
-            app:tint="@color/teks_utama" />
+            app:tint="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Confirm Registration"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -45,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Summary"
-            android:textColor="@color/teks_sekunder"
+            android:textColor="#B0B0B0"
             android:textSize="14sp"
             android:layout_marginBottom="8dp"/>
 
@@ -55,9 +54,7 @@
             android:layout_marginBottom="24dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/bg_utama"
-            app:strokeColor="@color/garis_pembatas"
-            app:strokeWidth="1dp">
+            app:cardBackgroundColor="#20FFFFFF">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -69,8 +66,8 @@
                     android:id="@+id/tvCheckEventName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Annual Inter-University Hackathon"
-                    android:textColor="@color/teks_utama"
+                    android:text="Event Name"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -78,8 +75,8 @@
                     android:id="@+id/tvCheckEventDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Oct 24, 2026 • Main Auditorium"
-                    android:textColor="@color/teks_sekunder"
+                    android:text="Date &amp; Venue Info"
+                    android:textColor="#B0B0B0"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
@@ -89,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Participant Details"
-            android:textColor="@color/teks_sekunder"
+            android:textColor="#B0B0B0"
             android:textSize="14sp"
             android:layout_marginBottom="8dp"/>
 
@@ -104,15 +101,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Full Name"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvCheckName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rifky Akbar Utomo Putra"
-                android:textColor="@color/teks_utama"
+                android:text="User Name"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"/>
@@ -121,15 +118,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Email"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvCheckEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="rifky@example.com"
-                android:textColor="@color/teks_utama"
+                android:text="user@example.com"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -146,7 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Payment Information"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -156,9 +153,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/bg_utama"
-                app:strokeColor="@color/garis_pembatas"
-                app:strokeWidth="1dp">
+                app:cardBackgroundColor="#20FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -170,7 +165,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Event Price"
-                        android:textColor="@color/teks_sekunder"
+                        android:textColor="#B0B0B0"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp"/>
 
@@ -178,8 +173,8 @@
                         android:id="@+id/tvEventPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp 50.000"
-                        android:textColor="@color/teks_utama"
+                        android:text="Price Info"
+                        android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="16dp"/>
@@ -188,7 +183,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Account Number"
-                        android:textColor="@color/teks_sekunder"
+                        android:textColor="#B0B0B0"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp"/>
 
@@ -196,8 +191,8 @@
                         android:id="@+id/tvAccountNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1234567890"
-                        android:textColor="@color/teks_utama"
+                        android:text="Number Info"
+                        android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold"/>
                 </LinearLayout>
@@ -223,7 +218,7 @@
         android:layout_height="60dp"
         android:layout_margin="24dp"
         android:backgroundTint="@color/warna_primer"
-        android:text="Get Free Ticket"
+        android:text="Get Ticket"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"

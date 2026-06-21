@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#20FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,23 +19,24 @@
             android:id="@+id/tvEventName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seminar AI Nasional"
+            android:text="Event Name"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tvCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seminar"
-            android:textColor="#6B7280"
+            android:text="Category"
+            android:textColor="#B0B0B0"
             android:layout_marginTop="4dp" />
 
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="WAIT APPROVE"
+            android:text="STATUS"
             android:textStyle="bold"
             android:textColor="#F59E0B"
             android:layout_marginTop="8dp" />
@@ -44,7 +45,8 @@
             android:id="@+id/tvCapacity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Capacity : 100"
+            android:text="Capacity : 0"
+            android:textColor="@color/white"
             android:layout_marginTop="8dp" />
 
         <TextView
@@ -52,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Registrants : 0"
+            android:textColor="#B0B0B0"
             android:layout_marginTop="4dp" />
 
         <Button
@@ -60,8 +63,8 @@
             android:layout_height="wrap_content"
             android:text="View Detail"
             android:layout_marginTop="12dp"
-            android:backgroundTint="#0047A5"
-            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/warna_primer"
+            android:textColor="@color/white"
             android:textAllCaps="false" />
 
     </LinearLayout>

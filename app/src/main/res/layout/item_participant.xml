@@ -7,7 +7,8 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="18dp"
-    app:cardElevation="3dp">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#20FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +24,7 @@
             android:text="Nama Peserta"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#111827"/>
+            android:textColor="@color/white"/>
 
         <!-- Role -->
         <TextView
@@ -33,7 +34,7 @@
             android:layout_marginTop="4dp"
             android:text="Mahasiswa"
             android:textSize="14sp"
-            android:textColor="#6B7280"/>
+            android:textColor="#B0B0B0"/>
 
         <!-- Status -->
         <TextView
@@ -43,7 +44,7 @@
             android:layout_marginTop="8dp"
             android:text="PENDING"
             android:textStyle="bold"
-            android:textColor="#2563EB"/>
+            android:textColor="#F59E0B"/>
 
         <!-- Tombol -->
         <LinearLayout
@@ -57,7 +58,10 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Lihat Bukti"/>
+                android:backgroundTint="#30FFFFFF"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:text="Bukti"/>
 
             <Space
                 android:layout_width="8dp"
@@ -68,6 +72,9 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:backgroundTint="@color/warna_primer"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
                 android:text="Approve"/>
 
             <Space
@@ -79,6 +86,9 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:backgroundTint="#20DC2626"
+                android:textColor="#DC2626"
+                android:textAllCaps="false"
                 android:text="Reject"/>
         </LinearLayout>
 

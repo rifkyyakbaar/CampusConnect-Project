@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama"
+    android:background="@drawable/bg_main_gradient"
     tools:context=".ui.mahasiswa.DetailEventActivity">
 
     <ScrollView
@@ -23,21 +23,21 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="300dp">
 
                 <ImageView
                     android:id="@+id/ivDetailPoster"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:background="@color/bg_input" />
+                    android:background="#1AFFFFFF" />
 
                 <ImageView
                     android:id="@+id/btnBack"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="16dp"
-                    android:background="@drawable/ic_launcher_background"
+                    android:background="@drawable/bg_circle_back"
                     android:padding="8dp"
                     android:src="@android:drawable/ic_menu_revert"
                     app:tint="@color/white" />
@@ -58,7 +58,7 @@
                         android:id="@+id/tvDetailCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="COMPETITION"
+                        android:text="CATEGORY"
                         android:textColor="@color/warna_primer"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -68,8 +68,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="Oct 24, 2026"
-                        android:textColor="@color/teks_sekunder"
+                        android:text="Date Info"
+                        android:textColor="#B0B0B0"
                         android:textSize="12sp" />
                 </RelativeLayout>
 
@@ -77,8 +77,8 @@
                     android:id="@+id/tvDetailTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Annual Inter-University Hackathon"
-                    android:textColor="@color/teks_utama"
+                    android:text="Event Title"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp"/>
@@ -94,29 +94,29 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@android:drawable/ic_dialog_map"
-                        app:tint="@color/teks_sekunder"
+                        app:tint="#B0B0B0"
                         android:layout_marginEnd="8dp"/>
 
                     <TextView
                         android:id="@+id/tvDetailLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Main Auditorium"
-                        android:textColor="@color/teks_sekunder"
+                        android:text="Location"
+                        android:textColor="#B0B0B0"
                         android:textSize="14sp" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/bg_input"
+                    android:background="#1AFFFFFF"
                     android:layout_marginBottom="24dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="About This Event"
-                    android:textColor="@color/teks_utama"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -126,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Description goes here..."
-                    android:textColor="@color/teks_sekunder"
+                    android:textColor="#CCFFFFFF"
                     android:textSize="14sp"
                     android:lineSpacingExtra="4dp" />
             </LinearLayout>
@@ -139,8 +139,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="@color/bg_utama"
-        android:elevation="8dp"
+        android:background="#1A1A1A"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -154,15 +153,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tickets Left"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvTicketsLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="15 / 500"
-                android:textColor="@color/teks_utama"
+                android:text="0 / 0"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>

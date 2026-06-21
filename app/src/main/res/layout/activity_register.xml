@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama"
+    android:background="@drawable/bg_main_gradient"
     android:fillViewport="true"
     tools:context=".ui.auth.RegisterActivity">
 
@@ -22,11 +22,12 @@
             android:layout_marginTop="32dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/white"> <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="12dp"
-            android:src="@drawable/logo_campus_connect" />
+            app:cardBackgroundColor="@color/white">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:src="@drawable/logo_campus_connect" />
         </androidx.cardview.widget.CardView>
 
         <TextView
@@ -35,7 +36,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Please sign up to continue your campus\nactivities."
-            android:textColor="@color/teks_sekunder"
+            android:textColor="#B0B0B0"
             android:textSize="14sp"
             android:layout_marginBottom="32dp"/>
 
@@ -43,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Full Name"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -57,8 +58,8 @@
             android:inputType="textPersonName"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="16dp"/>
 
@@ -66,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -80,8 +81,8 @@
             android:inputType="textEmailAddress"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="16dp"/>
 
@@ -89,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Role"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -107,7 +108,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:backgroundTint="#00000000"
+                android:backgroundTint="#2000BFA5"
                 android:text="Mahasiswa/Umum"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -122,7 +123,7 @@
                 android:backgroundTint="#00000000"
                 android:text="Panitia"
                 android:textAllCaps="false"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp"
                 app:cornerRadius="8dp"
                 app:elevation="0dp" />
@@ -132,7 +133,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Password"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -146,8 +147,8 @@
             android:inputType="textPassword"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="16dp"/>
 
@@ -155,7 +156,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Confirm Password"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -169,8 +170,8 @@
             android:inputType="textPassword"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
+            android:textColor="@color/white"
+            android:textColorHint="#CCFFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="16dp"/>
 
@@ -180,7 +181,7 @@
             android:layout_height="wrap_content"
             android:text="Saya setuju dengan Syarat \u0026 Ketentuan serta Kebijakan Privasi CampusConnect."
             android:textSize="12sp"
-            android:textColor="@color/teks_sekunder"
+            android:textColor="#B0B0B0"
             app:buttonTint="@color/warna_primer"
             android:layout_marginBottom="24dp"/>
 
@@ -189,7 +190,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:backgroundTint="@color/warna_primer"
-            android:text="Sign Up  →]"
+            android:text="Sign Up  →"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -207,33 +208,33 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="@color/garis_pembatas" />
+                android:background="#1AFFFFFF" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:text="Or sign up with"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="@color/garis_pembatas" />
+                android:background="#1AFFFFFF" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btnGoogleSignUp"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:backgroundTint="@color/bg_utama"
+            android:backgroundTint="@color/bg_input"
             android:text="G  Continue with Google"
             android:textAllCaps="false"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            app:strokeColor="@color/garis_pembatas"
+            app:strokeColor="#1AFFFFFF"
             app:strokeWidth="1dp"
             app:cornerRadius="10dp"
             android:layout_marginBottom="24dp"/>
@@ -249,7 +250,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="14sp" />
 
             <TextView

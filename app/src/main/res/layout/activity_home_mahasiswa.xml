@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama">
+    android:background="@drawable/bg_main_gradient">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="CampusConnect"
-                    android:textColor="@color/warna_primer"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
                 <ImageView
@@ -37,7 +37,7 @@
                     android:layout_height="28dp"
                     android:layout_alignParentEnd="true"
                     android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="@color/teks_utama" />
+                    app:tint="@color/white" />
             </RelativeLayout>
 
             <!-- Search Bar -->
@@ -47,7 +47,7 @@
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/bg_input"
+                app:cardBackgroundColor="#20FFFFFF"
                 app:cardCornerRadius="25dp"
                 app:cardElevation="0dp">
 
@@ -61,7 +61,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@android:drawable/ic_menu_search"
-                        app:tint="@color/teks_sekunder" />
+                        app:tint="@color/white" />
 
                     <EditText
                         android:id="@+id/etSearchEvent"
@@ -71,8 +71,8 @@
                         android:hint="Search events..."
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp"
-                        android:textColor="@color/teks_utama"
-                        android:textColorHint="@color/teks_sekunder"
+                        android:textColor="@color/white"
+                        android:textColorHint="#CCFFFFFF"
                         android:maxLines="1"
                         android:inputType="text" />
                 </LinearLayout>
@@ -95,7 +95,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_margin="16dp"
-                android:textColor="@color/teks_utama" />
+                android:textColor="@color/white" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -116,15 +116,15 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="@color/warna_primer"
-                        app:cardElevation="2dp">
+                        app:cardBackgroundColor="#30FFFFFF"
+                        app:cardElevation="0dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="Seminar"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/white"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
 
@@ -135,15 +135,15 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="@color/warna_primer"
-                        app:cardElevation="2dp">
+                        app:cardBackgroundColor="#30FFFFFF"
+                        app:cardElevation="0dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="Workshop"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/white"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
 
@@ -154,15 +154,15 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="@color/warna_primer"
-                        app:cardElevation="2dp">
+                        app:cardBackgroundColor="#30FFFFFF"
+                        app:cardElevation="0dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="Dies Natalis"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/white"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
 
@@ -173,41 +173,35 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="@color/warna_primer"
-                        app:cardElevation="2dp">
+                        app:cardBackgroundColor="#30FFFFFF"
+                        app:cardElevation="0dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="Lainnya"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/white"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- Popular Events (ViewPager2 with Scaling) -->
+            <!-- Popular Events Header (Text Removed as requested) -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:paddingHorizontal="16dp">
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Popular Events"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/teks_utama" />
-                <TextView
                     android:id="@+id/tvSeeAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="See all"
-                    android:textColor="@color/warna_primer" />
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <androidx.viewpager2.widget.ViewPager2
@@ -228,9 +222,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/bg_input"
-        app:itemIconTint="@color/warna_primer"
-        app:itemTextColor="@color/warna_primer"
+        android:background="#1A1A1A"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

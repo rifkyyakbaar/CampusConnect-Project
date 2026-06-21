@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama">
+    android:background="@drawable/bg_main_gradient">
 
     <LinearLayout
         android:id="@+id/headerVerify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_header_admin"
+        android:background="#1AFFFFFF"
         android:orientation="horizontal"
         android:padding="20dp"
         android:gravity="center_vertical"
@@ -49,14 +49,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Submitted by Organizer:"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
             <TextView
                 android:id="@+id/tvVerifyOrganizer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BEM Fakultas Teknik"
-                android:textColor="@color/teks_utama"
+                android:text="Organizer Name"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
@@ -65,43 +65,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:scaleType="centerCrop"
+                android:background="#1AFFFFFF"
                 android:layout_marginBottom="20dp"/>
 
-            <!-- Placeholder untuk preview data event (Judul, Kapasitas, dll) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Event Title"
-                android:textColor="#6B7280"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
             <TextView
                 android:id="@+id/tvVerifyTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Workshop Web Development"
-                android:textColor="#111827"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp"/>
+
             <TextView
                 android:id="@+id/tvVerifyCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6B7280"
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/tvVerifyLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6B7280"
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/tvVerifyCapacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6B7280"
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -109,21 +110,21 @@
                 android:id="@+id/tvVerifyPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6B7280"
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/tvVerifyPaymentType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6B7280"
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/tvVerifyPaymentInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#6B7280"
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -133,14 +134,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="Start : -"
-                android:textColor="#6B7280"
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Status"
-                android:textColor="#6B7280"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
 
             <TextView
@@ -157,27 +158,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description Preview"
-                android:textColor="#6B7280"
+                android:textColor="#B0B0B0"
                 android:textSize="12sp" />
             <TextView
                 android:id="@+id/tvVerifyDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Workshop ini ditujukan untuk pemula yang ingin belajar..."
-                android:textColor="#111827"
+                android:text="Description..."
+                android:textColor="#CCFFFFFF"
                 android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bar Aksi (Approve/Reject) -->
     <LinearLayout
         android:id="@+id/bottomVerifyBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="@color/bg_utama"
-        android:elevation="16dp"
+        android:background="#1A1A1A"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
@@ -186,12 +185,12 @@
             android:layout_height="55dp"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/bg_tolak"
+            android:backgroundTint="#20DC2626"
             android:text="Reject"
             android:textAllCaps="false"
-            android:textColor="@color/teks_tolak"
+            android:textColor="#DC2626"
             app:cornerRadius="10dp"
-            app:strokeColor="@color/teks_tolak"
+            app:strokeColor="#DC2626"
             app:strokeWidth="1dp" />
 
         <Button
@@ -200,7 +199,7 @@
             android:layout_height="55dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:backgroundTint="@color/bg_terima"
+            android:backgroundTint="#00BFA5"
             android:text="Approve"
             android:textAllCaps="false"
             android:textColor="@color/white"
