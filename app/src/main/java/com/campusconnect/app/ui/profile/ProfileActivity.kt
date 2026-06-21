@@ -3,7 +3,6 @@ package com.campusconnect.app.ui.profile
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -17,7 +16,6 @@ import com.campusconnect.app.ui.auth.LoginActivity
 import com.campusconnect.app.ui.mahasiswa.HomeMahasiswaActivity
 import com.campusconnect.app.ui.mahasiswa.HistoryActivity
 import com.campusconnect.app.ui.mahasiswa.ManageTicketActivity
-import com.campusconnect.app.ui.mahasiswa.TicketActivity
 import com.campusconnect.app.ui.panitia.DashboardPanitiaActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -36,12 +34,17 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        
+        val mainView = findViewById<android.view.View>(R.id.main)
+        if (mainView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
         }
 
+        // Inisialisasi View
         tvProfileName = findViewById(R.id.tvProfileName)
         tvProfileRole = findViewById(R.id.tvProfileRole)
         tvProfileEmail = findViewById(R.id.tvProfileEmail)
@@ -49,21 +52,11 @@ class ProfileActivity : AppCompatActivity() {
         btnLogout = findViewById(R.id.btnLogout)
         tvDeleteAccount = findViewById(R.id.tvDeleteAccount)
 
-        val btnBack = findViewById<ImageView>(R.id.btnBack)
-        btnBack.setOnClickListener {
-            if (userRole.equals("Panitia", ignoreCase = true)) {
-                startActivity(Intent(this, DashboardPanitiaActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                })
-            } else {
-                startActivity(Intent(this, HomeMahasiswaActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                })
-            }
-            overridePendingTransition(0, 0)
-        }
+        // Tombol Back dan Notif sudah dihapus dari XML, pastikan tidak ada kode yang memanggilnya di sini
+        // Hal ini untuk mencegah NullPointerException (Penyebab Crash)
 
         loadProfile()
+        
         btnLogout.setOnClickListener {
             logout()
         }
@@ -101,18 +94,24 @@ class ProfileActivity : AppCompatActivity() {
                     tvProfileEmail.text = profile.email.ifBlank { "-" }
                 }
                 .onFailure { exception ->
-                    tvProfileRole.text = providerLabel(user.provider)
-                    showMessage(exception.localizedMessage ?: "Gagal memuat profil.")
+                    val errorMsg = exception.localizedMessage ?: ""
+                    if (errorMsg.contains("JWT", ignoreCase = true) || errorMsg.contains("expired", ignoreCase = true)) {
+                        Toast.makeText(this, "Sesi telah habis, silakan login kembali", Toast.LENGTH_LONG).show()
+                        logout()
+                    } else {
+                        tvProfileRole.text = providerLabel(user.provider)
+                        showMessage(errorMsg.ifBlank { "Gagal memuat profil." })
+                    }
                 }
         }
     }
 
     private fun logout() {
         SupabaseRepository.signOut(this)
-        GoogleSignIn.getClient(this, googleSignInOptions()).signOut()
-            .addOnCompleteListener {
-                openLogin()
-            }
+        val client = GoogleSignIn.getClient(this, googleSignInOptions())
+        client.signOut().addOnCompleteListener {
+            openLogin()
+        }
     }
 
     private fun confirmDeleteAccount() {

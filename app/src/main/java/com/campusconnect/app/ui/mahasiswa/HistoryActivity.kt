@@ -2,31 +2,90 @@ package com.campusconnect.app.ui.mahasiswa
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.campusconnect.app.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.campusconnect.app.adapter.TicketAdapter
+import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.ui.profile.ProfileActivity
-
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HistoryActivity : AppCompatActivity() {
+
+    private lateinit var rvHistory: RecyclerView
+    private lateinit var layoutEmptyHistory: LinearLayout
+    private lateinit var adapter: TicketAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
 
-        val btnReview = findViewById<Button>(R.id.btnReview)
+        initViews()
+        setupRecyclerView()
+        loadHistory()
+        setupBottomNavigation()
+    }
 
-        btnReview.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    ReviewActivity::class.java
-                )
-            )
+    override fun onResume() {
+        super.onResume()
+        // Reload tiap kali kembali ke halaman ini, supaya tiket yang
+        // baru saja di-scan panitia (CONFIRMED -> USED) langsung muncul.
+        loadHistory()
+    }
+
+    private fun initViews() {
+        rvHistory = findViewById(R.id.rvHistory)
+        layoutEmptyHistory = findViewById(R.id.layoutEmptyHistory)
+    }
+
+    private fun setupRecyclerView() {
+
+        adapter = TicketAdapter { ticket ->
+
+            val intent = Intent(this, TicketActivity::class.java)
+
+            intent.putExtra("ticketId", ticket.ticketId)
+            intent.putExtra("eventId", ticket.eventId)
+            intent.putExtra("eventName", ticket.eventName)
+            intent.putExtra("eventDate", ticket.eventDate)
+            intent.putExtra("eventLocation", ticket.eventLocation)
+            intent.putExtra("category", ticket.category)
+            intent.putExtra("status", ticket.status)
+            intent.putExtra("attendeeName", ticket.attendeeName)
+            intent.putExtra("attendeeRole", ticket.attendeeRole)
+
+            startActivity(intent)
         }
 
-        setupBottomNavigation()
+        rvHistory.layoutManager = LinearLayoutManager(this)
+        rvHistory.adapter = adapter
+    }
+
+    private fun loadHistory() {
+
+        SupabaseRepository.loadHistoryTickets(this) { result ->
+
+            result.onSuccess { tickets ->
+
+                adapter.submitList(tickets)
+
+                if (tickets.isEmpty()) {
+                    layoutEmptyHistory.visibility = View.VISIBLE
+                    rvHistory.visibility = View.GONE
+                } else {
+                    layoutEmptyHistory.visibility = View.GONE
+                    rvHistory.visibility = View.VISIBLE
+                }
+            }
+
+            result.onFailure {
+                layoutEmptyHistory.visibility = View.VISIBLE
+                rvHistory.visibility = View.GONE
+            }
+        }
     }
 
     private fun setupBottomNavigation() {

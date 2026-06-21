@@ -7,6 +7,7 @@ import android.os.Looper
 import android.webkit.MimeTypeMap
 import com.campusconnect.app.model.Event
 import com.campusconnect.app.model.Ticket
+import com.campusconnect.app.model.Peserta
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -23,6 +24,7 @@ object SupabaseRepository {
     private const val SUPABASE_REST_URL = "https://tnestulrktqmpwwjmoct.supabase.co/rest/v1"
     private const val SUPABASE_AUTH_URL = "https://tnestulrktqmpwwjmoct.supabase.co/auth/v1"
     private const val SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuZXN0dWxya3RxbXB3d2ptb2N0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDI1NDMsImV4cCI6MjA5NjU3ODU0M30.EKEWIFhUdjAUOaSqdVm8ilRevK6qSRsQ9G6uiVrbUok"
+    private const val PAYMENT_PROOFS_BUCKET = "payment-proofs"
     private const val EVENT_POSTERS_BUCKET = "event-posters"
     private const val PREF_NAME = "supabase_session"
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -130,7 +132,7 @@ object SupabaseRepository {
     fun loadUserProfile(context: Context, uid: String, callback: (Result<AppUser>) -> Unit) =
         runAsync(callback) {
             val user = fetchUserProfile(context, uid) ?: currentUser(context)
-                ?: throw IllegalStateException("User tidak ditemukan.")
+            ?: throw IllegalStateException("User tidak ditemukan.")
             saveUserToPrefs(context, user)
             user
         }
@@ -145,6 +147,8 @@ object SupabaseRepository {
         eventDate: String,
         posterUri: Uri? = null,
         eventPrice: Int = 0,
+        paymentType: String,
+        paymentInfo: String,
         callback: (Result<Unit>) -> Unit
     ) = runAsync(callback) {
         val user = currentUser(context) ?: throw IllegalStateException("Silakan login terlebih dahulu.")
@@ -167,6 +171,8 @@ object SupabaseRepository {
             .put("eventDate", eventDate)
             .put("registrants", 0)
             .put("eventPrice", eventPrice)
+            .put("paymentType", paymentType)
+            .put("paymentInfo", paymentInfo)
         request("POST", "$SUPABASE_REST_URL/events", body, bearer = accessToken(context), prefer = "return=minimal")
         Unit
     }
@@ -201,6 +207,22 @@ object SupabaseRepository {
         )
         val events = parseEvents(response.getJSONArray("data"))
         events.firstOrNull() ?: throw IllegalStateException("Event tidak ditemukan.")
+    }
+
+    private fun incrementEventRegistrants(context: Context, eventId: String) {
+        // Gagal increment counter tidak boleh membatalkan tiket yang
+        // sudah berhasil dibuat — jadi error di sini hanya di-catch
+        // dan diabaikan (tiket tetap valid, hanya angka "tickets left"
+        // yang mungkin sedikit meleset kalau RPC gagal).
+        runCatching {
+            val body = JSONObject().put("p_event_id", eventId)
+            request(
+                "POST",
+                "$SUPABASE_REST_URL/rpc/increment_registrants",
+                body,
+                bearer = accessToken(context)
+            )
+        }
     }
 
     fun updateEventStatus(
@@ -244,17 +266,23 @@ object SupabaseRepository {
                     .substring(0, 8)
                     .uppercase()
 
+        // PENTING: nama kolom di tabel `tickets` semuanya lowercase
+        // polos (ticketid, userid, eventid, dst) — BUKAN camelCase
+        // seperti tabel `events`. Field di sini harus persis sama
+        // dengan nama kolom di Supabase, kalau tidak PostgREST akan
+        // menolak field asing dan insert akan gagal.
         val body = JSONObject()
-            .put("ticketId", ticketId)
-            .put("userId", user.uid)
-            .put("eventId", eventId)
-            .put("eventName", eventName)
+            .put("ticketid", ticketId)
+            .put("userid", user.uid)
+            .put("eventid", eventId)
+            .put("eventname", eventName)
             .put("category", category)
-            .put("eventDate", eventDate)
-            .put("eventLocation", eventLocation)
-            .put("attendeeName", user.fullName)
-            .put("attendeeRole", user.role)
-            .put("status", "Confirmed")
+            .put("eventdate", eventDate)
+            .put("eventlocation", eventLocation)
+            .put("attendeename", user.fullName)
+            .put("attendeerole", user.role)
+            .put("status", "CONFIRMED")
+            .put("paymentproofurl", "")
 
         request(
             "POST",
@@ -263,6 +291,95 @@ object SupabaseRepository {
             bearer = accessToken(context),
             prefer = "return=minimal"
         )
+
+        incrementEventRegistrants(context, eventId)
+
+        Unit
+    }
+
+    fun createPaidTicket(
+        context: Context,
+        eventId: String,
+        eventName: String,
+        category: String,
+        eventDate: String,
+        eventLocation: String,
+        paymentProofUrl: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        val ticketId =
+            "CC-" +
+                    UUID.randomUUID()
+                        .toString()
+                        .substring(0,8)
+                        .uppercase()
+
+        val body = JSONObject()
+            .put("ticketid", ticketId)
+            .put("userid", user.uid)
+
+            .put("eventid", eventId)
+            .put("eventname", eventName)
+            .put("category", category)
+            .put("eventdate", eventDate)
+            .put("eventlocation", eventLocation)
+
+            .put("attendeename", user.fullName)
+            .put("attendeerole", user.role)
+
+            .put("status", "PENDING")
+            .put("paymentproofurl", paymentProofUrl)
+
+        request(
+            "POST",
+            "$SUPABASE_REST_URL/tickets",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        incrementEventRegistrants(context, eventId)
+
+        Unit
+    }
+
+    fun uploadPaymentProofAndCreateTicket(
+        context: Context,
+        imageUri: Uri,
+        eventId: String,
+        eventName: String,
+        category: String,
+        eventDate: String,
+        eventLocation: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val user =
+            currentUser(context)
+                ?: throw IllegalStateException("User tidak ditemukan.")
+
+        val imageUrl =
+            uploadPaymentProof(
+                context,
+                imageUri,
+                user.uid
+            )
+
+        createPaidTicket(
+            context,
+            eventId,
+            eventName,
+            category,
+            eventDate,
+            eventLocation,
+            imageUrl
+        ) {
+
+        }
 
         Unit
     }
@@ -275,9 +392,12 @@ object SupabaseRepository {
         val user = currentUser(context)
             ?: throw IllegalStateException("Silakan login terlebih dahulu.")
 
+        // Hanya tiket CONFIRMED yang tampil di Manage Ticket.
+        // PENDING (masih menunggu verifikasi panitia), REJECTED,
+        // dan USED (sudah dipakai/dipindah ke History) tidak ikut.
         val response = request(
             "GET",
-            "$SUPABASE_REST_URL/tickets?userId=eq.${encode(user.uid)}&order=createdAt.desc",
+            "$SUPABASE_REST_URL/tickets?userid=eq.${encode(user.uid)}&status=eq.CONFIRMED&order=createdat.desc",
             bearer = accessToken(context)
         )
 
@@ -288,30 +408,99 @@ object SupabaseRepository {
 
             val item = rows.getJSONObject(i)
 
-            tickets.add(
-                Ticket(
-                    ticketId = item.optString("ticketId"),
-                    userId = item.optString("userId"),
-
-                    eventId = item.optString("eventId"),
-                    eventName = item.optString("eventName"),
-                    category = item.optString("category"),
-                    eventDate = item.optString("eventDate"),
-                    eventLocation = item.optString("eventLocation"),
-
-                    attendeeName = item.optString("attendeeName"),
-                    attendeeRole = item.optString("attendeeRole"),
-
-                    status = item.optString("status"),
-
-                    createdAt = item.optString("createdAt")
-                )
-            )
+            tickets.add(parseTicket(item))
         }
 
         tickets
     }
-    
+
+    fun loadHistoryTickets(
+        context: Context,
+        callback: (Result<List<Ticket>>) -> Unit
+    ) = runAsync(callback) {
+
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        // Tiket yang sudah dipakai (di-scan panitia saat acara)
+        // dipindahkan ke History.
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/tickets?userid=eq.${encode(user.uid)}&status=eq.USED&order=createdat.desc",
+            bearer = accessToken(context)
+        )
+
+        val rows = response.getJSONArray("data")
+        val tickets = mutableListOf<Ticket>()
+
+        for (i in 0 until rows.length()) {
+
+            val item = rows.getJSONObject(i)
+
+            tickets.add(parseTicket(item))
+        }
+
+        tickets
+    }
+
+    fun getTicketById(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Ticket>) -> Unit
+    ) = runAsync(callback) {
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/tickets?ticketid=eq.${encode(ticketId)}&limit=1",
+            bearer = accessToken(context)
+        )
+
+        val rows = response.getJSONArray("data")
+
+        if (rows.length() == 0) {
+            throw IllegalStateException("Tiket tidak ditemukan.")
+        }
+
+        parseTicket(rows.getJSONObject(0))
+    }
+
+    fun markTicketUsed(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val body = JSONObject()
+            .put("status", "USED")
+
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/tickets?ticketid=eq.${encode(ticketId)}",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        Unit
+    }
+
+    private fun parseTicket(item: JSONObject): Ticket {
+        return Ticket(
+            ticketId = item.optString("ticketid"),
+            userId = item.optString("userid"),
+            eventId = item.optString("eventid"),
+            eventName = item.optString("eventname"),
+            category = item.optString("category"),
+            eventDate = item.optString("eventdate"),
+            eventLocation = item.optString("eventlocation"),
+            attendeeName = item.optString("attendeename"),
+            attendeeRole = item.optString("attendeerole"),
+            status = item.optString("status"),
+            paymentProofUrl = item.optString("paymentproofurl"),
+            createdAt = item.optString("createdat")
+        )
+    }
+
     fun loadApprovedEvents(
         callback: (Result<List<Event>>) -> Unit
     ) = runAsync(callback) {
@@ -322,6 +511,80 @@ object SupabaseRepository {
         )
 
         parseEvents(response.getJSONArray("data"))
+    }
+
+    fun loadParticipants(
+        context: Context,
+        eventId: String,
+        callback: (Result<List<Peserta>>) -> Unit
+    ) = runAsync(callback) {
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/tickets?eventid=eq.${encode(eventId)}",
+            bearer = accessToken(context)
+        )
+
+        val rows = response.getJSONArray("data")
+
+        val participants = mutableListOf<Peserta>()
+
+        for (i in 0 until rows.length()) {
+
+            val item = rows.getJSONObject(i)
+
+            participants.add(
+                Peserta(
+                    ticketId = item.optString("ticketid"),
+                    attendeeName = item.optString("attendeename"),
+                    attendeeRole = item.optString("attendeerole"),
+                    paymentProofUrl = item.optString("paymentproofurl"),
+                    status = item.optString("status")
+                )
+            )
+        }
+
+        participants
+    }
+
+    fun approveParticipant(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val body = JSONObject()
+            .put("status", "CONFIRMED")
+
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/tickets?ticketid=eq.${encode(ticketId)}",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        Unit
+    }
+
+    fun rejectParticipant(
+        context: Context,
+        ticketId: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+
+        val body = JSONObject()
+            .put("status", "REJECTED")
+
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/tickets?ticketid=eq.${encode(ticketId)}",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+
+        Unit
     }
 
     fun loadOrganizerStats(uid: String, callback: (Result<Pair<Int, Long>>) -> Unit) =
@@ -645,8 +908,9 @@ object SupabaseRepository {
                     posterUrl = item.optString("posterUrl", ""),
                     eventDate = item.optString("eventDate", ""),
                     createdAt = if (item.isNull("createdAt")) null else item.optString("createdAt"),
-                    eventPrice = item.optInt("eventPrice", 0)
-                )
+                    eventPrice = item.optInt("eventPrice", 0),
+                    paymentType = item.optString("paymentType", "FREE"),
+                    paymentInfo = item.optString("paymentInfo", "")                )
             )
         }
         return events
@@ -689,6 +953,49 @@ object SupabaseRepository {
         }
 
         return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$EVENT_POSTERS_BUCKET/$objectPath"
+    }
+
+    private fun uploadPaymentProof(
+        context: Context,
+        imageUri: Uri,
+        userId: String
+    ): String {
+
+        val token = accessToken(context)
+
+        if (token.isBlank())
+            throw IllegalStateException("Silakan login ulang.")
+
+        val mimeType =
+            context.contentResolver.getType(imageUri)
+                ?: "image/jpeg"
+
+        val extension =
+            MimeTypeMap.getSingleton()
+                .getExtensionFromMimeType(mimeType)
+                ?: "jpg"
+
+        val objectPath =
+            "$userId/${UUID.randomUUID()}.$extension"
+
+        val bytes =
+            context.contentResolver
+                .openInputStream(imageUri)
+                ?.use { it.readBytes() }
+                ?: throw IllegalStateException("Gambar tidak bisa dibaca.")
+
+        requestBinary(
+            method = "POST",
+            url =
+                "$SUPABASE_PROJECT_URL/storage/v1/object/$PAYMENT_PROOFS_BUCKET/$objectPath",
+
+            bytes = bytes,
+            contentType = mimeType,
+            bearer = token,
+            upsert = false
+        )
+
+        return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$PAYMENT_PROOFS_BUCKET/$objectPath"
     }
 
     private fun requestBinary(
@@ -756,8 +1063,69 @@ object SupabaseRepository {
     }
 
     private fun accessToken(context: Context): String {
-        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-            .getString("accessToken", "") ?: ""
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val token = prefs.getString("accessToken", "") ?: ""
+        val refreshToken = prefs.getString("refreshToken", "") ?: ""
+
+        // Coba refresh token jika access token terlihat kedaluwarsa.
+        // Supabase JWT body (bagian tengah base64) berisi field "exp" (unix timestamp).
+        // Kita decode dan bandingkan dengan waktu sekarang.
+        if (token.isNotBlank() && refreshToken.isNotBlank() && isTokenExpiredOrNearExpiry(token)) {
+            return runCatching {
+                refreshAccessToken(context, refreshToken)
+            }.getOrDefault(token) // Jika refresh gagal, kembalikan token lama agar error asli tetap terbaca
+        }
+
+        return token
+    }
+
+    /**
+     * Cek apakah JWT access token sudah expired atau akan expired dalam 60 detik ke depan.
+     * JWT terdiri dari 3 bagian dipisah titik: header.payload.signature
+     * Payload di-encode base64url — decode untuk membaca field "exp".
+     */
+    private fun isTokenExpiredOrNearExpiry(token: String): Boolean {
+        return runCatching {
+            val parts = token.split(".")
+            if (parts.size != 3) return true
+            // base64url decode — ganti - dengan + dan _ dengan /
+            val payload = parts[1]
+                .replace("-", "+")
+                .replace("_", "/")
+                .let { padded ->
+                    // Tambahkan padding '=' jika perlu
+                    val pad = padded.length % 4
+                    if (pad == 0) padded else padded + "=".repeat(4 - pad)
+                }
+            val decoded = String(android.util.Base64.decode(payload, android.util.Base64.DEFAULT))
+            val json = org.json.JSONObject(decoded)
+            val exp = json.optLong("exp", 0L)
+            val nowPlusBUffer = System.currentTimeMillis() / 1000L + 60L // 60 detik buffer
+            exp < nowPlusBUffer
+        }.getOrDefault(false)
+    }
+
+    /**
+     * Panggil endpoint refresh token Supabase, simpan sesi baru, kembalikan access token baru.
+     * Dipanggil secara sinkron karena accessToken() sendiri dipanggil dari background thread.
+     */
+    private fun refreshAccessToken(context: Context, refreshToken: String): String {
+        val body = JSONObject()
+            .put("refresh_token", refreshToken)
+        val response = request(
+            "POST",
+            "$SUPABASE_AUTH_URL/token?grant_type=refresh_token",
+            body
+        )
+        val newAccessToken = response.optString("access_token")
+        val newRefreshToken = response.optString("refresh_token")
+        if (newAccessToken.isNotBlank()) {
+            context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit()
+                .putString("accessToken", newAccessToken)
+                .putString("refreshToken", newRefreshToken.ifBlank { refreshToken })
+                .apply()
+        }
+        return newAccessToken.ifBlank { refreshToken }
     }
 
     private fun encode(value: String): String = URLEncoder.encode(value, "UTF-8")
@@ -785,20 +1153,20 @@ object SupabaseRepository {
     private fun isMissingUsersTableError(exception: Throwable): Boolean {
         val message = exception.localizedMessage.orEmpty()
         return message.contains("public.users", ignoreCase = true) &&
-            message.contains("schema cache", ignoreCase = true)
+                message.contains("schema cache", ignoreCase = true)
     }
 
     private fun isInvalidLoginCredentialsError(exception: Throwable): Boolean {
         val message = exception.localizedMessage.orEmpty()
         return message.contains("invalid login credentials", ignoreCase = true) ||
-            message.contains("invalid_grant", ignoreCase = true)
+                message.contains("invalid_grant", ignoreCase = true)
     }
 
     private fun isEmailAlreadyRegisteredError(exception: Throwable): Boolean {
         val message = exception.localizedMessage.orEmpty()
         return message.contains("already registered", ignoreCase = true) ||
-            message.contains("already exists", ignoreCase = true) ||
-            message.contains("user already", ignoreCase = true)
+                message.contains("already exists", ignoreCase = true) ||
+                message.contains("user already", ignoreCase = true)
     }
 
     private fun isExistingEmailSignupResponse(response: JSONObject): Boolean {
@@ -810,8 +1178,8 @@ object SupabaseRepository {
     private fun isMissingEventPostersBucketError(exception: Throwable): Boolean {
         val message = exception.localizedMessage.orEmpty()
         return message.contains("bucket not found", ignoreCase = true) ||
-            (message.contains(EVENT_POSTERS_BUCKET, ignoreCase = true) &&
-                message.contains("not found", ignoreCase = true))
+                (message.contains(EVENT_POSTERS_BUCKET, ignoreCase = true) &&
+                        message.contains("not found", ignoreCase = true))
     }
 
     private fun <T> runAsync(callback: (Result<T>) -> Unit, block: () -> T) {

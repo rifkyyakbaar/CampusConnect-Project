@@ -14,5 +14,8 @@ data class Event(
     var posterUrl: String = "",
     var eventDate: String = "",
     var createdAt: String? = null,
-    var eventPrice: Int = 0
+    var eventPrice: Int = 0,
+    var paymentType: String = "FREE",
+    var paymentInfo: String = "",
+    var isReviewed: Boolean = false
 )

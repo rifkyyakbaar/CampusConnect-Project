@@ -24,6 +24,9 @@ class VerifyEventActivity : AppCompatActivity() {
     private lateinit var tvStatus: TextView
     private lateinit var tvDescription: TextView
     private lateinit var bottomVerifyBar: View
+    private lateinit var tvVerifyPrice: TextView
+    private lateinit var tvVerifyPaymentType: TextView
+    private lateinit var tvVerifyPaymentInfo: TextView
 
     private lateinit var btnApprove: Button
     private lateinit var btnReject: Button
@@ -43,6 +46,9 @@ class VerifyEventActivity : AppCompatActivity() {
         tvEventDate = findViewById(R.id.tvVerifyEventDate)
         tvStatus = findViewById(R.id.tvVerifyStatus)
         tvDescription = findViewById(R.id.tvVerifyDesc)
+        tvVerifyPrice = findViewById(R.id.tvVerifyPrice)
+        tvVerifyPaymentType = findViewById(R.id.tvVerifyPaymentType)
+        tvVerifyPaymentInfo = findViewById(R.id.tvVerifyPaymentInfo)
         bottomVerifyBar = findViewById(R.id.bottomVerifyBar)
 
         btnApprove = findViewById(R.id.btnApprove)
@@ -72,6 +78,20 @@ class VerifyEventActivity : AppCompatActivity() {
                 tvCategory.text = "Category : ${event.category}"
                 tvLocation.text = "Location : ${event.location}"
                 tvCapacity.text = "Capacity : ${event.capacity}"
+                tvVerifyPrice.text =
+                    if (event.eventPrice == 0)
+                        "Price : FREE"
+                    else
+                        "Price : Rp ${event.eventPrice}"
+
+                tvVerifyPaymentType.text =
+                    "Payment Type : ${event.paymentType}"
+
+                tvVerifyPaymentInfo.text =
+                    if (event.paymentType == "PAID")
+                        "Payment Info : ${event.paymentInfo}"
+                    else
+                        ""
                 tvEventDate.text = "Start : ${event.eventDate.ifBlank { "-" }}"
                 showStatus(event.status)
                 tvDescription.text = event.description

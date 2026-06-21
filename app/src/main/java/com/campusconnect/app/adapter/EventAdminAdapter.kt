@@ -1,14 +1,14 @@
-package com.campusconnect.app.ui.admin
+package com.campusconnect.app.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.widget.ImageView
-import com.bumptech.glide.Glide
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.campusconnect.app.R
 import com.campusconnect.app.model.Event
 

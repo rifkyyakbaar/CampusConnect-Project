@@ -118,6 +118,7 @@ class CreateEventActivity : AppCompatActivity() {
         val capacityText = findViewById<EditText>(R.id.etCapacity).text.toString().trim()
         val description = findViewById<EditText>(R.id.etDescription).text.toString().trim()
         val ticketPriceText = findViewById<EditText>(R.id.etTicketPrice).text.toString().trim()
+        val paymentInfo = findViewById<EditText>(R.id.etPaymentInfo).text.toString().trim()
         val eventDate = listOf(selectedEventDate, selectedEventTime)
             .filter { it.isNotBlank() }
             .joinToString(" ")
@@ -134,7 +135,22 @@ class CreateEventActivity : AppCompatActivity() {
         }
 
         // Capture ticket price: if empty or 0, treat as free event (0)
-        val ticketPrice = if (ticketPriceText.isEmpty()) 0 else ticketPriceText.toIntOrNull() ?: 0
+        val ticketPrice = ticketPriceText.toIntOrNull() ?: 0
+
+        val paymentType =
+            if (ticketPrice == 0)
+                "FREE"
+            else
+                "PAID"
+
+        if (paymentType == "PAID" && paymentInfo.isEmpty()) {
+            Toast.makeText(
+                this,
+                "Masukkan informasi pembayaran",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
 
         if (SupabaseRepository.currentUser(this) == null) {
             Toast.makeText(this, "Silakan login terlebih dahulu", Toast.LENGTH_SHORT).show()
@@ -148,7 +164,7 @@ class CreateEventActivity : AppCompatActivity() {
         }
 
         setSubmitLoading(btnSubmit, true)
-        SupabaseRepository.createEvent(this, eventName, category, location, capacity, description, eventDate, selectedPosterUri, ticketPrice) { result ->
+        SupabaseRepository.createEvent(this, eventName, category, location, capacity, description, eventDate, selectedPosterUri, ticketPrice, paymentType, paymentInfo) { result ->
             result
                 .onSuccess {
                     Toast.makeText(this, "Event berhasil dibuat", Toast.LENGTH_SHORT).show()

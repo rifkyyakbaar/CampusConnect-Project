@@ -1,4 +1,4 @@
-package com.campusconnect.app.ui.panitia
+package com.campusconnect.app.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater

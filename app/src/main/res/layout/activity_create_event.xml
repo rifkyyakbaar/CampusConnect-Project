@@ -178,6 +178,25 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Payment Information"
+            android:textColor="@color/teks_utama"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etPaymentInfo"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_input_rounded"
+            android:gravity="top"
+            android:hint="Contoh : Bank BCA 123456789              a.n. Panitia Informatika"
+            android:textColor="@color/teks_utama"
+            android:textColorHint="@color/teks_sekunder"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Location"
             android:textColor="@color/teks_utama"
             android:textStyle="bold"

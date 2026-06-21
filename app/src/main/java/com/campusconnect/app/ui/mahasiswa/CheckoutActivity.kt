@@ -23,7 +23,6 @@ class CheckoutActivity : AppCompatActivity() {
     private var eventId: String = ""
     private var eventName: String = ""
     private var eventDate: String = ""
-    private var isFreeEvent: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,66 +35,31 @@ class CheckoutActivity : AppCompatActivity() {
         eventName = intent.getStringExtra("eventName").orEmpty()
         eventDate = intent.getStringExtra("eventDate").orEmpty()
         eventCategory = intent.getStringExtra("category").orEmpty()
-        eventLocation = intent.getStringExtra("location").orEmpty()
+        eventLocation = intent.getStringExtra("eventLocation").orEmpty()
 
-        // Determine if event is free or paid
-        isFreeEvent = eventPrice == 0
 
-        // Setup UI based on event type
-        setupEventTypeUI()
-
+        setupUI()
         // Setup button listeners
         setupListeners()
     }
 
-    private fun setupEventTypeUI() {
-        if (isFreeEvent) {
-            // Gratis Event
-            binding.paymentSection.visibility = View.GONE
-            binding.btnConfirmRegister.text = "Get Free Ticket"
-        } else {
-            // Berbayar Event
-            binding.paymentSection.visibility = View.VISIBLE
-            binding.btnConfirmRegister.text = "Upload & Confirm"
-            binding.tvEventPrice.text = formatPrice(eventPrice)
-        }
-    }
 
     private fun formatPrice(price: Int): String {
         return "Rp ${String.format("%,d", price).replace(",", ".")}"
     }
 
     private fun setupListeners() {
-        binding.btnBackCheckout.setOnClickListener {
-            finish()
-        }
-
         binding.btnConfirmRegister.setOnClickListener {
-            if (isFreeEvent) {
-                processRegistration()
-            } else {
-                uploadPaymentProof()
-            }
-        }
-
-        binding.btnUploadProof.setOnClickListener {
-            uploadPaymentProof()
+            processRegistration()
         }
     }
+    private fun setupUI() {
 
-    private fun uploadPaymentProof() {
-        // Dummy function for uploading payment proof
-        // In a real implementation, this would:
-        // 1. Open a file picker for payment screenshot
-        // 2. Upload to Supabase storage
-        // 3. Save the proof URL to the database
+        binding.paymentSection.visibility = View.GONE
 
-        Toast.makeText(this, "Opening payment proof uploader...", Toast.LENGTH_SHORT).show()
+        binding.btnConfirmRegister.text = "Get Ticket"
 
-        // After successful upload, process the registration
-        processRegistration()
     }
-
     private fun processRegistration() {
 
         SupabaseRepository.createTicket(

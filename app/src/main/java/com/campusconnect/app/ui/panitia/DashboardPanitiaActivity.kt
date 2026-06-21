@@ -9,9 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.campusconnect.app.R
+import com.campusconnect.app.adapter.EventPanitiaAdapter
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
-import com.campusconnect.app.ui.mahasiswa.DetailEventActivity
+import com.campusconnect.app.ui.panitia.DetailPanitiaEventActivity
 import com.campusconnect.app.ui.profile.ProfileActivity
 
 class DashboardPanitiaActivity : AppCompatActivity() {
@@ -39,7 +40,7 @@ class DashboardPanitiaActivity : AppCompatActivity() {
     private fun setupMyEventsList() {
         rvPanitiaEvents = findViewById(R.id.rvPanitiaEvents)
         adapter = EventPanitiaAdapter(myEvents) { event ->
-            startActivity(Intent(this, DetailEventActivity::class.java).apply {
+            startActivity(Intent(this, DetailPanitiaEventActivity::class.java).apply {
                 putExtra("eventId", event.id)
                 putExtra("source", "panitia")
             })

@@ -11,11 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
-import com.campusconnect.app.ui.panitia.ManagePesertaActivity
+import com.campusconnect.app.utils.setBlinkOnClick
 import java.net.URL
 
-
 class DetailEventActivity : AppCompatActivity() {
+
     private lateinit var ivDetailPoster: ImageView
     private lateinit var tvDetailCategory: TextView
     private lateinit var tvDetailDate: TextView
@@ -24,15 +24,15 @@ class DetailEventActivity : AppCompatActivity() {
     private lateinit var tvDetailDescription: TextView
     private lateinit var tvTicketsLeft: TextView
     private lateinit var btnJoinEvent: Button
+    private lateinit var btnBack: ImageView
+
     private var eventId: String = ""
-    private var source: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_event)
 
         eventId = intent.getStringExtra("eventId").orEmpty()
-        source = intent.getStringExtra("source").orEmpty()
 
         bindViews()
         setupInitialState()
@@ -40,29 +40,28 @@ class DetailEventActivity : AppCompatActivity() {
     }
 
     private fun bindViews() {
-        ivDetailPoster = findViewById(R.id.ivDetailPoster)
-        tvDetailCategory = findViewById(R.id.tvDetailCategory)
-        tvDetailDate = findViewById(R.id.tvDetailDate)
-        tvDetailTitle = findViewById(R.id.tvDetailTitle)
-        tvDetailLocation = findViewById(R.id.tvDetailLocation)
+        ivDetailPoster      = findViewById(R.id.ivDetailPoster)
+        tvDetailCategory    = findViewById(R.id.tvDetailCategory)
+        tvDetailDate        = findViewById(R.id.tvDetailDate)
+        tvDetailTitle       = findViewById(R.id.tvDetailTitle)
+        tvDetailLocation    = findViewById(R.id.tvDetailLocation)
         tvDetailDescription = findViewById(R.id.tvDetailDescription)
-        tvTicketsLeft = findViewById(R.id.tvTicketsLeft)
-        btnJoinEvent = findViewById(R.id.btnJoinEvent)
+        tvTicketsLeft       = findViewById(R.id.tvTicketsLeft)
+        btnJoinEvent        = findViewById(R.id.btnJoinEvent)
+        btnBack             = findViewById(R.id.btnBack)
     }
 
     private fun setupInitialState() {
-        tvDetailCategory.text = "-"
-        tvDetailDate.text = "-"
-        tvDetailTitle.text = "Loading event..."
-        tvDetailLocation.text = "-"
+        tvDetailCategory.text    = "-"
+        tvDetailDate.text        = "-"
+        tvDetailTitle.text       = "Loading event..."
+        tvDetailLocation.text    = "-"
         tvDetailDescription.text = "-"
-        tvTicketsLeft.text = "-"
-        btnJoinEvent.isEnabled = false
-        btnJoinEvent.text = if (source.equals("panitia", ignoreCase = true)) {
-            "Manage Participants"
-        } else {
-            "Join Event"
-        }
+        tvTicketsLeft.text       = "-"
+        btnJoinEvent.isEnabled   = false
+        btnJoinEvent.text        = "Join Event"
+
+        btnBack.setBlinkOnClick { finish() }
     }
 
     private fun loadEvent() {
@@ -74,62 +73,71 @@ class DetailEventActivity : AppCompatActivity() {
 
         SupabaseRepository.loadEventById(eventId) { result ->
             result
-                .onSuccess { event ->
-                    showEvent(event)
-                }
+                .onSuccess { event -> showEvent(event) }
                 .onFailure { exception ->
-                    Toast.makeText(this, exception.localizedMessage ?: "Gagal memuat detail event.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        exception.localizedMessage ?: "Gagal memuat detail event.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
                 }
         }
     }
 
     private fun showEvent(event: Event) {
-        tvDetailCategory.text = event.category.ifBlank { "-" }.uppercase()
-        tvDetailDate.text = formatDate(event.createdAt)
-        tvDetailTitle.text = event.eventName.ifBlank { "Untitled Event" }
-        tvDetailLocation.text = event.location.ifBlank { "Lokasi belum ditentukan" }
+        tvDetailCategory.text    = event.category.ifBlank { "-" }.uppercase()
+        tvDetailDate.text        = formatDate(event.eventDate)
+        tvDetailTitle.text       = event.eventName.ifBlank { "Untitled Event" }
+        tvDetailLocation.text    = event.location.ifBlank { "Lokasi belum ditentukan" }
         tvDetailDescription.text = event.description.ifBlank { "Tidak ada deskripsi event." }
 
         val ticketsLeft = (event.capacity - event.registrants).coerceAtLeast(0)
         tvTicketsLeft.text = "$ticketsLeft / ${event.capacity}"
-        btnJoinEvent.isEnabled = true
-        btnJoinEvent.setOnClickListener {
-            openAction(event)
-        }
+
+        btnJoinEvent.isEnabled = ticketsLeft > 0
+        btnJoinEvent.text = if (ticketsLeft > 0) "Join Event" else "Sold Out"
+
+        btnJoinEvent.setBlinkOnClick { joinEvent(event) }
 
         loadPoster(event.posterUrl)
     }
 
-    private fun openAction(event: Event) {
-        if (source.equals("panitia", ignoreCase = true)) {
-            startActivity(Intent(this, ManagePesertaActivity::class.java).apply {
-                putExtra("eventId", event.id)
-            })
+    private fun joinEvent(event: Event) {
+        if (event.paymentType == "FREE") {
+            startActivity(
+                Intent(this, CheckoutActivity::class.java).apply {
+                    putExtra("eventId", event.id)
+                    putExtra("eventPrice", event.eventPrice)
+                    putExtra("eventName", event.eventName)
+                    putExtra("eventDate", event.eventDate)
+                    putExtra("eventLocation", event.location)
+                    putExtra("category", event.category)
+                }
+            )
         } else {
-            startActivity(Intent(this, CheckoutActivity::class.java).apply {
-                putExtra("eventId", event.id)
-                putExtra("eventPrice", event.eventPrice)
-                putExtra("eventName", event.eventName)
-                putExtra("eventDate", event.eventDate)
-            })
+            startActivity(
+                Intent(this, PaymentConfirmationActivity::class.java).apply {
+                    putExtra("eventId", event.id)
+                    putExtra("eventName", event.eventName)
+                    putExtra("eventPrice", event.eventPrice)
+                    putExtra("paymentInfo", event.paymentInfo)
+                    putExtra("eventDate", event.eventDate)
+                    putExtra("eventLocation", event.location)
+                    putExtra("category", event.category)
+                }
+            )
         }
     }
 
     private fun loadPoster(posterUrl: String) {
         if (posterUrl.isBlank()) return
-
         Thread {
             val bitmap = runCatching {
-                URL(posterUrl).openStream().use { stream ->
-                    BitmapFactory.decodeStream(stream)
-                }
+                URL(posterUrl).openStream().use { BitmapFactory.decodeStream(it) }
             }.getOrNull()
-
             if (bitmap != null) {
-                runOnUiThread {
-                    ivDetailPoster.setImageBitmap(bitmap)
-                }
+                runOnUiThread { ivDetailPoster.setImageBitmap(bitmap) }
             }
         }.start()
     }

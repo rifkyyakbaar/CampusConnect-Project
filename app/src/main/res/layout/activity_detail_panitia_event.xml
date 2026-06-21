@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_utama"
-    tools:context=".ui.mahasiswa.DetailEventActivity">
+    tools:context=".ui.panitia.DetailPanitiaEventActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -62,11 +62,11 @@
                     android:id="@+id/tvDetailTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Annual Inter-University Hackathon: CodeTheFuture"
+                    android:text="Nama Event"
                     android:textColor="@color/teks_utama"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -80,13 +80,13 @@
                         android:layout_height="20dp"
                         android:src="@android:drawable/ic_dialog_map"
                         app:tint="@color/teks_sekunder"
-                        android:layout_marginEnd="8dp"/>
+                        android:layout_marginEnd="8dp" />
 
                     <TextView
                         android:id="@+id/tvDetailLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Main Auditorium, Building A"
+                        android:text="Lokasi"
                         android:textColor="@color/teks_sekunder"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/garis_pembatas"
-                    android:layout_marginBottom="24dp"/>
+                    android:layout_marginBottom="24dp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -104,84 +104,114 @@
                     android:textColor="@color/teks_utama"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp" />
 
                 <TextView
                     android:id="@+id/tvDetailDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Join over 500 developers for 48 hours of building, learning, and networking. This annual hackathon brings together the brightest minds across universities to solve real-world problems using technology. \n\nWhat to expect:\n- Mentorship from industry experts\n- Free food and swags\n- Grand prize of $5000"
+                    android:text="Deskripsi event"
                     android:textColor="@color/teks_sekunder"
                     android:textSize="14sp"
                     android:lineSpacingExtra="4dp" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
+    <!-- ================================================================
+         BOTTOM BAR — 3 kolom horizontal:
+         [Sisa Tiket] | [● FAB Kamera] | [Manage Participants]
+         ================================================================ -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:orientation="horizontal"
         android:background="@color/bg_utama"
-        android:elevation="16dp"
+        android:elevation="12dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- KIRI: Sisa Tiket -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Sisa Tiket"
+                android:textColor="@color/teks_sekunder"
+                android:textSize="11sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tickets Left"
-                    android:textColor="@color/teks_sekunder"
-                    android:textSize="12sp"/>
-
-                <TextView
-                    android:id="@+id/tvTicketsLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="100 / 500"
-                    android:textColor="@color/teks_warning"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/tvTicketsLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-- / --"
+                android:textColor="@color/warna_warning"
+                android:textStyle="bold"
+                android:textSize="18sp" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnManageParticipants"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="Manage Participants"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/warna_primer"
-            android:textColor="@color/white"
-            app:cornerRadius="10dp"/>
+        <!-- TENGAH: Tombol Scan QR bulat (FAB) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="12dp"/>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnScanTicket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_camera"
+                android:contentDescription="Scan Tiket QR"
+                app:backgroundTint="@color/warna_primer"
+                app:tint="@color/white"
+                app:fabSize="normal"
+                app:elevation="4dp" />
 
-        <Button
-            android:id="@+id/btnScanTicket"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="Scan Ticket"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/warna_warning"
-            android:textColor="@color/white"
-            app:cornerRadius="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Scan QR"
+                android:textColor="@color/teks_sekunder"
+                android:textSize="11sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- KANAN: Manage Participants -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/btnManageParticipants"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Peserta"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/warna_primer"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

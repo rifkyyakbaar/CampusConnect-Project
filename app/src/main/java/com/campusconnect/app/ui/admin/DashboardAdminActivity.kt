@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.campusconnect.app.R
+import com.campusconnect.app.adapter.EventAdminAdapter
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
 

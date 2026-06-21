@@ -1,13 +1,11 @@
 package com.campusconnect.app.ui.mahasiswa
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
 import com.campusconnect.app.R
-import com.campusconnect.app.ui.auth.LoginActivity
-
 
 class ReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,24 +16,21 @@ class ReviewActivity : AppCompatActivity() {
         val btnSubmitReview = findViewById<Button>(R.id.btnSubmitReview)
 
         btnCloseReview.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    HistoryActivity::class.java
-                )
-            )
+            finish()
         }
 
         btnSubmitReview.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    HomeMahasiswaActivity::class.java
-                )
-            )
+            // Menggunakan MaterialAlertDialogBuilder sesuai request terbaru
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Sukses")
+                .setMessage("Terima Kasih Telah Mengisi Survey")
+                .setIcon(android.R.drawable.checkbox_on_background)
+                .setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                    finish()
+                }
+                .setCancelable(false)
+                .show()
         }
-
     }
 }

@@ -9,7 +9,7 @@
     android:background="@color/bg_utama"
     tools:context=".ui.profile.ProfileActivity">
 
-    <!-- Top App Bar (Bersih, tanpa background warna-warni) -->
+    <!-- Top App Bar - Clean Header (Back and Notif removed as requested) -->
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -17,37 +17,14 @@
         android:paddingHorizontal="16dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@null"
-            android:padding="8dp"
-            android:src="@android:drawable/ic_menu_revert"
-            app:tint="@color/teks_utama" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Profile"
             android:textColor="@color/teks_utama"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/btnNotif"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@null"
-            android:padding="8dp"
-            android:src="@android:drawable/ic_popup_reminder"
-            app:tint="@color/teks_utama" />
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView

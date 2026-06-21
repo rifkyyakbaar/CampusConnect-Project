@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.campusconnect.app.R
+import com.campusconnect.app.adapter.TicketAdapter
 import com.campusconnect.app.databinding.ActivityManageTicketBinding
 import com.campusconnect.app.model.Ticket
 import com.campusconnect.app.ui.profile.ProfileActivity
@@ -15,8 +16,6 @@ class ManageTicketActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityManageTicketBinding
     private lateinit var adapter: TicketAdapter
-
-    private val tickets = mutableListOf<Ticket>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +30,7 @@ class ManageTicketActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
 
-        adapter = TicketAdapter(tickets) { ticket ->
+        adapter = TicketAdapter { ticket ->
 
             val intent = Intent(this, TicketActivity::class.java)
 
@@ -55,17 +54,11 @@ class ManageTicketActivity : AppCompatActivity() {
     }
 
     private fun loadUserTickets() {
-
         SupabaseRepository.loadUserTickets(this) { result ->
 
             result.onSuccess { ticketList ->
-
-                tickets.clear()
-                tickets.addAll(ticketList)
-
-                adapter.notifyDataSetChanged()
-
-                if (tickets.isEmpty()) {
+                adapter.submitList(ticketList)
+                if (ticketList.isEmpty()) {
                     binding.layoutEmpty.visibility = View.VISIBLE
                     binding.rvTickets.visibility = View.GONE
                 } else {
