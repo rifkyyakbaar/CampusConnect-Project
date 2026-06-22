@@ -1,26 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Brand Colors (Biru Modern) -->
+    <color name="colorPrimary">#1D4ED8</color>
+    <color name="colorSecondary">#3B82F6</color>
 
-    <!-- Modern Clean Palette -->
-    <color name="blue_dark">#0D47A1</color>
-    <color name="blue_primary">#1565C0</color>
-    <color name="blue_light_gradient">#42A5F5</color>
-    <color name="bg_off_white">#F8F9FA</color>
+    <!-- UI Palette Light (Overhauled) -->
+    <color name="backgroundColor">#F8F9FA</color>
+    <color name="surfaceColor">#FFFFFF</color>
+    <color name="textColorPrimary">#0F172A</color> <!-- Biru Dongker Pekat -->
+    <color name="textColorSecondary">#334155</color> <!-- Abu-abu Tua Pekat -->
 
-    <!-- Gradient Colors -->
-    <color name="bg_gradient_start">#1565C0</color>
-    <color name="bg_gradient_end">#42A5F5</color>
+    <!-- Gradient References for Overhaul -->
+    <color name="blue_grad_light_start">#3B82F6</color> <!-- Biru Langit Tegas -->
+    <color name="blue_grad_light_end">#FFFFFF</color>   <!-- Putih Murni -->
 
-    <!-- UI Semantic Colors -->
-    <color name="bg_utama">@color/bg_off_white</color>
-    <color name="warna_primer">@color/blue_dark</color>
-    <color name="warna_aksen">@color/blue_light_gradient</color>
-    <color name="teks_utama">#212121</color>
-    <color name="teks_sekunder">#757575</color>
+    <color name="blue_grad_start">#1D4ED8</color>
+    <color name="blue_grad_end">#3B82F6</color>
+    <color name="bg_gradient_start">#1D4ED8</color>
+    <color name="bg_gradient_end">#3B82F6</color>
+
+    <!-- Compatibility for bg_gradient.xml and others -->
+    <color name="bg_mtix_start">@color/blue_grad_light_start</color>
+    <color name="bg_mtix_end">@color/blue_grad_light_end</color>
+    <color name="blue_primary">#1D4ED8</color>
+    <color name="blue_light_gradient">#3B82F6</color>
+
+    <!-- Mapping for Compatibility -->
+    <color name="warna_primer">@color/colorPrimary</color>
+    <color name="warna_aksen">@color/colorSecondary</color>
+    <color name="bg_utama">@color/backgroundColor</color>
+    <color name="teks_utama">@color/textColorPrimary</color>
+    <color name="teks_sekunder">@color/textColorSecondary</color>
     <color name="bg_input">#FFFFFF</color>
-    <color name="garis_pembatas">#EEEEEE</color>
+    <color name="garis_pembatas">#E5E7EB</color>
+
+    <!-- Base Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <!-- Status Colors -->
     <color name="bg_warning">#FFF9C4</color>
@@ -29,7 +45,4 @@
     <color name="bg_terima">#C8E6C9</color>
     <color name="bg_tolak">#FFCDD2</color>
     <color name="teks_tolak">#B71C1C</color>
-
-    <!-- Helpers -->
-    <color name="bottom_nav_bg">@color/blue_dark</color>
 </resources>

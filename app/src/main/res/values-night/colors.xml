@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Brand Colors (Lighter Blue for Dark Mode visibility) -->
+    <color name="colorPrimary">#3B82F6</color>
+    <color name="colorSecondary">#60A5FA</color>
 
-    <!-- Modern Clean Palette (Dark variants) -->
-    <color name="blue_dark">#0A2D5E</color>
-    <color name="blue_primary">#3F71CD</color>
-    <color name="blue_light_gradient">#1976D2</color>
-    <color name="bg_off_white">#121212</color>
+    <!-- UI Palette Dark -->
+    <color name="backgroundColor">#0A1128</color>
+    <color name="surfaceColor">#111827</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColorSecondary">#9CA3AF</color>
 
     <!-- Gradient Colors -->
-    <color name="bg_gradient_start">@color/blue_primary</color>
-    <color name="bg_gradient_end">@color/blue_light_gradient</color>
+    <color name="blue_grad_start">#1D4ED8</color>
+    <color name="blue_grad_end">#3B82F6</color>
 
-    <!-- UI Semantic Colors -->
-    <color name="bg_utama">@color/bg_off_white</color>
-    <color name="warna_primer">@color/blue_primary</color>
-    <color name="warna_aksen">@color/blue_light_gradient</color>
-    <color name="teks_utama">#FFFFFF</color>
-    <color name="teks_sekunder">#A0A0A0</color>
-    <color name="bg_input">#1E1E1E</color>
-    <color name="garis_pembatas">#374151</color>
+    <!-- Mapping for Compatibility -->
+    <color name="warna_primer">@color/colorPrimary</color>
+    <color name="bg_utama">@color/backgroundColor</color>
+    <color name="teks_utama">@color/textColorPrimary</color>
+    <color name="teks_sekunder">@color/textColorSecondary</color>
+    <color name="bg_input">#111827</color>
+    <color name="garis_pembatas">#1F2937</color>
+
+    <!-- Gradient Colors used in bg_main_gradient -->
+    <color name="bg_gradient_start">#0A1128</color>
+    <color name="bg_gradient_end">#1D4ED8</color>
+
+    <!-- MTIX Background Compatibility (Fixes Crash in Night Mode) -->
+    <color name="bg_mtix_start">#0A1128</color>
+    <color name="bg_mtix_end">#000000</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <!-- Status Colors -->
     <color name="bg_warning">#454020</color>
@@ -30,5 +41,7 @@
     <color name="bg_tolak">#B71C1C</color>
     <color name="teks_tolak">#FFCDD2</color>
 
-    <color name="bottom_nav_bg">#1A1A1A</color>
+    <color name="warna_aksen">@color/colorSecondary</color>
+    <color name="blue_primary">@color/colorPrimary</color>
+    <color name="blue_light_gradient">@color/colorSecondary</color>
 </resources>

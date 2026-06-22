@@ -46,7 +46,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="Smart Mobile Platform for Campus\nEvents"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,14 +61,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGetStarted"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:backgroundTint="#FFFFFF"
+            app:backgroundTint="@color/white"
             android:text="Get Started  →"
             android:textAllCaps="false"
-            android:textColor="@color/warna_primer"
+            android:textColor="@color/colorPrimary"
             android:textSize="18sp"
             app:cornerRadius="12dp" />
 

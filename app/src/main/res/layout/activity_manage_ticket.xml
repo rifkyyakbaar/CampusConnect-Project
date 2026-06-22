@@ -118,7 +118,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingTop="8dp"
-        android:paddingBottom="80dp"
+        android:paddingBottom="60dp"
         app:layout_constraintTop_toBottomOf="@id/llHeader"
         app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -160,15 +160,18 @@
             android:layout_marginTop="4dp"/>
     </LinearLayout>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#1A1A1A"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/bottom_nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="52dp"
+        android:background="@color/bg_input"
+        app:itemIconSize="22dp"
+        app:itemIconTint="@color/warna_primer"
+        app:itemTextColor="@color/warna_primer"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

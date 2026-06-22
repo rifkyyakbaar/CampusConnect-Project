@@ -10,7 +10,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="80dp"
+        android:paddingBottom="60dp"
         android:clipToPadding="false">
 
         <LinearLayout
@@ -188,7 +188,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- Popular Events Header (Text Removed as requested) -->
+            <!-- Popular Events Header -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,11 +220,13 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_gravity="bottom"
-        android:background="#1A1A1A"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        android:background="@color/bg_input"
+        app:itemIconSize="22dp"
+        app:itemIconTint="@color/warna_primer"
+        app:itemTextColor="@color/warna_primer"
+        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
