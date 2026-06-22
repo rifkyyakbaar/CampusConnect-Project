@@ -1,23 +1,152 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" android:layout_marginVertical="10dp" app:cardCornerRadius="24dp" app:cardElevation="8dp" app:cardBackgroundColor="@color/bg_input">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-        <!--  Bagian atas  -->
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="20dp" android:orientation="vertical">
-            <TextView android:id="@+id/tvCategory" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SEMINAR" android:textColor="@color/warna_primer" android:textStyle="bold" android:textSize="12sp"/>
-            <TextView android:id="@+id/tvEventName" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Seminar Nasional AI" android:textColor="@color/teks_utama" android:textStyle="bold" android:textSize="20sp" android:layout_marginTop="8dp"/>
-            <TextView android:id="@+id/tvDateVenue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="20 Juni 2026 • Aula FT Unram" android:textColor="@color/teks_sekunder" android:textSize="14sp" android:layout_marginTop="8dp"/>
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="10dp"
+    app:cardCornerRadius="20dp"
+
+    app:cardElevation="12dp"
+
+    app:cardBackgroundColor="#1E2536">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEMINAR"
+            android:textColor="#00FFFF"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layoutStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="@id/tvCategory"
+            app:layout_constraintBottom_toBottomOf="@id/tvCategory"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:backgroundTint="#4CAF50"
+                android:background="@drawable/bg_badge" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIRMED"
+                android:textColor="#4CAF50"
+                android:textStyle="bold"
+                android:textSize="11sp"
+                android:layout_marginStart="6dp" />
         </LinearLayout>
-        <!--  Garis putus-putus  -->
-        <View android:layout_width="match_parent" android:layout_height="2dp" android:layout_marginHorizontal="20dp" android:background="@drawable/bg_dashed_line"/>
-        <!--  Bagian bawah  -->
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="20dp" android:orientation="vertical">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ticket ID" android:textColor="@color/teks_sekunder" android:textSize="12sp"/>
-            <TextView android:id="@+id/tvTicketId" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CC-8924-XYZ" android:textColor="@color/teks_utama" android:textStyle="bold" android:textSize="15sp" android:layout_marginTop="4dp"/>
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:orientation="horizontal" android:gravity="center_vertical">
-                <View android:layout_width="10dp" android:layout_height="10dp" android:backgroundTint="#4CAF50" android:background="@drawable/bg_badge"/>
-                <TextView android:id="@+id/tvStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Confirmed" android:textColor="#4CAF50" android:textStyle="bold" android:textSize="14sp" android:layout_marginStart="8dp"/>
-            </LinearLayout>
-            <com.google.android.material.button.MaterialButton android:id="@+id/btnViewTicket" android:layout_width="match_parent" android:layout_height="50dp" android:layout_marginTop="20dp" android:text="View Ticket" android:textAllCaps="false" android:textSize="15sp" android:textStyle="bold" android:textColor="@color/white" app:cornerRadius="18dp" app:backgroundTint="@color/warna_primer"/>
-            <com.google.android.material.button.MaterialButton android:id="@+id/btnReview" android:layout_width="match_parent" android:layout_height="44dp" android:layout_marginTop="8dp" android:text="⭐ Review Event" android:textAllCaps="false" android:textSize="14sp" android:textColor="@color/white" android:visibility="gone" app:backgroundTint="@color/warna_aksen" app:cornerRadius="14dp"/>
-        </LinearLayout>
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tvEventName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="Seminar Nasional AI"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/tvCategory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/layoutStatus" />
+
+        <TextView
+            android:id="@+id/tvDateVenue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="20 Juni 2026 • Aula FT Unram"
+            android:textColor="#CCCCCC"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/tvEventName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#33FFFFFF"
+            app:layout_constraintTop_toBottomOf="@id/tvDateVenue" />
+
+        <TextView
+            android:id="@+id/tvTicketIdLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Ticket ID"
+            android:textColor="#CCCCCC"
+            android:textSize="11sp"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTicketId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CC-8924-XYZ"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintTop_toBottomOf="@id/tvTicketIdLabel"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewTicket"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="View Ticket"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:cornerRadius="22dp"
+            app:backgroundTint="@color/warna_primer"
+            app:layout_constraintTop_toTopOf="@id/tvTicketIdLabel"
+            app:layout_constraintBottom_toBottomOf="@id/tvTicketId"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReview"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:text="⭐ Review Event"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:backgroundTint="@color/warna_aksen"
+            app:cornerRadius="14dp"
+            app:layout_constraintTop_toBottomOf="@id/btnViewTicket"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -20,6 +20,7 @@
             android:id="@+id/btnBackCheckout"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_revert"
             app:tint="@color/white" />
 
@@ -44,17 +45,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Summary"
-            android:textColor="#B0B0B0"
+            android:textColor="@color/white"
             android:textSize="14sp"
+            android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="#20FFFFFF">
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="#33FFFFFF">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,8 +70,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Event Name"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:textColor="#00FFFF"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -76,60 +79,69 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Date &amp; Venue Info"
-                    android:textColor="#B0B0B0"
+                    android:textColor="#CCCCCC"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Participant Details"
-            android:textColor="#B0B0B0"
+            android:textColor="@color/white"
             android:textSize="14sp"
+            android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_input_rounded"
-            android:orientation="vertical"
-            android:padding="16dp">
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="#33FFFFFF">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Full Name"
-                android:textColor="#B0B0B0"
-                android:textSize="12sp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <TextView
-                android:id="@+id/tvCheckName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User Name"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="12dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Full Name"
+                    android:textColor="#CCCCCC"
+                    android:textSize="12sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="#B0B0B0"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tvCheckName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Name"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:id="@+id/tvCheckEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="user@example.com"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textColor="#CCCCCC"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvCheckEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user@example.com"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:id="@+id/paymentSection"
@@ -143,17 +155,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Payment Information"
-                android:textColor="#B0B0B0"
+                android:textColor="@color/white"
                 android:textSize="14sp"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="#20FFFFFF">
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="#33FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -165,7 +179,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Event Price"
-                        android:textColor="#B0B0B0"
+                        android:textColor="#CCCCCC"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp"/>
 
@@ -183,7 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Account Number"
-                        android:textColor="#B0B0B0"
+                        android:textColor="#CCCCCC"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp"/>
 
@@ -192,37 +206,43 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Number Info"
-                        android:textColor="@color/white"
+                        android:textColor="#00FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUploadProof"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:backgroundTint="@color/warna_primer"
+                android:layout_height="56dp"
                 android:text="Upload Payment Proof"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:cornerRadius="10dp"
+                android:textStyle="bold"
+                app:backgroundTint="#33FFFFFF"
+                app:strokeWidth="1dp"
+                app:strokeColor="#00FFFF"
+                app:cornerRadius="12dp"
                 android:layout_marginBottom="12dp"/>
         </LinearLayout>
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnConfirmRegister"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="24dp"
-        android:backgroundTint="@color/warna_primer"
         android:text="Get Ticket"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:cornerRadius="10dp"
+        android:textStyle="bold"
+        app:backgroundTint="#10FFFFFF"
+        app:strokeWidth="1dp"
+        app:strokeColor="#00FFFF"
+        app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

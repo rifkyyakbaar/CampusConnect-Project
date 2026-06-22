@@ -16,13 +16,14 @@
         android:padding="32dp"
         android:gravity="center_horizontal">
 
+        <!-- Kotak Logo Putih Solid -->
         <androidx.cardview.widget.CardView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/white">
+            app:cardBackgroundColor="#FFFFFF">
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -36,10 +37,11 @@
             android:layout_marginTop="24dp"
             android:gravity="center"
             android:text="Please sign in to continue your campus\nactivities."
-            android:textColor="#FFFFFF"
+            android:textColor="#CCCCCC"
             android:textSize="14sp"
             android:layout_marginBottom="40dp"/>
 
+        <!-- Label & Input Email -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,20 +51,29 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etEmail"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="name@gmail.com"
-            android:inputType="textEmailAddress"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/teks_utama"
-            android:textColorHint="@color/teks_sekunder"
-            android:textSize="14sp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="name@gmail.com"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:textSize="16sp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Label & Lupa Password -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,45 +93,58 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:text="Forgot Password?"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:textColor="#00FFFF"
+                android:textSize="13sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <!-- Input Password -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_marginBottom="32dp"
-            app:endIconMode="password_toggle"
-            app:endIconTint="@color/teks_sekunder"
-            app:hintEnabled="false">
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/bg_input_rounded"
-                android:hint="•••••••"
-                android:textColor="@color/teks_utama"
-                android:textColorHint="@color/teks_sekunder"
-                android:inputType="textPassword"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"/>
+                android:layout_height="match_parent"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/white"
+                app:hintEnabled="false"
+                app:boxBackgroundMode="none">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="•••••••"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        <Button
+        <!-- Tombol Sign In (Kembali ke Warna Biru Primer) -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignIn"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:backgroundTint="@color/warna_primer"
             android:text="Sign In  →"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp"
-            app:cornerRadius="10dp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/warna_primer"
+            app:cornerRadius="12dp"
             android:layout_marginBottom="32dp"/>
 
+        <!-- Garis Pemisah (Divider) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -132,37 +156,40 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#FFFFFF" />
+                android:background="#33FFFFFF" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:text="Or sign in with"
-                android:textColor="#FFFFFF"
+                android:textColor="#CCCCCC"
                 android:textSize="12sp" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#FFFFFF" />
+                android:background="#33FFFFFF" />
         </LinearLayout>
 
-        <Button
+        <!-- Tombol Google -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGoogleSignIn"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:backgroundTint="@color/bg_input"
+            android:layout_height="56dp"
             android:text="G  Continue with Google"
             android:textAllCaps="false"
-            android:textColor="@color/teks_utama"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            app:strokeColor="@color/garis_pembatas"
+            android:textStyle="bold"
+            app:backgroundTint="#1AFFFFFF"
             app:strokeWidth="1dp"
-            app:cornerRadius="10dp"
+            app:strokeColor="#00FFFF"
+            app:cornerRadius="12dp"
             android:layout_marginBottom="32dp"/>
 
+        <!-- Teks Register -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -173,7 +200,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Don't have an account? "
-                android:textColor="#FFFFFF"
+                android:textColor="#CCCCCC"
                 android:textSize="14sp" />
 
             <TextView
@@ -181,7 +208,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign up now"
-                android:textColor="#FFFFFF"
+                android:textColor="#00FFFF"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>

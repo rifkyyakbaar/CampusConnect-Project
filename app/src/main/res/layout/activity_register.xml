@@ -16,6 +16,7 @@
         android:padding="32dp"
         android:gravity="center_horizontal">
 
+        <!-- LOGO (TIDAK DIUBAH SESUAI PERMINTAAN) -->
         <androidx.cardview.widget.CardView
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -36,10 +37,11 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Please sign up to continue your campus\nactivities."
-            android:textColor="#B0B0B0"
+            android:textColor="#CCCCCC"
             android:textSize="14sp"
             android:layout_marginBottom="32dp"/>
 
+        <!-- Input Full Name (Glassy) -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,20 +51,29 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etFullName"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="Your Full Name"
-            android:inputType="textPersonName"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <EditText
+                android:id="@+id/etFullName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="Your Full Name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:textSize="16sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Input Email (Glassy) -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,20 +83,29 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etEmailRegister"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="name@gmail.com"
-            android:inputType="textEmailAddress"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <EditText
+                android:id="@+id/etEmailRegister"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="name@gmail.com"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:textSize="16sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Pilihan Role (Glassy Kapsul) -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,40 +115,54 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_input_rounded"
-            android:orientation="horizontal"
-            android:padding="4dp">
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-            <Button
-                android:id="@+id/btnRoleMahasiswa"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="#2000BFA5"
-                android:text="Mahasiswa/Umum"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                app:cornerRadius="8dp" />
+                android:orientation="horizontal"
+                android:padding="4dp">
 
-            <Button
-                android:id="@+id/btnRolePanitia"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="#00000000"
-                android:text="Panitia"
-                android:textAllCaps="false"
-                android:textColor="#B0B0B0"
-                android:textSize="12sp"
-                app:cornerRadius="8dp"
-                app:elevation="0dp" />
-        </LinearLayout>
+                <!-- Mahasiswa (Aktif: Neon Style) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRoleMahasiswa"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Mahasiswa/Umum"
+                    android:textAllCaps="false"
+                    android:textColor="#00FFFF"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#33FFFFFF"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#00FFFF"
+                    app:cornerRadius="10dp" />
 
+                <!-- Panitia (Pasif: Transparan Biasa) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRolePanitia"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Panitia"
+                    android:textAllCaps="false"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp"
+                    app:backgroundTint="@android:color/transparent"
+                    app:elevation="0dp"
+                    app:cornerRadius="10dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Input Password (Glassy + Ikon Mata) -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -138,20 +172,38 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etPasswordRegister"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="••••••••"
-            android:inputType="textPassword"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/white"
+                app:hintEnabled="false"
+                app:boxBackgroundMode="none">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPasswordRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="••••••••"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Input Confirm Password (Glassy + Ikon Mata) -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -161,30 +213,49 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etConfirmPassword"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="••••••••"
-            android:inputType="textPassword"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/white"
+                app:hintEnabled="false"
+                app:boxBackgroundMode="none">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="••••••••"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Checkbox Terms & Conditions -->
         <CheckBox
             android:id="@+id/cbTerms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Saya setuju dengan Syarat \u0026 Ketentuan serta Kebijakan Privasi CampusConnect."
             android:textSize="12sp"
-            android:textColor="#B0B0B0"
-            app:buttonTint="@color/warna_primer"
+            android:textColor="#CCCCCC"
+            app:buttonTint="#00FFFF"
             android:layout_marginBottom="24dp"/>
 
+        <!-- TOMBOL SIGN UP (TIDAK DIUBAH SESUAI PERMINTAAN) -->
         <Button
             android:id="@+id/btnSignUpSubmit"
             android:layout_width="match_parent"
@@ -197,6 +268,7 @@
             app:cornerRadius="10dp"
             android:layout_marginBottom="24dp"/>
 
+        <!-- Garis Pemisah (Divider) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -208,37 +280,40 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#1AFFFFFF" />
+                android:background="#33FFFFFF" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:text="Or sign up with"
-                android:textColor="#B0B0B0"
+                android:textColor="#CCCCCC"
                 android:textSize="12sp" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#1AFFFFFF" />
+                android:background="#33FFFFFF" />
         </LinearLayout>
 
-        <Button
+        <!-- Tombol Google Sign Up (Glassy + Neon Outline) -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGoogleSignUp"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:backgroundTint="@color/bg_input"
+            android:layout_height="56dp"
             android:text="G  Continue with Google"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:strokeColor="#1AFFFFFF"
+            android:textStyle="bold"
+            app:backgroundTint="#1AFFFFFF"
             app:strokeWidth="1dp"
-            app:cornerRadius="10dp"
+            app:strokeColor="#00FFFF"
+            app:cornerRadius="12dp"
             android:layout_marginBottom="24dp"/>
 
+        <!-- Arahkan ke Sign In -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -250,7 +325,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
-                android:textColor="#B0B0B0"
+                android:textColor="#CCCCCC"
                 android:textSize="14sp" />
 
             <TextView
@@ -258,7 +333,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign In"
-                android:textColor="@color/warna_primer"
+                android:textColor="#00FFFF"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>

@@ -6,29 +6,32 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_main_gradient">
 
+    <!-- Header -->
     <LinearLayout
         android:id="@+id/headerVerify"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="#1AFFFFFF"
         android:orientation="horizontal"
-        android:padding="20dp"
+        android:paddingHorizontal="16dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/btnBackVerify"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
             android:src="@android:drawable/ic_menu_revert"
             app:tint="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:text="Event Verification"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -36,20 +39,21 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:padding="24dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/headerVerify"
         app:layout_constraintBottom_toTopOf="@id/bottomVerifyBar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Submitted by Organizer:"
-                android:textColor="#B0B0B0"
+                android:textColor="#CCCCCC"
                 android:textSize="12sp" />
             <TextView
                 android:id="@+id/tvVerifyOrganizer"
@@ -59,150 +63,188 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="24dp"/>
-            <ImageView
-                android:id="@+id/imgVerifyPoster"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Poster dengan Frame Neon -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
-                android:scaleType="centerCrop"
-                android:background="#1AFFFFFF"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#00FFFF"
+                app:cardBackgroundColor="#1AFFFFFF">
+                <ImageView
+                    android:id="@+id/imgVerifyPoster"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"/>
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Event Title"
-                android:textColor="#B0B0B0"
-                android:textSize="12sp" />
-            <TextView
-                android:id="@+id/tvVerifyTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Workshop Web Development"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView
-                android:id="@+id/tvVerifyCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tvVerifyLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tvVerifyCapacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView
-                android:id="@+id/tvVerifyPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tvVerifyPaymentType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tvVerifyPaymentInfo"
+            <!-- Card Informasi Event -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp"/>
+                app:cardBackgroundColor="#33FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:text="Event Title"
+                        android:textColor="#CCCCCC"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tvVerifyTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Workshop Web Development"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVerifyCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#00FFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVerifyLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#E0E0E0"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVerifyCapacity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#E0E0E0"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVerifyPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#E0E0E0"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVerifyPaymentType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#E0E0E0"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVerifyPaymentInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#E0E0E0"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVerifyEventDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start : -"
+                        android:textColor="#CCCCCC"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:id="@+id/tvVerifyEventDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Start : -"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:text="Status"
-                android:textColor="#B0B0B0"
+                android:textColor="#CCCCCC"
                 android:textSize="12sp" />
-
             <TextView
                 android:id="@+id/tvVerifyStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 android:text="PENDING"
                 android:textColor="#F59E0B"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description Preview"
-                android:textColor="#B0B0B0"
+                android:textColor="#CCCCCC"
                 android:textSize="12sp" />
             <TextView
                 android:id="@+id/tvVerifyDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Description..."
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp" />
+                android:textColor="#E0E0E0"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp"/>
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+    <!-- Bottom Bar Glassy -->
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomVerifyBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="#1A1A1A"
+        app:cardBackgroundColor="#CC0A1128"
+        app:cardElevation="16dp"
+        app:cardCornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <Button
-            android:id="@+id/btnReject"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="#20DC2626"
-            android:text="Reject"
-            android:textAllCaps="false"
-            android:textColor="#DC2626"
-            app:cornerRadius="10dp"
-            app:strokeColor="#DC2626"
-            app:strokeWidth="1dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnApprove"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:backgroundTint="#00BFA5"
-            android:text="Approve"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:cornerRadius="10dp" />
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReject"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Reject"
+                android:textAllCaps="false"
+                android:textColor="#FF5252"
+                app:backgroundTint="#1AFFFFFF"
+                app:strokeWidth="1dp"
+                app:strokeColor="#FF5252"
+                app:cornerRadius="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApprove"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Approve"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="#00BFA5"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

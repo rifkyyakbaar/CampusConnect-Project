@@ -68,9 +68,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CATEGORY"
-                        android:textColor="@color/warna_primer"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:textColor="#00FFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05" />
 
                     <TextView
                         android:id="@+id/tvDetailDate"
@@ -78,8 +79,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:text="Date Info"
-                        android:textColor="#B0B0B0"
-                        android:textSize="12sp" />
+                        android:textColor="#CCCCCC"
+                        android:textSize="13sp" />
                 </RelativeLayout>
 
                 <TextView
@@ -88,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:text="Event Name"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp" />
 
@@ -103,7 +104,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@android:drawable/ic_dialog_map"
-                        app:tint="#B0B0B0"
+                        app:tint="#00FFFF"
                         android:layout_marginEnd="8dp" />
 
                     <TextView
@@ -111,14 +112,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Location"
-                        android:textColor="#B0B0B0"
+                        android:textColor="#CCCCCC"
                         android:textSize="14sp" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#1AFFFFFF"
+                    android:background="#33FFFFFF"
                     android:layout_marginBottom="24dp" />
 
                 <TextView
@@ -128,109 +129,130 @@
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
 
-                <TextView
-                    android:id="@+id/tvDetailDescription"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Description goes here..."
-                    android:textColor="#CCFFFFFF"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp" />
+                    app:cardBackgroundColor="#20FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#00FFFF">
+
+                    <TextView
+                        android:id="@+id/tvDetailDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:text="Description goes here..."
+                        android:textColor="#E0E0E0"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="6dp" />
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#1A1A1A"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="20dp"
-        android:gravity="center_vertical"
+        app:cardBackgroundColor="#CC0A1128"
+        app:cardElevation="16dp"
+        app:cardCornerRadius="0dp"
+        app:strokeWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- KIRI: Sisa Tiket -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="20dp"
+            android:gravity="center_vertical">
 
-            <TextView
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sisa Tiket"
+                    android:textColor="#CCCCCC"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvTicketsLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-- / --"
+                    android:textColor="#00FFFF"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sisa Tiket"
-                android:textColor="#B0B0B0"
-                android:textSize="11sp" />
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp">
 
-            <TextView
-                android:id="@+id/tvTicketsLeft"
-                android:layout_width="wrap_content"
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btnScanTicket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_camera"
+                    android:contentDescription="Scan Tiket QR"
+                    app:backgroundTint="#00FFFF"
+                    app:tint="#0A1128"
+                    app:fabSize="normal"
+                    app:elevation="0dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Scan QR"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="-- / --"
-                android:textColor="@color/warna_primer"
-                android:textStyle="bold"
-                android:textSize="18sp" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnManageParticipants"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Peserta"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    app:backgroundTint="#33FFFFFF"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#00FFFF"
+                    app:cornerRadius="14dp" />
+            </LinearLayout>
+
         </LinearLayout>
-
-        <!-- TENGAH: Tombol Scan QR bulat (FAB) -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btnScanTicket"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_camera"
-                android:contentDescription="Scan Tiket QR"
-                app:backgroundTint="@color/warna_primer"
-                app:tint="@color/white"
-                app:fabSize="normal"
-                app:elevation="4dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Scan QR"
-                android:textColor="#B0B0B0"
-                android:textSize="11sp"
-                android:gravity="center" />
-        </LinearLayout>
-
-        <!-- KANAN: Manage Participants -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/btnManageParticipants"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Peserta"
-                android:textAllCaps="false"
-                android:textSize="13sp"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/warna_primer"
-                app:cornerRadius="12dp" />
-        </LinearLayout>
-
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -203,9 +203,10 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1C1C1C"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        android:background="@drawable/bg_navbar_glass"
+        app:itemActiveIndicatorStyle="@null"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/admin_bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent" />

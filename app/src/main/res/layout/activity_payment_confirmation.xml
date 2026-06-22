@@ -12,123 +12,188 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingBottom="32dp">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@android:drawable/ic_media_previous"
-            app:tint="@color/white"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#1AFFFFFF"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Payment Confirmation"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_marginTop="16dp"/>
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="@color/white" />
 
-        <androidx.cardview.widget.CardView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Payment Confirmation"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="#20FFFFFF">
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="#33FFFFFF">
 
-                <TextView
-                    android:text="Event"
-                    android:textColor="#B0B0B0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/tvEventName"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <Space
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                <TextView
-                    android:text="Price"
-                    android:textColor="#B0B0B0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:text="Event Name"
+                        android:textColor="#CCCCCC"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/warna_primer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tvEventName"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="2dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-                <Space
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#20FFFFFF"
+                        android:layout_marginVertical="16dp"/>
+
+                    <TextView
+                        android:text="Total Payment"
+                        android:textColor="#CCCCCC"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/tvPrice"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#00FFFF"
+                        android:layout_marginTop="2dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#20FFFFFF"
+                        android:layout_marginVertical="16dp"/>
+
+                    <TextView
+                        android:text="Payment Information"
+                        android:textColor="#CCCCCC"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/tvPaymentInfo"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                app:cardBackgroundColor="#1AFFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#00FFFF">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"/>
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Payment Information"
-                    android:textColor="#B0B0B0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#80FFFFFF"/>
 
-                <TextView
-                    android:id="@+id/tvPaymentInfo"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Proof preview"
+                        android:textColor="#80FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imgProof"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"/>
+            </com.google.android.material.card.MaterialCardView>
 
-            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnChooseImage"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Choose Payment Proof"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp"
+                app:backgroundTint="#33FFFFFF"
+                app:cornerRadius="12dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#33FFFFFF" />
 
-        </androidx.cardview.widget.CardView>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirmPayment"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Confirm Payment"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                app:backgroundTint="#33FFFFFF"
+                app:cornerRadius="12dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#00FFFF" />
 
-
-        <ImageView
-            android:id="@+id/imgProof"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:background="#20FFFFFF"
-            android:scaleType="centerCrop"/>
-
-        <Button
-            android:id="@+id/btnChooseImage"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="Choose Payment Proof"
-            android:textAllCaps="false"
-            android:backgroundTint="#30FFFFFF"
-            android:textColor="@color/white"
-            android:layout_marginTop="20dp"
-            app:cornerRadius="10dp"/>
-
-        <Button
-            android:id="@+id/btnConfirmPayment"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="Confirm Payment"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/warna_primer"
-            android:textColor="@color/white"
-            android:layout_marginTop="16dp"
-            app:cornerRadius="10dp"/>
-
+        </LinearLayout>
     </LinearLayout>
-
 </ScrollView>

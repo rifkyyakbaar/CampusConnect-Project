@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="6dp"
-    app:cardBackgroundColor="#1AFFFFFF"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="0dp">
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#33FFFFFF"
+    app:cardBackgroundColor="#33FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,14 +19,15 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Foto profil -->
-        <ImageView
+        <!-- Foto profil (Bulat) -->
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgUserAvatar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:scaleType="centerCrop"
-            android:background="#30FFFFFF"
-            android:src="@android:drawable/ic_menu_myplaces" />
+            android:background="#33FFFFFF"
+            android:src="@android:drawable/ic_menu_myplaces"
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
 
         <!-- Info user -->
         <LinearLayout
@@ -32,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:layout_marginStart="16dp">
 
             <TextView
                 android:id="@+id/tvUserName"
@@ -40,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="Nama Lengkap"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -48,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="email@example.com"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#CCCCCC"
                 android:textSize="12sp"
                 android:layout_marginTop="2dp" />
 
@@ -57,26 +60,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mahasiswa"
-                android:textColor="@color/teks_sekunder"
+                android:textColor="#00FFFF"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:layout_marginTop="2dp" />
-
         </LinearLayout>
 
-        <!-- Badge status -->
+        <!-- Badge status (Gaya Neon Tipis) -->
         <TextView
             android:id="@+id/tvUserStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ACTIVE"
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:textStyle="bold"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:background="@drawable/bg_badge" />
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:textColor="#00FFFF"
+            android:background="@drawable/bg_card_transparan" />
+        <!-- Pastikan bg_badge_transparent adalah drawable dengan border warna #00FFFF -->
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

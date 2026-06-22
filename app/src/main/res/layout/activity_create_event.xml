@@ -14,6 +14,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <!-- Top Bar -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,8 +22,10 @@
 
             <ImageView
                 android:id="@+id/btnBackCreate"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
                 android:src="@android:drawable/ic_menu_revert"
                 app:tint="@color/white" />
 
@@ -37,14 +40,17 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <androidx.cardview.widget.CardView
+        <!-- Upload Header Image -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvUploadHeaderImage"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_marginBottom="10dp"
-            app:cardBackgroundColor="#20FFFFFF"
+            app:cardBackgroundColor="#33FFFFFF"
             app:cardCornerRadius="12dp"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#00FFFF">
 
             <ImageView
                 android:id="@+id/ivHeaderImagePreview"
@@ -66,14 +72,15 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_menu_camera"
-                    app:tint="#B0B0B0" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Gambar header"
-                    android:textColor="#B0B0B0"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     android:textSize="14sp" />
 
                 <TextView
@@ -81,10 +88,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Landscape min 800x360 px, max 8 MB"
-                    android:textColor="#80FFFFFF"
+                    android:textColor="#CCFFFFFF"
                     android:textSize="12sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:layout_width="match_parent"
@@ -94,14 +101,17 @@
             android:textColor="#CCFFFFFF"
             android:textSize="12sp" />
 
-        <androidx.cardview.widget.CardView
+        <!-- Upload General Image -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvUploadGeneralImage"
             android:layout_width="match_parent"
             android:layout_height="260dp"
             android:layout_marginBottom="10dp"
-            app:cardBackgroundColor="#20FFFFFF"
+            app:cardBackgroundColor="#33FFFFFF"
             app:cardCornerRadius="12dp"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#00FFFF">
 
             <ImageView
                 android:id="@+id/ivGeneralImagePreview"
@@ -123,14 +133,15 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_menu_camera"
-                    app:tint="#B0B0B0" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Gambar umum"
-                    android:textColor="#B0B0B0"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     android:textSize="14sp" />
 
                 <TextView
@@ -138,19 +149,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Portrait min 600x800 px, max 8 MB"
-                    android:textColor="#80FFFFFF"
+                    android:textColor="#CCFFFFFF"
                     android:textSize="12sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Dipakai pada kartu event peserta. Gambar yang terlalu panjang akan otomatis dipotong mengikuti frame."
+            android:layout_marginBottom="24dp"
+            android:text="Dipakai pada kartu event peserta. Gambar yang terlalu panjang akan otomatis dipotong."
             android:textColor="#CCFFFFFF"
             android:textSize="12sp" />
 
+        <!-- Event Name -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -159,17 +171,27 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etEventName"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="Enter event name"
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:paddingHorizontal="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <EditText
+                android:id="@+id/etEventName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="Enter event name"
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:paddingHorizontal="16dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Category & Capacity -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -191,12 +213,21 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
-                <Spinner
-                    android:id="@+id/spCategory"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:background="@drawable/bg_input_rounded"
-                    android:paddingHorizontal="12dp" />
+                    android:layout_height="56dp"
+                    app:cardBackgroundColor="#33FFFFFF"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <Spinner
+                        android:id="@+id/spCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:paddingHorizontal="12dp" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <LinearLayout
@@ -214,19 +245,29 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
-                <EditText
-                    android:id="@+id/etCapacity"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:background="@drawable/bg_input_rounded"
-                    android:inputType="number"
-                    android:hint="e.g. 500"
-                    android:textColor="@color/white"
-                    android:textColorHint="#CCFFFFFF"
-                    android:paddingHorizontal="16dp"/>
+                    android:layout_height="56dp"
+                    app:cardBackgroundColor="#33FFFFFF"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <EditText
+                        android:id="@+id/etCapacity"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:inputType="number"
+                        android:hint="e.g. 500"
+                        android:textColor="@color/white"
+                        android:textColorHint="#CCFFFFFF"
+                        android:paddingHorizontal="16dp"/>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Ticket Price -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -235,18 +276,28 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etTicketPrice"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:inputType="number"
-            android:hint="Leave empty for free event"
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:paddingHorizontal="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <EditText
+                android:id="@+id/etTicketPrice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:inputType="number"
+                android:hint="Leave empty for free event"
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:paddingHorizontal="16dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Payment Information -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -255,18 +306,28 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etPaymentInfo"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:background="@drawable/bg_input_rounded"
-            android:gravity="top"
-            android:hint="Payment details..."
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <EditText
+                android:id="@+id/etPaymentInfo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="Payment details..."
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:padding="16dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Location -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -275,17 +336,27 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etLocation"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/bg_input_rounded"
-            android:hint="e.g. Main Auditorium"
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:paddingHorizontal="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <EditText
+                android:id="@+id/etLocation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="e.g. Main Auditorium"
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:paddingHorizontal="16dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Event Date & Time -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -300,35 +371,54 @@
             android:orientation="horizontal"
             android:layout_marginBottom="16dp">
 
-            <EditText
-                android:id="@+id/etEventDate"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="55dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_input_rounded"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="Date"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/white"
-                android:textColorHint="#CCFFFFFF" />
+                app:cardBackgroundColor="#33FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
-            <EditText
-                android:id="@+id/etEventTime"
+                <EditText
+                    android:id="@+id/etEventDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="Date"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_marginStart="8dp"
+                android:layout_height="56dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_input_rounded"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="Time"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/white"
-                android:textColorHint="#CCFFFFFF" />
+                android:layout_marginStart="8dp"
+                app:cardBackgroundColor="#33FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <EditText
+                    android:id="@+id/etEventTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="Time"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF" />
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
+        <!-- Description -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -337,28 +427,41 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etDescription"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:background="@drawable/bg_input_rounded"
-            android:gravity="top|start"
-            android:hint="Detail about the event..."
-            android:textColor="@color/white"
-            android:textColorHint="#CCFFFFFF"
-            android:padding="16dp"
-            android:layout_marginBottom="32dp"/>
+            android:layout_marginBottom="32dp"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-        <Button
+            <EditText
+                android:id="@+id/etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:gravity="top|start"
+                android:hint="Detail about the event..."
+                android:textColor="@color/white"
+                android:textColorHint="#CCFFFFFF"
+                android:padding="16dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Submit Button -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitEvent"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:backgroundTint="@color/warna_primer"
             android:text="Publish Event"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp"
-            app:cornerRadius="10dp" />
+            android:textStyle="bold"
+            app:backgroundTint="#10FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#00FFFF"
+            app:cornerRadius="12dp" />
 
     </LinearLayout>
 </ScrollView>

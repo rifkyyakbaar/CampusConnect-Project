@@ -4,14 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_utama">
+    android:background="@drawable/bg_main_gradient">
 
-    <!-- Header -->
+    <!-- Header (Latar Transparan Kaca) -->
     <LinearLayout
         android:id="@+id/headerReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/warna_primer"
+        android:background="#1AFFFFFF"
         android:orientation="vertical"
         android:padding="24dp"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,6 +22,7 @@
             android:layout_height="32dp"
             android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
             android:src="@android:drawable/ic_menu_revert"
             app:tint="@color/white" />
 
@@ -37,13 +38,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:alpha="0.8"
             android:text="Bagikan pengalaman kamu di event ini"
-            android:textColor="@color/white"
+            android:textColor="#CCCCCC"
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Konten -->
+    <!-- Konten Scroll -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -57,17 +57,17 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Label Rating -->
+            <!-- Label Rating (Warna Putih agar terbaca) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rating Event"
-                android:textColor="@color/teks_utama"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- RatingBar di tengah -->
+            <!-- RatingBar (Warna Bintang Neon) -->
             <RatingBar
                 android:id="@+id/ratingBar"
                 style="@style/Widget.AppCompat.RatingBar"
@@ -79,6 +79,9 @@
                 android:rating="0"
                 android:scaleX="1.2"
                 android:scaleY="1.2"
+                android:progressTint="#00FFFF"
+                android:secondaryProgressTint="#00FFFF"
+                android:progressBackgroundTint="#33FFFFFF"
                 android:layout_marginBottom="36dp"/>
 
             <!-- Label Komentar -->
@@ -86,29 +89,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Komentar (opsional)"
-                android:textColor="@color/teks_utama"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- Input Komentar -->
-            <EditText
-                android:id="@+id/etComment"
+            <!-- Input Komentar (Glassmorphism + Garis Neon) -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:background="@color/bg_input"
-                android:gravity="top|start"
-                android:hint="Ceritakan pengalaman kamu..."
-                android:inputType="textMultiLine"
-                android:padding="16dp"
-                android:textColor="@color/teks_utama"
-                android:textColorHint="@color/teks_sekunder"
-                android:textSize="14sp"/>
+                android:layout_height="160dp"
+                app:cardBackgroundColor="#33FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#00FFFF">
+
+                <EditText
+                    android:id="@+id/etComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="top|start"
+                    android:hint="Ceritakan pengalaman kamu..."
+                    android:inputType="textMultiLine"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#CCFFFFFF"
+                    android:textSize="14sp"/>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- Tombol Submit -->
+    <!-- Tombol Submit (KEMBALI KE DESAIN ASLI MILIKMU) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubmitReview"
         android:layout_width="0dp"

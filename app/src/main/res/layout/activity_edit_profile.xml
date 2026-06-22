@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 tools:text="Nama Pengguna"
-                android:textColor="@color/white"
+                android:textColor="#00FFFF"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -86,7 +86,7 @@
                 android:layout_marginTop="4dp"
                 android:background="?attr/selectableItemBackground"
                 android:text="Upload profile picture"
-                android:textColor="@color/warna_primer"
+                android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -105,16 +105,25 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/etEditName"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_input_rounded"
-                    android:hint="Your full name"
-                    android:paddingHorizontal="16dp"
-                    android:textColor="@color/white"
-                    android:textColorHint="#CCFFFFFF"
-                    android:textSize="16sp" />
+                    app:cardBackgroundColor="#33FFFFFF"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <EditText
+                        android:id="@+id/etEditName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:hint="Your full name"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="#CCFFFFFF"
+                        android:textSize="16sp" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -126,17 +135,26 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/etEditEmail"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_input_rounded"
-                    android:hint="Your email address"
-                    android:inputType="textEmailAddress"
-                    android:paddingHorizontal="16dp"
-                    android:textColor="@color/white"
-                    android:textColorHint="#CCFFFFFF"
-                    android:textSize="16sp" />
+                    app:cardBackgroundColor="#33FFFFFF"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <EditText
+                        android:id="@+id/etEditEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:hint="Your email address"
+                        android:inputType="textEmailAddress"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="#CCFFFFFF"
+                        android:textSize="16sp" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -148,16 +166,25 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/etEditRole"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_input_rounded"
-                    android:hint="Your role"
-                    android:paddingHorizontal="16dp"
-                    android:textColor="@color/white"
-                    android:textColorHint="#CCFFFFFF"
-                    android:textSize="16sp" />
+                    app:cardBackgroundColor="#33FFFFFF"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <EditText
+                        android:id="@+id/etEditRole"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:hint="Your role"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="#CCFFFFFF"
+                        android:textSize="16sp" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSaveChanges"
@@ -169,7 +196,9 @@
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:backgroundTint="@color/warna_primer"
+                    app:backgroundTint="#10FFFFFF"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#00FFFF"
                     app:cornerRadius="12dp" />
 
             </LinearLayout>

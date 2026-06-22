@@ -64,14 +64,15 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/tvPanitiaName">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            app:cardCornerRadius="12dp"
-            app:cardBackgroundColor="#20FFFFFF"
-            app:cardElevation="0dp">
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="8dp"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,8 +85,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Active Events"
-                    android:textColor="#B0B0B0"
-                    android:textSize="12sp" />
+                    android:textColor="#6B7280"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tvTotalEvents"
@@ -93,20 +95,21 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@color/warna_primer"
-                    android:textSize="24sp"
+                    android:textSize="28sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            app:cardCornerRadius="12dp"
-            app:cardBackgroundColor="#20FFFFFF"
-            app:cardElevation="0dp">
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="8dp"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -119,8 +122,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Total Registrants"
-                    android:textColor="#B0B0B0"
-                    android:textSize="12sp" />
+                    android:textColor="#6B7280"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tvTotalRegistrants"
@@ -128,11 +132,11 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@color/warna_primer"
-                    android:textSize="24sp"
+                    android:textSize="28sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <HorizontalScrollView

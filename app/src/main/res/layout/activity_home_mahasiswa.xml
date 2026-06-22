@@ -18,11 +18,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Custom Top Bar -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="24dp">
+
                 <TextView
                     android:id="@+id/tvLogoText"
                     android:layout_width="wrap_content"
@@ -31,6 +31,7 @@
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+
                 <ImageView
                     android:id="@+id/ivBell"
                     android:layout_width="28dp"
@@ -40,16 +41,17 @@
                     app:tint="@color/white" />
             </RelativeLayout>
 
-            <!-- Search Bar -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvSearchBar"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#20FFFFFF"
+                app:cardBackgroundColor="#33FFFFFF"
                 app:cardCornerRadius="25dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#00FFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,9 +78,8 @@
                         android:maxLines="1"
                         android:inputType="text" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Top Slider Poster -->
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vpEventSlider"
                 android:layout_width="match_parent"
@@ -87,7 +88,6 @@
                 android:clipToPadding="false"
                 android:clipChildren="false" />
 
-            <!-- Category Filter Buttons -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -109,15 +109,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- Seminar -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btnCatSeminar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="#30FFFFFF"
-                        app:cardElevation="0dp">
+                        app:cardBackgroundColor="#33FFFFFF"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#00FFFF">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -126,17 +127,18 @@
                             android:text="Seminar"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Workshop -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btnCatWorkshop"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="#30FFFFFF"
-                        app:cardElevation="0dp">
+                        app:cardBackgroundColor="#33FFFFFF"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#00FFFF">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -145,17 +147,18 @@
                             android:text="Workshop"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Dies Natalis -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btnCatDiesNatalis"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="#30FFFFFF"
-                        app:cardElevation="0dp">
+                        app:cardBackgroundColor="#33FFFFFF"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#00FFFF">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -164,17 +167,18 @@
                             android:text="Dies Natalis"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Lainnya -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btnCatLainnya"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="#30FFFFFF"
-                        app:cardElevation="0dp">
+                        app:cardBackgroundColor="#33FFFFFF"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#00FFFF">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -183,17 +187,17 @@
                             android:text="Lainnya"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- Popular Events Header -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:paddingHorizontal="16dp">
+
                 <TextView
                     android:id="@+id/tvSeeAll"
                     android:layout_width="wrap_content"
@@ -222,10 +226,11 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_gravity="bottom"
-        android:background="@color/bg_input"
-        app:itemIconSize="22dp"
-        app:itemIconTint="@color/warna_primer"
-        app:itemTextColor="@color/warna_primer"
+        android:background="#CC0A1128"
+        app:itemIconSize="24dp"
+        app:itemActiveIndicatorStyle="@null"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu" />
 
