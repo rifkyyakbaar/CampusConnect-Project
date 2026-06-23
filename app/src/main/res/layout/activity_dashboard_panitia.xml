@@ -17,30 +17,77 @@
 
     <TextView
         android:id="@+id/tvDashboardTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
         android:text="Organizer Dashboard"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/btnOpenProfile"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Profile"
-        android:padding="8dp"
-        android:src="@android:drawable/ic_menu_myplaces"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
+        app:layout_constraintEnd_toStartOf="@id/layoutTopIcons" />
+
+    <!--
+        Grup ikon kanan atas: [Bell + badge]  [Profile]
+        Diposisikan di pojok kanan atas, sejajar dengan tvDashboardTitle.
+    -->
+    <LinearLayout
+        android:id="@+id/layoutTopIcons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Bell + badge merah -->
+        <FrameLayout
+            android:id="@+id/frameBellPanitia"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginEnd="4dp">
+
+            <ImageView
+                android:id="@+id/ivBellPanitia"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_popup_reminder"
+                app:tint="@color/white" />
+
+            <!-- Badge merah — tersembunyi secara default -->
+            <TextView
+                android:id="@+id/tvNotifBadgePanitia"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="top|end"
+                android:background="@drawable/bg_badge_red"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="2"
+                tools:visibility="visible" />
+        </FrameLayout>
+
+        <!-- Tombol Profile -->
+        <ImageButton
+            android:id="@+id/btnOpenProfile"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Profile"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_myplaces"
+            app:tint="@color/white" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvPanitiaName"
@@ -87,17 +134,17 @@
                     android:text="Active Events"
                     android:textColor="#6B7280"
                     android:textSize="12sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvTotalEvents"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="0"
                     android:textColor="@color/warna_primer"
                     android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp"/>
+                    android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -124,17 +171,17 @@
                     android:text="Total Registrants"
                     android:textColor="#6B7280"
                     android:textSize="12sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvTotalRegistrants"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="0"
                     android:textColor="@color/warna_primer"
                     android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp"/>
+                    android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
@@ -144,10 +191,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:scrollbars="none"
         android:clipToPadding="false"
-        android:paddingStart="24dp"
         android:paddingEnd="12dp"
+        android:paddingStart="24dp"
+        android:scrollbars="none"
         app:layout_constraintTop_toBottomOf="@id/layoutStats">
 
         <LinearLayout
@@ -160,10 +207,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                app:cardCornerRadius="20dp"
                 app:cardBackgroundColor="@color/warna_primer"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="0dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -171,8 +217,8 @@
                     android:paddingVertical="8dp"
                     android:text="All"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -180,10 +226,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                app:cardCornerRadius="20dp"
                 app:cardBackgroundColor="#30FFFFFF"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="0dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -191,8 +236,8 @@
                     android:paddingVertical="8dp"
                     android:text="Waiting"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -200,10 +245,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                app:cardCornerRadius="20dp"
                 app:cardBackgroundColor="#30FFFFFF"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="0dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -211,8 +255,8 @@
                     android:paddingVertical="8dp"
                     android:text="Approved"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -220,10 +264,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                app:cardCornerRadius="20dp"
                 app:cardBackgroundColor="#30FFFFFF"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="0dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -231,18 +274,17 @@
                     android:paddingVertical="8dp"
                     android:text="Rejected"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btnFilterFinished"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
                 app:cardBackgroundColor="#30FFFFFF"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="0dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -250,12 +292,11 @@
                     android:paddingVertical="8dp"
                     android:text="Finished"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-
     </HorizontalScrollView>
 
     <TextView
@@ -288,8 +329,8 @@
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/warna_primer"
         android:src="@android:drawable/ic_input_add"
-        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.campusconnect.app.R
 import com.campusconnect.app.data.SupabaseRepository
+import com.campusconnect.app.util.ReminderScheduler
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PaymentConfirmationActivity : AppCompatActivity() {
 
@@ -122,6 +125,23 @@ class PaymentConfirmationActivity : AppCompatActivity() {
                         "Pembayaran berhasil dikirim, menunggu persetujuan panitia",
                         Toast.LENGTH_LONG
                     ).show()
+
+                    // Jadwalkan reminder meski tiket masih PENDING —
+                    // kalau panitia approve, reminder sudah terjadwal.
+                    runCatching {
+                        val user = SupabaseRepository.currentUser(this)
+                        val ts = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+                            .parse(eventDate)?.time ?: 0L
+                        if (user != null && ts > System.currentTimeMillis()) {
+                            ReminderScheduler.scheduleAllReminders(
+                                context            = this,
+                                userId             = user.uid,
+                                eventId            = eventId,
+                                eventName          = eventName,
+                                eventDateTimestamp = ts
+                            )
+                        }
+                    }
 
                     finish()
 

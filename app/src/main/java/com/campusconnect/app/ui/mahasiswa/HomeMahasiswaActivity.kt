@@ -6,6 +6,8 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -49,6 +51,44 @@ class HomeMahasiswaActivity : AppCompatActivity() {
         setupBottomNavigation()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Perbarui badge setiap kali layar ini aktif kembali
+        // (misalnya setelah kembali dari NotificationActivity)
+        refreshNotifBadge()
+
+        if (allEvents.isNotEmpty()) {
+            sliderHandler.postDelayed(sliderRunnable, 3000)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.removeCallbacks(sliderRunnable)
+    }
+
+    // ─────────────────────────────────────────
+    // Badge Notifikasi
+    // ─────────────────────────────────────────
+
+    private fun refreshNotifBadge() {
+        SupabaseRepository.getUnreadNotificationCount(this) { result ->
+            val count = result.getOrDefault(0)
+            val badge = binding.tvNotifBadge
+            if (count > 0) {
+                badge.visibility = View.VISIBLE
+                // Tampilkan angka; jika > 99 tampilkan "99+"
+                badge.text = if (count > 99) "99+" else count.toString()
+            } else {
+                badge.visibility = View.GONE
+            }
+        }
+    }
+
+    // ─────────────────────────────────────────
+    // Setup
+    // ─────────────────────────────────────────
+
     private fun setupPageTransformer(viewPager: ViewPager2) {
         val transformer = CompositePageTransformer()
         transformer.addTransformer(MarginPageTransformer(40))
@@ -87,14 +127,15 @@ class HomeMahasiswaActivity : AppCompatActivity() {
     }
 
     private fun openEventDetail(event: Event) {
-            val intent = Intent(this, DetailEventActivity::class.java)
-            intent.putExtra("eventId", event.id)
-            intent.putExtra("eventPrice", event.eventPrice)
-            startActivity(intent)
+        val intent = Intent(this, DetailEventActivity::class.java)
+        intent.putExtra("eventId", event.id)
+        intent.putExtra("eventPrice", event.eventPrice)
+        startActivity(intent)
     }
 
     private fun setupListeners() {
-        binding.ivBell.setBlinkOnClick {
+        // Klik bell → NotificationActivity, badge otomatis refresh saat kembali (onResume)
+        binding.frameBell.setBlinkOnClick {
             startActivity(Intent(this, NotificationActivity::class.java))
         }
 
@@ -124,7 +165,9 @@ class HomeMahasiswaActivity : AppCompatActivity() {
     }
 
     private fun applyFilters() {
-        val results = allEvents.filter { it.eventName.contains(currentSearchQuery, ignoreCase = true) }
+        val results = allEvents.filter {
+            it.eventName.contains(currentSearchQuery, ignoreCase = true)
+        }
         filteredEvents.clear()
         filteredEvents.addAll(results)
         adapter.notifyDataSetChanged()
@@ -151,18 +194,6 @@ class HomeMahasiswaActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (allEvents.isNotEmpty()) {
-            sliderHandler.postDelayed(sliderRunnable, 3000)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sliderHandler.removeCallbacks(sliderRunnable)
-    }
-
     private fun setupBottomNavigation() {
         binding.bottomNavigation.selectedItemId = R.id.nav_home
         binding.bottomNavigation.setOnItemSelectedListener { item ->
@@ -170,17 +201,17 @@ class HomeMahasiswaActivity : AppCompatActivity() {
                 R.id.nav_home -> true
                 R.id.nav_ticket -> {
                     startActivity(Intent(this, ManageTicketActivity::class.java))
-                    overridePendingTransition(0,0)
+                    overridePendingTransition(0, 0)
                     true
                 }
                 R.id.nav_history -> {
                     startActivity(Intent(this, HistoryActivity::class.java))
-                    overridePendingTransition(0,0)
+                    overridePendingTransition(0, 0)
                     true
                 }
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
-                    overridePendingTransition(0,0)
+                    overridePendingTransition(0, 0)
                     true
                 }
                 else -> false

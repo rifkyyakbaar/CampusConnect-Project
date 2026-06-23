@@ -32,13 +32,41 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/ivBell"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="@color/white" />
+                <!--
+                    FrameLayout sebagai wrapper bell + badge.
+                    Badge (tvNotifBadge) menempel di pojok kanan atas ivBell.
+                -->
+                <FrameLayout
+                    android:id="@+id/frameBell"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentEnd="true">
+
+                    <ImageView
+                        android:id="@+id/ivBell"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:src="@android:drawable/ic_popup_reminder"
+                        app:tint="@color/white" />
+
+                    <!-- Badge merah — disembunyikan secara default -->
+                    <TextView
+                        android:id="@+id/tvNotifBadge"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="top|end"
+                        android:background="@drawable/bg_badge_red"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="3"
+                        tools:visibility="visible" />
+
+                </FrameLayout>
+
             </RelativeLayout>
 
             <com.google.android.material.card.MaterialCardView

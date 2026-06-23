@@ -116,6 +116,7 @@ class VerifyEventActivity : AppCompatActivity() {
         setActionLoading(true)
 
         SupabaseRepository.updateEventStatus(
+            this,
             eventId,
             "approved"
         ) { result ->
@@ -147,6 +148,7 @@ class VerifyEventActivity : AppCompatActivity() {
         setActionLoading(true)
 
         SupabaseRepository.updateEventStatus(
+            this,
             eventId,
             "rejected"
         ) { result ->

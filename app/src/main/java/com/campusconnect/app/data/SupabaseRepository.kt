@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.webkit.MimeTypeMap
 import com.campusconnect.app.model.Event
+import com.campusconnect.app.model.Notification
 import com.campusconnect.app.model.Ticket
 import com.campusconnect.app.model.Peserta
 import com.campusconnect.app.model.Review
@@ -369,6 +370,7 @@ object SupabaseRepository {
     }
 
     fun updateEventStatus(
+        context: Context,
         eventId: String,
         status: String,
         callback: (Result<Unit>) -> Unit
@@ -387,8 +389,102 @@ object SupabaseRepository {
             prefer = "return=minimal"
         )
 
+        runCatching {
+            val eventResp = request(
+                "GET",
+                "$SUPABASE_REST_URL/events?eventId=eq.${encode(eventId)}&limit=1"
+            )
+            val rows = eventResp.getJSONArray("data")
+            if (rows.length() == 0) return@runCatching
+
+            val event        = rows.getJSONObject(0)
+            val organizerId  = event.optString("organizerId")
+            val eventName    = event.optString("eventName", "event kamu")
+            val newEventDate = event.optString("eventDate", "")
+            val newLocation  = event.optString("location", "")
+
+            if (status.equals("approved", ignoreCase = true)) {
+                createNotification(
+                    context = context,
+                    userId  = organizerId,
+                    title   = "Event Disetujui 🎉",
+                    message = "Selamat! Event \"$eventName\" telah disetujui oleh administrator dan sekarang tampil di beranda mahasiswa.",
+                    type    = "EVENT_APPROVED"
+                )
+
+                runCatching {
+                    val ticketResp = request(
+                        "GET",
+                        "$SUPABASE_REST_URL/tickets?eventid=eq.${encode(eventId)}&status=in.(CONFIRMED,PENDING)",
+                        bearer = accessToken(context)
+                    )
+                    val ticketRows = ticketResp.getJSONArray("data")
+
+                    val affectedUserIds = mutableSetOf<String>()
+                    val hasTickets      = ticketRows.length() > 0
+
+                    if (hasTickets) {
+                        // Cek apakah tanggal/lokasi berubah dibanding tiket lama
+                        val firstTicket     = ticketRows.getJSONObject(0)
+                        val oldEventDate    = firstTicket.optString("eventdate", "")
+                        val oldEventLocation = firstTicket.optString("eventlocation", "")
+
+                        val dateChanged     = newEventDate.isNotBlank() && newEventDate != oldEventDate
+                        val locationChanged = newLocation.isNotBlank() && newLocation != oldEventLocation
+                        val infoChanged     = dateChanged || locationChanged
+
+                        if (infoChanged) {
+                            val ticketUpdateBody = JSONObject()
+                            if (dateChanged)     ticketUpdateBody.put("eventdate",     newEventDate)
+                            if (locationChanged) ticketUpdateBody.put("eventlocation", newLocation)
+
+                            request(
+                                "PATCH",
+                                "$SUPABASE_REST_URL/tickets?eventid=eq.${encode(eventId)}&status=in.(CONFIRMED,PENDING)",
+                                ticketUpdateBody,
+                                bearer = accessToken(context),
+                                prefer = "return=minimal"
+                            )
+
+                            for (i in 0 until ticketRows.length()) {
+                                val uid = ticketRows.getJSONObject(i).optString("userid")
+                                if (uid.isNotBlank()) affectedUserIds.add(uid)
+                            }
+
+                            val changeDetail = buildString {
+                                if (dateChanged) append("Waktu: $newEventDate")
+                                if (dateChanged && locationChanged) append("\n")
+                                if (locationChanged) append("Lokasi: $newLocation")
+                            }
+
+                            // Kirim notifikasi ke setiap peserta
+                            for (uid in affectedUserIds) {
+                                createNotification(
+                                    context = context,
+                                    userId  = uid,
+                                    title   = "Informasi Event Diperbarui 📋",
+                                    message = "Informasi event \"$eventName\" telah diubah oleh panitia.\n$changeDetail\nSilakan cek tiket kamu.",
+                                    type    = "EVENT_UPDATED"
+                                )
+                            }
+                        }
+                    }
+                }
+
+            } else {
+                createNotification(
+                    context = context,
+                    userId  = organizerId,
+                    title   = "Event Ditolak",
+                    message = "Mohon maaf. Event \"$eventName\" tidak disetujui oleh administrator.",
+                    type    = "EVENT_REJECTED"
+                )
+            }
+        }
+
         Unit
     }
+
 
     fun createTicket(
         context: Context,
@@ -813,6 +909,28 @@ object SupabaseRepository {
             prefer = "return=minimal"
         )
 
+        // Ambil data tiket untuk kirim notifikasi ke peserta
+        runCatching {
+            val ticketResp = request(
+                "GET",
+                "$SUPABASE_REST_URL/tickets?ticketid=eq.${encode(ticketId)}&limit=1",
+                bearer = accessToken(context)
+            )
+            val rows = ticketResp.getJSONArray("data")
+            if (rows.length() > 0) {
+                val ticket = rows.getJSONObject(0)
+                val userId = ticket.optString("userid")
+                val eventName = ticket.optString("eventname", "event yang kamu daftarkan")
+                createNotification(
+                    context = context,
+                    userId = userId,
+                    title = "Pembayaran Diterima ✓",
+                    message = "Pembayaran kamu untuk event \"$eventName\" telah diterima. Tiket kamu sudah aktif!",
+                    type = "PAYMENT_APPROVED"
+                )
+            }
+        }
+
         Unit
     }
 
@@ -833,6 +951,28 @@ object SupabaseRepository {
             prefer = "return=minimal"
         )
 
+        // Ambil data tiket untuk kirim notifikasi ke peserta
+        runCatching {
+            val ticketResp = request(
+                "GET",
+                "$SUPABASE_REST_URL/tickets?ticketid=eq.${encode(ticketId)}&limit=1",
+                bearer = accessToken(context)
+            )
+            val rows = ticketResp.getJSONArray("data")
+            if (rows.length() > 0) {
+                val ticket = rows.getJSONObject(0)
+                val userId = ticket.optString("userid")
+                val eventName = ticket.optString("eventname", "event yang kamu daftarkan")
+                createNotification(
+                    context = context,
+                    userId = userId,
+                    title = "Pembayaran Ditolak ✗",
+                    message = "Pembayaran kamu untuk event \"$eventName\" ditolak. Silakan periksa kembali bukti pembayaran yang diunggah.",
+                    type = "PAYMENT_REJECTED"
+                )
+            }
+        }
+
         Unit
     }
 
@@ -842,6 +982,124 @@ object SupabaseRepository {
             val events = parseEvents(response.getJSONArray("data"))
             events.size to events.sumOf { it.registrants.toLong() }
         }
+
+    // =========================================================
+    // SISTEM NOTIFIKASI
+    // =========================================================
+
+    fun createNotification(
+        context: Context,
+        userId: String,
+        title: String,
+        message: String,
+        type: String,
+        callback: ((Result<Unit>) -> Unit)? = null
+    ) {
+        val work = {
+            val body = JSONObject()
+                .put("notificationid", "NOTIF-" + UUID.randomUUID().toString().substring(0, 8).uppercase())
+                .put("userid", userId)
+                .put("title", title)
+                .put("message", message)
+                .put("type", type)
+                .put("isread", false)
+
+            request(
+                "POST",
+                "$SUPABASE_REST_URL/notifications",
+                body,
+                bearer = accessToken(context),
+                prefer = "return=minimal"
+            )
+            Unit
+        }
+
+        if (callback != null) {
+            runAsync(callback, work)
+        } else {
+            Thread { runCatching(work) }.start()
+        }
+    }
+
+    fun loadNotifications(
+        context: Context,
+        callback: (Result<List<Notification>>) -> Unit
+    ) = runAsync(callback) {
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/notifications?userid=eq.${encode(user.uid)}&order=createdat.desc&limit=50",
+            bearer = accessToken(context)
+        )
+
+        val rows = response.getJSONArray("data")
+        val list = mutableListOf<Notification>()
+        for (i in 0 until rows.length()) {
+            val item = rows.getJSONObject(i)
+            list.add(
+                Notification(
+                    notificationId = item.optString("notificationid"),
+                    userId = item.optString("userid"),
+                    title = item.optString("title"),
+                    message = item.optString("message"),
+                    type = item.optString("type"),
+                    isRead = item.optBoolean("isread", false),
+                    createdAt = item.optString("createdat")
+                )
+            )
+        }
+        list
+    }
+
+    fun markNotificationRead(
+        context: Context,
+        notificationId: String,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+        val body = JSONObject().put("isread", true)
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/notifications?notificationid=eq.${encode(notificationId)}",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+        Unit
+    }
+
+    fun markAllNotificationsRead(
+        context: Context,
+        callback: (Result<Unit>) -> Unit
+    ) = runAsync(callback) {
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+        val body = JSONObject().put("isread", true)
+        request(
+            "PATCH",
+            "$SUPABASE_REST_URL/notifications?userid=eq.${encode(user.uid)}&isread=eq.false",
+            body,
+            bearer = accessToken(context),
+            prefer = "return=minimal"
+        )
+        Unit
+    }
+
+    fun getUnreadNotificationCount(
+        context: Context,
+        callback: (Result<Int>) -> Unit
+    ) = runAsync(callback) {
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/notifications?userid=eq.${encode(user.uid)}&isread=eq.false&select=notificationid",
+            bearer = accessToken(context)
+        )
+        response.getJSONArray("data").length()
+    }
 
     fun sendPasswordReset(email: String, callback: (Result<Unit>) -> Unit) = runAsync(callback) {
         val body = JSONObject().put("email", email)

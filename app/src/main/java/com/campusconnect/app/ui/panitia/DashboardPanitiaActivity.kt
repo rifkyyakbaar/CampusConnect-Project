@@ -2,6 +2,7 @@ package com.campusconnect.app.ui.panitia
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -13,31 +14,28 @@ import com.campusconnect.app.R
 import com.campusconnect.app.adapter.EventPanitiaAdapter
 import com.campusconnect.app.data.SupabaseRepository
 import com.campusconnect.app.model.Event
-import com.campusconnect.app.ui.panitia.DetailPanitiaEventActivity
+import com.campusconnect.app.ui.mahasiswa.NotificationActivity
 import com.campusconnect.app.ui.profile.ProfileActivity
 
 class DashboardPanitiaActivity : AppCompatActivity() {
 
-    // Data mentah hasil load dari server, tidak pernah difilter langsung.
     private val allEvents = mutableListOf<Event>()
-
-    // List yang benar-benar dibaca oleh adapter (hasil filter dari allEvents).
-    // EventPanitiaAdapter memegang referensi List ini langsung di constructor
-    // dan membaca isinya tiap kali notifyDataSetChanged() dipanggil, jadi
-    // filter dilakukan dengan clear()+addAll() ke list yang sama ini,
-    // bukan dengan mengganti referensi list baru.
-    private val myEvents = mutableListOf<Event>()
+    private val myEvents  = mutableListOf<Event>()
 
     private lateinit var adapter: EventPanitiaAdapter
     private lateinit var rvPanitiaEvents: RecyclerView
 
-    private var selectedFilter = "all" // all | waiting | approved | rejected | finished
+    private var selectedFilter = "all"
 
-    private lateinit var btnFilterAll: CardView
-    private lateinit var btnFilterWaiting: CardView
+    private lateinit var btnFilterAll:      CardView
+    private lateinit var btnFilterWaiting:  CardView
     private lateinit var btnFilterApproved: CardView
     private lateinit var btnFilterRejected: CardView
     private lateinit var btnFilterFinished: CardView
+
+    // Bell + badge
+    private lateinit var frameBellPanitia:     View
+    private lateinit var tvNotifBadgePanitia:  TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +43,8 @@ class DashboardPanitiaActivity : AppCompatActivity() {
 
         setupMyEventsList()
         setupFilterNavbar()
+        setupTopIcons()
         loadPanitiaName()
-        profilepanitia()
         createevent()
         showDefaultStats()
     }
@@ -55,7 +53,44 @@ class DashboardPanitiaActivity : AppCompatActivity() {
         super.onStart()
         loadMyEventsStats()
         loadMyManagedEvents()
+        // Refresh badge setiap kali dashboard aktif
+        // (termasuk setelah kembali dari NotificationActivity)
+        refreshNotifBadge()
     }
+
+    // ─────────────────────────────────────────
+    // Bell icon & badge
+    // ─────────────────────────────────────────
+
+    private fun setupTopIcons() {
+        frameBellPanitia    = findViewById(R.id.frameBellPanitia)
+        tvNotifBadgePanitia = findViewById(R.id.tvNotifBadgePanitia)
+
+        frameBellPanitia.setOnClickListener {
+            startActivity(Intent(this, NotificationActivity::class.java))
+        }
+
+        // Tombol profile di samping bell
+        findViewById<ImageButton>(R.id.btnOpenProfile).setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
+    }
+
+    private fun refreshNotifBadge() {
+        SupabaseRepository.getUnreadNotificationCount(this) { result ->
+            val count = result.getOrDefault(0)
+            if (count > 0) {
+                tvNotifBadgePanitia.visibility = View.VISIBLE
+                tvNotifBadgePanitia.text = if (count > 99) "99+" else count.toString()
+            } else {
+                tvNotifBadgePanitia.visibility = View.GONE
+            }
+        }
+    }
+
+    // ─────────────────────────────────────────
+    // Event list
+    // ─────────────────────────────────────────
 
     private fun setupMyEventsList() {
         rvPanitiaEvents = findViewById(R.id.rvPanitiaEvents)
@@ -74,20 +109,23 @@ class DashboardPanitiaActivity : AppCompatActivity() {
                 })
             }
         )
-
         rvPanitiaEvents.layoutManager = LinearLayoutManager(this)
         rvPanitiaEvents.adapter = adapter
     }
 
+    // ─────────────────────────────────────────
+    // Filter navbar
+    // ─────────────────────────────────────────
+
     private fun setupFilterNavbar() {
-        btnFilterAll = findViewById(R.id.btnFilterAll)
-        btnFilterWaiting = findViewById(R.id.btnFilterWaiting)
+        btnFilterAll      = findViewById(R.id.btnFilterAll)
+        btnFilterWaiting  = findViewById(R.id.btnFilterWaiting)
         btnFilterApproved = findViewById(R.id.btnFilterApproved)
         btnFilterRejected = findViewById(R.id.btnFilterRejected)
         btnFilterFinished = findViewById(R.id.btnFilterFinished)
 
-        btnFilterAll.setOnClickListener { selectFilter("all") }
-        btnFilterWaiting.setOnClickListener { selectFilter("waiting") }
+        btnFilterAll.setOnClickListener      { selectFilter("all") }
+        btnFilterWaiting.setOnClickListener  { selectFilter("waiting") }
         btnFilterApproved.setOnClickListener { selectFilter("approved") }
         btnFilterRejected.setOnClickListener { selectFilter("rejected") }
         btnFilterFinished.setOnClickListener { selectFilter("finished") }
@@ -104,24 +142,24 @@ class DashboardPanitiaActivity : AppCompatActivity() {
 
     private fun updateFilterVisualState() {
         val activeColor = when (selectedFilter) {
-            "waiting" -> getColor(R.color.bg_warning)
+            "waiting"  -> getColor(R.color.bg_warning)
             "approved" -> getColor(R.color.bg_terima)
             "rejected" -> getColor(R.color.bg_tolak)
             "finished" -> getColor(R.color.teks_sekunder)
-            else -> getColor(R.color.warna_primer)
+            else       -> getColor(R.color.warna_primer)
         }
         val activeTextColor = when (selectedFilter) {
-            "waiting" -> getColor(R.color.teks_warning)
+            "waiting"  -> getColor(R.color.teks_warning)
             "rejected" -> getColor(R.color.teks_tolak)
-            else -> getColor(R.color.black)
+            else       -> getColor(R.color.black)
         }
 
-        val inactiveBg = android.graphics.Color.parseColor("#30FFFFFF")
+        val inactiveBg   = android.graphics.Color.parseColor("#30FFFFFF")
         val inactiveText = getColor(R.color.white)
 
         val pills = mapOf(
-            "all" to btnFilterAll,
-            "waiting" to btnFilterWaiting,
+            "all"      to btnFilterAll,
+            "waiting"  to btnFilterWaiting,
             "approved" to btnFilterApproved,
             "rejected" to btnFilterRejected,
             "finished" to btnFilterFinished
@@ -141,7 +179,7 @@ class DashboardPanitiaActivity : AppCompatActivity() {
 
     private fun applyFilter() {
         val filtered = when (selectedFilter) {
-            "waiting" -> allEvents.filter {
+            "waiting"  -> allEvents.filter {
                 it.status.equals("pending", ignoreCase = true)
             }
             "approved" -> allEvents.filter {
@@ -155,24 +193,23 @@ class DashboardPanitiaActivity : AppCompatActivity() {
                 it.status.equals("approved", ignoreCase = true) &&
                         EventPanitiaAdapter.isEventFinished(it)
             }
-            else -> allEvents.toList() // "all"
+            else -> allEvents.toList()
         }
 
         myEvents.clear()
         myEvents.addAll(filtered)
         adapter.notifyDataSetChanged()
-
         updateLabel(filtered.isEmpty())
     }
 
     private fun updateLabel(isEmpty: Boolean) {
         val label = findViewById<TextView>(R.id.tvMyEventsLabel)
-        label.text = if (isEmpty) {
-            "My Managed Events - No events yet"
-        } else {
-            "My Managed Events"
-        }
+        label.text = if (isEmpty) "My Managed Events - No events yet" else "My Managed Events"
     }
+
+    // ─────────────────────────────────────────
+    // Load data
+    // ─────────────────────────────────────────
 
     private fun loadPanitiaName() {
         val tvPanitiaName = findViewById<TextView>(R.id.tvPanitiaName)
@@ -190,13 +227,6 @@ class DashboardPanitiaActivity : AppCompatActivity() {
         }
     }
 
-    private fun profilepanitia() {
-        val btnProfile = findViewById<ImageButton>(R.id.btnOpenProfile)
-        btnProfile.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
-        }
-    }
-
     private fun createevent() {
         val fabAddEvent = findViewById<ImageButton>(R.id.fabAddEvent)
         fabAddEvent.setOnClickListener {
@@ -205,21 +235,19 @@ class DashboardPanitiaActivity : AppCompatActivity() {
     }
 
     private fun showDefaultStats() {
-        findViewById<TextView>(R.id.tvTotalEvents).text = "0"
+        findViewById<TextView>(R.id.tvTotalEvents).text     = "0"
         findViewById<TextView>(R.id.tvTotalRegistrants).text = "0"
     }
 
     private fun loadMyEventsStats() {
         val user = SupabaseRepository.currentUser(this) ?: return
         SupabaseRepository.loadOrganizerStats(user.uid) { result ->
-            result
-                .onSuccess { stats ->
-                    findViewById<TextView>(R.id.tvTotalEvents).text = stats.first.toString()
-                    findViewById<TextView>(R.id.tvTotalRegistrants).text = stats.second.toString()
-                }
-                .onFailure {
-                    showDefaultStats()
-                }
+            result.onSuccess { stats ->
+                findViewById<TextView>(R.id.tvTotalEvents).text     = stats.first.toString()
+                findViewById<TextView>(R.id.tvTotalRegistrants).text = stats.second.toString()
+            }.onFailure {
+                showDefaultStats()
+            }
         }
     }
 
@@ -231,17 +259,19 @@ class DashboardPanitiaActivity : AppCompatActivity() {
         }
 
         SupabaseRepository.loadOrganizerEvents(user.uid) { result ->
-            result
-                .onSuccess { events ->
-                    allEvents.clear()
-                    allEvents.addAll(events)
-                    applyFilter()
-                }
-                .onFailure { exception ->
-                    allEvents.clear()
-                    applyFilter()
-                    Toast.makeText(this, exception.localizedMessage ?: "Gagal memuat event.", Toast.LENGTH_SHORT).show()
-                }
+            result.onSuccess { events ->
+                allEvents.clear()
+                allEvents.addAll(events)
+                applyFilter()
+            }.onFailure { exception ->
+                allEvents.clear()
+                applyFilter()
+                Toast.makeText(
+                    this,
+                    exception.localizedMessage ?: "Gagal memuat event.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }

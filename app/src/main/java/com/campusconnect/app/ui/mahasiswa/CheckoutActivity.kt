@@ -101,19 +101,19 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun scheduleEventReminder() {
         try {
-            // Convert event date string to timestamp
+            val user = SupabaseRepository.currentUser(this) ?: return
             val eventDateTimestamp = parseEventDateToTimestamp(eventDate)
-
-            // Schedule the reminder only if timestamp is valid (in the future)
             if (eventDateTimestamp > System.currentTimeMillis()) {
-                ReminderScheduler.scheduleH1Reminder(
-                    this,
-                    eventName,
-                    eventDateTimestamp
+                ReminderScheduler.scheduleAllReminders(
+                    context            = this,
+                    userId             = user.uid,
+                    eventId            = eventId,
+                    eventName          = eventName,
+                    eventDateTimestamp = eventDateTimestamp
                 )
             }
-        } catch (exception: Exception) {
-            exception.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

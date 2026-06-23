@@ -2,6 +2,7 @@ package com.campusconnect.app.util
 
 import android.content.Context
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.campusconnect.app.worker.EventReminderWorker
@@ -10,49 +11,77 @@ import java.util.concurrent.TimeUnit
 object ReminderScheduler {
 
     /**
-     * Schedule H-1 (one day before) event reminder notification
+     * Menjadwalkan tiga pengingat sekaligus:
+     *   H-1 hari, H-1 jam, H-10 menit
      *
-     * @param context Application context
-     * @param eventName Name of the event
-     * @param eventDateTimestamp Event date timestamp in milliseconds
+     * Dipanggil dari CheckoutActivity (event gratis) dan
+     * PaymentConfirmationActivity (event berbayar, tiket masih PENDING).
      */
-    fun scheduleH1Reminder(
+    fun scheduleAllReminders(
         context: Context,
+        userId: String,
+        eventId: String,
         eventName: String,
         eventDateTimestamp: Long
     ) {
-        // Calculate H-1 timestamp (24 hours before event)
-        val h1Timestamp = eventDateTimestamp - (24 * 60 * 60 * 1000) // 24 hours in milliseconds
+        val now = System.currentTimeMillis()
 
-        // Calculate delay from now to H-1
-        val currentTime = System.currentTimeMillis()
-        val delayInMillis = h1Timestamp - currentTime
+        scheduleOne(
+            context   = context,
+            workName  = "reminder_H1_$eventId",
+            delayMs   = eventDateTimestamp - TimeUnit.HOURS.toMillis(24) - now,
+            userId    = userId,
+            eventName = eventName,
+            type      = EventReminderWorker.TYPE_H1_DAY
+        )
 
-        // If delay is negative or too small, don't schedule
-        if (delayInMillis <= 0) {
-            return
-        }
+        scheduleOne(
+            context   = context,
+            workName  = "reminder_1H_$eventId",
+            delayMs   = eventDateTimestamp - TimeUnit.HOURS.toMillis(1) - now,
+            userId    = userId,
+            eventName = eventName,
+            type      = EventReminderWorker.TYPE_1H
+        )
 
-        // Convert milliseconds to minutes for WorkManager
-        val delayInMinutes = TimeUnit.MILLISECONDS.toMinutes(delayInMillis)
+        scheduleOne(
+            context   = context,
+            workName  = "reminder_10M_$eventId",
+            delayMs   = eventDateTimestamp - TimeUnit.MINUTES.toMillis(10) - now,
+            userId    = userId,
+            eventName = eventName,
+            type      = EventReminderWorker.TYPE_10M
+        )
+    }
 
-        // Prepare input data for worker
+    // ---------- internal ----------
+
+    private fun scheduleOne(
+        context: Context,
+        workName: String,
+        delayMs: Long,
+        userId: String,
+        eventName: String,
+        type: String
+    ) {
+        // Lewati jika waktunya sudah lampau
+        if (delayMs <= 0) return
+
         val inputData = Data.Builder()
-            .putString(EventReminderWorker.EVENT_NAME_KEY, eventName)
+            .putString(EventReminderWorker.KEY_EVENT_NAME,    eventName)
+            .putString(EventReminderWorker.KEY_USER_ID,       userId)
+            .putString(EventReminderWorker.KEY_REMINDER_TYPE, type)
             .build()
 
-        // Create one-time work request
-        val reminderWorkRequest = OneTimeWorkRequestBuilder<EventReminderWorker>()
-            .setInitialDelay(delayInMinutes, TimeUnit.MINUTES)
+        val request = OneTimeWorkRequestBuilder<EventReminderWorker>()
+            .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)
             .setInputData(inputData)
             .build()
 
-        // Enqueue the work
         WorkManager.getInstance(context).enqueueUniqueWork(
-            "event_reminder_$eventName",
-            androidx.work.ExistingWorkPolicy.REPLACE,
-            reminderWorkRequest
+            workName,
+            ExistingWorkPolicy.REPLACE,
+            request
         )
     }
 }
-
