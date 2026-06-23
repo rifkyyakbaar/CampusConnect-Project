@@ -300,7 +300,7 @@ object SupabaseRepository {
             .put("description", description)
             .put("posterUrl", posterUrl)
             .put("headerImageUrl", headerImageUrl)
-            .put("status", "pending")
+//            .put("status", "pending")
             .put("eventDate", eventDate)
             .put("eventPrice", eventPrice)
             .put("paymentType", paymentType)
@@ -627,16 +627,12 @@ object SupabaseRepository {
         context: Context,
         callback: (Result<List<Ticket>>) -> Unit
     ) = runAsync(callback) {
-
         val user = currentUser(context)
             ?: throw IllegalStateException("Silakan login terlebih dahulu.")
 
-        // Hanya tiket CONFIRMED yang tampil di Manage Ticket.
-        // PENDING (masih menunggu verifikasi panitia), REJECTED,
-        // dan USED (sudah dipakai/dipindah ke History) tidak ikut.
         val response = request(
             "GET",
-            "$SUPABASE_REST_URL/tickets?userid=eq.${encode(user.uid)}&status=eq.CONFIRMED&order=createdat.desc",
+            "$SUPABASE_REST_URL/tickets?userid=eq.${encode(user.uid)}&status=in.(CONFIRMED,PENDING)&order=createdat.desc",
             bearer = accessToken(context)
         )
 
@@ -644,9 +640,7 @@ object SupabaseRepository {
         val tickets = mutableListOf<Ticket>()
 
         for (i in 0 until rows.length()) {
-
             val item = rows.getJSONObject(i)
-
             tickets.add(parseTicket(item))
         }
 
@@ -1243,6 +1237,27 @@ object SupabaseRepository {
 
         // Tambahkan ?v=versi di belakang URL untuk menembus cache server
         return "$SUPABASE_PROJECT_URL/storage/v1/object/public/$AVATARS_BUCKET/$userId/avatar.jpg?v=$version"
+    }
+
+    fun checkAlreadyRegistered(
+        context: Context,
+        eventId: String,
+        callback: (Result<Boolean>) -> Unit
+    ) = runAsync(callback) {
+        val user = currentUser(context)
+            ?: throw IllegalStateException("Silakan login terlebih dahulu.")
+
+        // Meminta Supabase mencari tiket milik user ini untuk event ini
+        val response = request(
+            "GET",
+            "$SUPABASE_REST_URL/tickets?userid=eq.${encode(user.uid)}&eventid=eq.${encode(eventId)}&select=ticketid",
+            bearer = accessToken(context)
+        )
+
+        val rows = response.getJSONArray("data")
+
+        // Jika panjang datanya lebih dari 0, berarti dia SUDAH pernah daftar
+        rows.length() > 0
     }
 
 

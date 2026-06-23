@@ -103,29 +103,60 @@ class DetailEventActivity : AppCompatActivity() {
     }
 
     private fun joinEvent(event: Event) {
-        if (event.paymentType == "FREE") {
-            startActivity(
-                Intent(this, CheckoutActivity::class.java).apply {
-                    putExtra("eventId", event.id)
-                    putExtra("eventPrice", event.eventPrice)
-                    putExtra("eventName", event.eventName)
-                    putExtra("eventDate", event.eventDate)
-                    putExtra("eventLocation", event.location)
-                    putExtra("category", event.category)
+        // Matikan tombol sementara saat sedang mengecek ke database agar tidak di-spam klik
+        btnJoinEvent.isEnabled = false
+        val originalText = btnJoinEvent.text
+        btnJoinEvent.text = "Mengecek pendaftaran..."
+
+        // Panggil fungsi pengecekan di Supabase
+        SupabaseRepository.checkAlreadyRegistered(this, event.id) { result ->
+            // Nyalakan kembali tombol
+            btnJoinEvent.isEnabled = true
+            btnJoinEvent.text = originalText
+
+            result.onSuccess { isAlreadyRegistered ->
+                if (isAlreadyRegistered) {
+                    // Cegah dan tampilkan peringatan
+                    Toast.makeText(
+                        this,
+                        "Anda sudah mendaftar di event ini! Silakan cek menu My Tickets.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    // Jika belum terdaftar, arahkan ke proses selanjutnya sesuai tipe pembayaran
+                    if (event.paymentType == "FREE") {
+                        startActivity(
+                            Intent(this, CheckoutActivity::class.java).apply {
+                                putExtra("eventId", event.id)
+                                putExtra("eventPrice", event.eventPrice)
+                                putExtra("eventName", event.eventName)
+                                putExtra("eventDate", event.eventDate)
+                                putExtra("eventLocation", event.location)
+                                putExtra("category", event.category)
+                            }
+                        )
+                    } else {
+                        startActivity(
+                            Intent(this, PaymentConfirmationActivity::class.java).apply {
+                                putExtra("eventId", event.id)
+                                putExtra("eventName", event.eventName)
+                                putExtra("eventPrice", event.eventPrice)
+                                putExtra("paymentInfo", event.paymentInfo)
+                                putExtra("eventDate", event.eventDate)
+                                putExtra("eventLocation", event.location)
+                                putExtra("category", event.category)
+                            }
+                        )
+                    }
                 }
-            )
-        } else {
-            startActivity(
-                Intent(this, PaymentConfirmationActivity::class.java).apply {
-                    putExtra("eventId", event.id)
-                    putExtra("eventName", event.eventName)
-                    putExtra("eventPrice", event.eventPrice)
-                    putExtra("paymentInfo", event.paymentInfo)
-                    putExtra("eventDate", event.eventDate)
-                    putExtra("eventLocation", event.location)
-                    putExtra("category", event.category)
-                }
-            )
+            }.onFailure { exception ->
+                // Jika internet mati atau gagal ngecek, jangan izinkan lewat untuk cari aman
+                Toast.makeText(
+                    this,
+                    "Gagal mengecek status pendaftaran: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

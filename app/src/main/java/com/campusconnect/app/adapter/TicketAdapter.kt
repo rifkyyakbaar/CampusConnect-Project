@@ -25,8 +25,28 @@ class TicketAdapter(
             binding.tvTicketId.text  = ticket.ticketId
             binding.tvStatus.text    = ticket.status
 
-            binding.btnViewTicket.setBlinkOnClick { onClick(ticket) }
-            binding.root.setBlinkOnClick { onClick(ticket) }
+            // LOGIKA PENDING & CONFIRMED
+            if (ticket.status.equals("PENDING", ignoreCase = true)) {
+                // Sembunyikan tombol View Ticket
+                binding.btnViewTicket.visibility = android.view.View.GONE
+
+                // Ubah warna teks dan titik status menjadi Abu-abu/Kuning
+                binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#FFA500")) // Warna Orange untuk Pending
+                // (Opsional) Jika Anda punya akses ke View bullet point-nya, Anda bisa ubah warnanya juga di sini
+
+                // Matikan klik pada seluruh card agar tidak bisa membuka TicketActivity
+                binding.root.setOnClickListener(null)
+            } else {
+                // Munculkan kembali tombol View Ticket
+                binding.btnViewTicket.visibility = android.view.View.VISIBLE
+
+                // Kembalikan warna teks status ke warna default (misalnya Hijau untuk Confirmed)
+                binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
+
+                // Aktifkan kembali fungsi klik
+                binding.btnViewTicket.setBlinkOnClick { onClick(ticket) }
+                binding.root.setBlinkOnClick { onClick(ticket) }
+            }
 
             // Tombol Review — hanya muncul di History (onReview != null) & status USED
             if (onReview != null && ticket.status == "USED") {

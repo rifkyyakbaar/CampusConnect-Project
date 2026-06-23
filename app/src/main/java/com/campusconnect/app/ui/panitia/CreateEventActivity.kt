@@ -295,7 +295,7 @@ class CreateEventActivity : AppCompatActivity() {
                 paymentType = paymentType,
                 paymentInfo = paymentInfo
             ) { result ->
-                handlePublishResult(result, "Event berhasil diperbarui dan kembali menunggu approval.")
+                handlePublishResult(result, "Event berhasil diperbarui.")
             }
         } else {
             SupabaseRepository.createEvent(
